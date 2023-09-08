@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Cactus</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white p-2" asp-controller="home" asp-action="index">Message</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                @if (!User.Identity.IsAuthenticated) {
+                    <li><a type="submit" asp-controller="account" asp-action="login" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Войти</a></li>
+                    <li><a type="submit" asp-controller="account" asp-action="registration" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Зарегистрироваться</a></li>
+                }
+                else {
+                    <li><a type="submit" asp-controller="account" asp-action="logOut">Выйти</a></li>
+                }
+            </ul>
+        </div>
+    </nav>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>
