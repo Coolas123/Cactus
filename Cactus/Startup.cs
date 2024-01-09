@@ -3,7 +3,8 @@ using Cactus.Models.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace Cactus
 {
@@ -23,7 +24,14 @@ namespace Cactus
             });
             services.AddDistributedMemoryCache();
             services.AddSession();
-            services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddIdentity<User, SystemRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.ConfigureApplicationCookie(opts => {
                 opts.Cookie.HttpOnly = true;
@@ -33,6 +41,10 @@ namespace Cactus
                 opts.SlidingExpiration = true;
             });
             services.AddAuthorization(opts => {
+                opts.AddPolicy("User", builder =>
+                {
+                    builder.RequireClaim(ClaimTypes.Role,"User");
+                });
                 opts.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             });
             services.AddAuthentication().AddGoogle(options =>

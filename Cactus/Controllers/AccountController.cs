@@ -13,7 +13,6 @@ namespace Cactus.Controllers
     {
         private UserManager<User> userManager;
         private SignInManager<User> signInManager;
-        private RoleManager<IdentityRole> roleManager;
         private string returnUrl { get; set; }
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) {
@@ -86,17 +85,17 @@ namespace Cactus.Controllers
             if (ModelState.IsValid) {
                 User user = new User
                 {
-                    UserName = model.Email,
+                    UserName=model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Surname = model.Surname,
                     DateOfBirth = model.DateOfBirth,
                     Gender = model.Gender,
-                    Email = model.Email
+                    //Email = model.Email
                 };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
-                    await userManager.AddToRoleAsync(user, "User");
+                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role,"User"));
                     await signInManager.SignInAsync(user, false);
                     return Redirect(returnUrl ?? "/");
                 }
@@ -119,20 +118,23 @@ namespace Cactus.Controllers
             }
             User user = new User
             {
-                UserName = model.Email,
+                UserName= result.Principal.FindFirstValue(ClaimTypes.Email),
                 FirstName = result.Principal.FindFirstValue(ClaimTypes.Name),
                 LastName = result.Principal.FindFirstValue(ClaimTypes.GivenName),
                 Gender = result.Principal.FindFirstValue(ClaimTypes.Gender)??"",
-                Email = result.Principal.FindFirstValue(ClaimTypes.Email)
+                //Email = result.Principal.FindFirstValue(ClaimTypes.Email)
             };
             var resultCreate = await userManager.CreateAsync(user, model.Password);
             if (resultCreate.Succeeded) {
-                var loginResult = await userManager.AddLoginAsync(user, result);
-                if (loginResult.Succeeded) {
-                    await userManager.AddToRoleAsync(user, "User");
-                    await signInManager.SignInAsync(user, false);
-                    return Redirect(model.ReturnUrl ?? "/");
-                }
+                await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                await signInManager.SignInAsync(user, false);
+                return Redirect(model.ReturnUrl ?? "/");
+                //var loginResult = await userManager.AddLoginAsync(user, result);
+                //if (loginResult.Succeeded) {
+                //    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                //    await signInManager.SignInAsync(user, false);
+                //    return Redirect(model.ReturnUrl ?? "/");
+                //}
             }
             return View(model);
         }
