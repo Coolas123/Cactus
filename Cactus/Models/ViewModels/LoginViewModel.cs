@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Cactus.Models.ViewModels
 {
-    public class LoginModel
+    public class LoginViewModel
     {
         [Required]
         [EmailAddress(ErrorMessage = "Неверный формат почты")]
