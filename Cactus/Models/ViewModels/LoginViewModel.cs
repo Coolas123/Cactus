@@ -15,15 +15,4 @@ namespace Cactus.Models.ViewModels
         public string Password { get; set; }
         public string ReturnUrl { get; set; }
     }
-
-    public class LoginGoogleModel
-    {
-        [Required]
-        [EmailAddress(ErrorMessage = "Неверный формат почты")]
-        [Display(Name = "Почта")]
-        public string? Email { get; set; }
-
-
-        public string ReturnUrl { get; set; }
-    }
 }

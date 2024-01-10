@@ -1,4 +1,4 @@
-﻿@model LoginModel
+﻿@model LoginViewModel
 
 <div class="container">
     <div class="row justify-content-center">
@@ -16,14 +16,6 @@
                     <input class="form-control" asp-for="Password" placeholder="Введите пароль" />
                 </div>
                 <button type="submit" class="btn btn-success">Войти</button>
-            </form>
-            <form asp-action="LoginGoogle">
-                <div class="col-md-4">
-                    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
-                    <button type="submit" class="btn btn-block btn-google" name="provider" value="Google">
-                        Google
-                   </button>
-                </div>
             </form>
         </div>
     </div>
