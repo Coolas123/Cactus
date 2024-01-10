@@ -1,8 +1,9 @@
-﻿using Cactus.Models.Database;
-using Cactus.Models;
-using Cactus.Models.ViewModels;
+﻿using Cactus.Models.ViewModels;
+using Cactus.Services.Implementations;
+using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -11,62 +12,33 @@ namespace Cactus.Controllers
     [AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {
-        private UserManager<User> userManager;
-        private SignInManager<User> signInManager;
-        private string returnUrl { get; set; }
+        private readonly IUserService userService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-        }
-        [AllowAnonymous]
-        public IActionResult LoginGoogle(string provider, string returnUrl) {
-            if (User.Identity.IsAuthenticated) {
-                return View(new Models.ViewModels.LoginGoogleModel { ReturnUrl = returnUrl });
-            }
-            var redirectUrl = Url.Action(nameof(loginReturn),"Account", new { returnUrl });
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> loginReturn(string returnUrl) {
-            var result = await signInManager.GetExternalLoginInfoAsync();
-            if (result == null) {
-                return RedirectToAction(nameof(Login));
-            }
-            var signInResult = await signInManager.ExternalLoginSignInAsync(result.LoginProvider, result.ProviderKey,false,false);
-            if (signInResult.Succeeded) {
-                return Redirect(returnUrl??"/");
-            }
-            return View(nameof(RegistrationGoogle),new RegisterGoogleModel
-            {
-                Email= result.Principal.FindFirstValue(ClaimTypes.Email),
-                ReturnUrl = returnUrl
-            });
+        public AccountController (IUserService userService)
+        {
+            this.userService = userService;
         }
 
         [AllowAnonymous]
         public IActionResult Login(string returnUrl) {
             if (!User.Identity.IsAuthenticated) {
-                return View(new Models.ViewModels.LoginModel { ReturnUrl = returnUrl });
+                return View(new LoginViewModel { ReturnUrl = returnUrl });
             }
             return Redirect(returnUrl ?? "/");
         }
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(Models.ViewModels.LoginModel model, string returnUrl) {
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl) {
             if (ModelState.IsValid) {
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-                if (result.Succeeded) {
+                var result = await userService.Login(model);
+                if (result.StatucCode == StatusCodes.Status200OK) {
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(result.Data));
                     return Redirect(returnUrl ?? "/");
                 }
                 else {
-                    ModelState.AddModelError(nameof(model.Email), "Неверный логин или пароль");
+                    ModelState.AddModelError(nameof(model.Email), result.Description);
                 }
-            }
-            else {
-                ModelState.AddModelError(nameof(model.Email), "Неверный логин или пароль");
             }
             return View(model);
         }
@@ -74,73 +46,28 @@ namespace Cactus.Controllers
         [AllowAnonymous]
         public IActionResult Registration(string returnUrl) {
             if (!User.Identity.IsAuthenticated) {
-                return View(new RegisterModel { ReturnUrl = returnUrl });
+                return View(new RegisterViewModel { ReturnUrl = returnUrl });
             }
             return Redirect(returnUrl ?? "/");
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Registration(RegisterModel model, string returnUrl) {
+        public async Task<IActionResult> Registration(RegisterViewModel model, string returnUrl) {
             if (ModelState.IsValid) {
-                User user = new User
-                {
-                    UserName=model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Surname = model.Surname,
-                    DateOfBirth = model.DateOfBirth,
-                    Gender = model.Gender,
-                    //Email = model.Email
-                };
-                var result = await userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded) {
-                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role,"User"));
-                    await signInManager.SignInAsync(user, false);
+                var result = await userService.Register(model);
+                if (result.StatucCode==StatusCodes.Status200OK) {
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(result.Data));
                     return Redirect(returnUrl ?? "/");
                 }
-            }
-            return View(model);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult RegistrationGoogle(RegisterGoogleModel model) {
-            return View(model);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> RegistrationGoogleConfirmedAsync(RegisterGoogleModel model) {
-            var result = await signInManager.GetExternalLoginInfoAsync();
-            if (result == null) {
-                return RedirectToAction(nameof(Login));
-            }
-            User user = new User
-            {
-                UserName= result.Principal.FindFirstValue(ClaimTypes.Email),
-                FirstName = result.Principal.FindFirstValue(ClaimTypes.Name),
-                LastName = result.Principal.FindFirstValue(ClaimTypes.GivenName),
-                Gender = result.Principal.FindFirstValue(ClaimTypes.Gender)??"",
-                //Email = result.Principal.FindFirstValue(ClaimTypes.Email)
-            };
-            var resultCreate = await userManager.CreateAsync(user, model.Password);
-            if (resultCreate.Succeeded) {
-                await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
-                await signInManager.SignInAsync(user, false);
-                return Redirect(model.ReturnUrl ?? "/");
-                //var loginResult = await userManager.AddLoginAsync(user, result);
-                //if (loginResult.Succeeded) {
-                //    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
-                //    await signInManager.SignInAsync(user, false);
-                //    return Redirect(model.ReturnUrl ?? "/");
-                //}
+                ModelState.AddModelError("",result.Description);
             }
             return View(model);
         }
 
         public async Task<IActionResult> LogOut() {
-            await signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
     }
