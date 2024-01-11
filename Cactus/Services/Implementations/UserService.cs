@@ -27,15 +27,25 @@ namespace Cactus.Services.Implementations
                     Description = "Пользователь с такой почтой зарегистрирован"
                 };
             }
+            user = await userRepository.GetByUserNameAsync(model.UserName);
+            if (user != null)
+            {
+                return new BaseResponse<ClaimsIdentity>()
+                {
+                    Description = "Аккаунт с таким прозвищем уже существует"
+                };
+            }
             user = new User
             {
+                UserName=model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                Surname = model.Surname,
-                DateOfBirth = model.DateOfBirth,
+                DateOfBirth = model.DateOfBirth.ToUniversalTime(),
                 Gender = model.Gender,
                 Email = model.Email,
-                SystemRoleId = (int)Cactus.Models.Enums.SystemRole.User,
+                CountryId = (int)model.Country,
+                SystemRoleId = (int)Models.Enums.SystemRole.User,
+                UserRoleId = (int)Models.Enums.UserRole.Patron,
                 HashPassword = HashPassword.Generate(model.Password)
             };
             await userRepository.CreateAsync(user);

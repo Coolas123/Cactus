@@ -13,6 +13,8 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<bool> CreateAsync(User entity)
         {
             await dbContext.Users.AddAsync(entity);
+            var id = GetByEmailAsync(entity.Email).Id;
+            await dbContext.Patrons.AddAsync(new Patron { UserId= id });
             await dbContext.SaveChangesAsync();
             return true;
         }
@@ -37,6 +39,11 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<IEnumerable<User>> SelectAsync()
         {
             return await dbContext.Users.ToListAsync();
+        }
+
+        public async Task<User> GetByUserNameAsync(string userName)
+        {
+            return await dbContext.Users.FirstOrDefaultAsync(x=>x.UserName==userName);
         }
     }
 }

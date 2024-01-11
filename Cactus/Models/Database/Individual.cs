@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.Database
 {
-    public class Legal
+    public class Individual
     {
         [Key]
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-        public string Surname { get; set; }
     }
 }

@@ -1,10 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cactus.Infrastructure;
+using Cactus.Models.Enums;
 
 namespace Cactus.Models.ViewModels
 {
     public class RegisterViewModel
     {
+        [Required]
+        [RegularExpression(@"[A-Za-z0-9]+", ErrorMessage = "Прозвище должно состоять из латинских букв")]
+        [Display(Name = "Прозвище")]
+        public string UserName { get; set; }
+
+
         [Required]
         [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Имя должно состоять из букв")]
         [Display(Name = "Имя")]
@@ -17,11 +24,6 @@ namespace Cactus.Models.ViewModels
         public string LastName { get; set; }
 
 
-        [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Отчество должно состоять из букв")]
-        [Display(Name = "Отчество")]
-        public string? Surname { get; set; }
-
-
         [DataType(DataType.Date)]
         [DateTimeRange(minAge:16,maxAge:100)]
         [Display(Name = "Дата рождения")]
@@ -29,10 +31,15 @@ namespace Cactus.Models.ViewModels
 
 
         [Display(Name = "Пол")]
-        public string? Gender { get; set; }
+        public string Gender { get; set; }
+
+
+        [Display(Name = "Страна")]
+        public Country? Country { get; set; }
 
 
         [Required]
+        [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Длина пароля должна быть больше 5-ти символов")]
         [Display(Name = "Пароль")]
         public string Password { get; set; }

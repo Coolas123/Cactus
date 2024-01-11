@@ -3,12 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cactus.Models.Database
 {
-    public class Legal
+    public class AuthorSubscribe
     {
         [Key]
         [ForeignKey("User")]
         public int UserId { get; set; }
-        public User User { get; set; }
-        public string Surname { get; set; }
+        [ForeignKey("User")]
+        public int SubscriptionId {  get; set; }
+        public User Subscription { get; set; }
+        public int UserRoleId {  get; set; }
     }
 }

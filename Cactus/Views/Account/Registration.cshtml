@@ -1,4 +1,5 @@
-﻿@model RegisterViewModel
+﻿@using Cactus.Models.Enums
+@model RegisterViewModel
 
 <div class="row align-items-center">
     <div class="col-lg-4">
@@ -7,6 +8,11 @@
         <h3>Регистрация</h3>
         <form asp-action="registration" method="post" class="row g-3" style="max-width: 400px;">
             <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input class="form-control" asp-for="UserName" placeholder="Введите прозвище" />
+            </div>
             <div class="form-group">
                 <label asp-for="FirstName"></label>
                 <input class="form-control" asp-for="FirstName" placeholder="Введите имя" />
@@ -14,10 +20,6 @@
             <div class="form-group">
                 <label asp-for="LastName"></label>
                 <input class="form-control" asp-for="LastName" placeholder="Введите фамилию" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Surname"></label>
-                <input class="form-control" asp-for="Surname" placeholder="Введите отчество(если есть)" />
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth"></label>
@@ -33,6 +35,10 @@
                     <input type="radio" asp-for="Gender" value="Женский" />
                     Женский
                 </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country"></label>
+                <select asp-for="Country" asp-items="Html.GetEnumSelectList<Country>()"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Password"></label>

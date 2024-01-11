@@ -13,6 +13,9 @@ namespace Cactus.Models.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Legal> Legals { get; set; }
         public DbSet<Patron> Patrons { get; set; }
+        public DbSet<Individual> Individuals { get; set; }
+        public DbSet<Country> Countries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("Users");
@@ -20,6 +23,8 @@ namespace Cactus.Models.Database
             builder.Entity<Legal>().ToTable("Legals");
             builder.Entity<Patron>().ToTable("Patrons");
             builder.Entity<UserRole>().ToTable("UserRoles");
+            builder.Entity<Country>().ToTable("Countries");
+            builder.Entity<Individual>().ToTable("Individuals");
 
             builder.Entity<User>(x =>
             {
@@ -41,6 +46,14 @@ namespace Cactus.Models.Database
                 {
                     new UserRole {Id=1,Name="Legal" },
                     new UserRole {Id=2,Name="Patron" }
+                });
+            });
+            builder.Entity<Country>(x =>
+            {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+                x.HasData(new Country[]
+                {
+                    new Country {Id=1,Name="Russia" }
                 });
             });
         }

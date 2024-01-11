@@ -14,10 +14,10 @@ namespace Cactus.Infrastructure
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext) {
             DateTime time = Convert.ToDateTime(value);
-            if (time < DateTime.Now && time >= DateTime.Now.AddYears(-minAge) && time <= DateTime.Now.AddYears(-maxAge)) {
+            if (time < DateTime.Now && time <= DateTime.Now.AddYears(-minAge) && time>= DateTime.Now.AddYears(-maxAge)) {
                 return ValidationResult.Success;
             }
-            else return new ValidationResult(ErrorMessage = "Неверная дата рождения");
+            else return new ValidationResult(ErrorMessage = "Вам должно быть минимум 16 лет");
         }
     }
 }
