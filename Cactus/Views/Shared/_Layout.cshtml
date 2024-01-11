@@ -3,25 +3,52 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Cactus</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand text-white p-2" asp-controller="home" asp-action="index">Message</a>
+            <div class="navbar-left">
+                <ul class="navbar-nav">
+                    <li>
+                        <a class="navbar-brand" asp-Controller="Home" asp-action="Index">Cactus</a>
+                    </li>
+                    <li>
+                        <a class="navbar-brand" asp-Controller="NewsFeed" asp-action="Index">Лента</a>
+                    </li>
+                </ul>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                @if (!User.Identity.IsAuthenticated) {
-                    <li><a type="submit" asp-controller="account" asp-action="login" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Войти</a></li>
-                    <li><a type="submit" asp-controller="account" asp-action="registration" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Зарегистрироваться</a></li>
-                }
-                else {
-                    <li><a type="submit" asp-controller="account" asp-action="logOut">Выйти</a></li>
-                }
-            </ul>
+            <div class="navbar-right" id="navbarNavDarkDropdown">
+                <ul class="navbar-nav">
+                    @if (User.Identity.IsAuthenticated) {
+                        <li>
+                        <li><a class="navbar-brand" asp-controller="Account" asp-action="RegisterIndividual">Стать автором</a></li>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="navbar-brand dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Аккаунт
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item" asp-controller="Setting" asp-action="Index">Настройки</a></li>
+                                <li><a class="dropdown-item">Другое действие</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item">Что-то еще здесь</a></li>
+                            </ul>
+                        </li>
+                    }
+                    <ul class="navbar-nav">
+                        @if (!User.Identity.IsAuthenticated) {
+                            <li><a class="navbar-brand" asp-controller="account" asp-action="login" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Войти</a></li>
+                            <li><a class="navbar-brand" asp-controller="account" asp-action="registration" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Зарегистрироваться</a></li>
+                        }
+                        else {
+                            <li><a class="navbar-brand" asp-controller="account" asp-action="logOut">Выйти</a></li>
+                        }
+                    </ul>
+            </div>
+                </ul>
         </div>
     </nav>
     <div>

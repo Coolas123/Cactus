@@ -70,5 +70,11 @@ namespace Cactus.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
+
+        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Patron")]
+        public IActionResult RegisterIndividual() {
+            return View();
+        }
     }
 }

@@ -13,8 +13,9 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<bool> CreateAsync(User entity)
         {
             await dbContext.Users.AddAsync(entity);
-            var id = GetByEmailAsync(entity.Email).Id;
-            await dbContext.Patrons.AddAsync(new Patron { UserId= id });
+            await dbContext.SaveChangesAsync();
+            User user =await GetByEmailAsync(entity.Email);
+            await dbContext.Patrons.AddAsync(new Patron { UserId=user.Id});
             await dbContext.SaveChangesAsync();
             return true;
         }

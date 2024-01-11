@@ -5,8 +5,7 @@ namespace Cactus.Models.Database
 {
     public class AuthorSubscribe
     {
-        [Key]
-        [ForeignKey("User")]
+        public int Id { get; set; }
         public int UserId { get; set; }
         [ForeignKey("User")]
         public int SubscriptionId {  get; set; }
