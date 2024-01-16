@@ -31,4 +31,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Files\Account\Documents\" />
+    <Folder Include="wwwroot\Files\Account\Avatars\" />
+  </ItemGroup>
+
 </Project>

@@ -8,8 +8,8 @@ namespace Cactus.Services.Interfaces
     public interface IUserService
     {
         Task<BaseResponse<ClaimsIdentity>> Register(RegisterViewModel model);
-        ClaimsIdentity Authenticate(User user);
-
+        ClaimsIdentity Authenticate(User user, int id);
         Task<BaseResponse<ClaimsIdentity>> Login(LoginViewModel model);
+        Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(ProfileViewModel model, int id);
     }
 }

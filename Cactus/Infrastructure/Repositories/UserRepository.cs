@@ -20,9 +20,9 @@ namespace Cactus.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteAsync(User id)
+        public async Task<bool> DeleteAsync(User entity)
         {
-            dbContext.Users.Remove(id);
+            dbContext.Users.Remove(entity);
             await dbContext.SaveChangesAsync();
             return true;
         }
@@ -45,6 +45,16 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<User> GetByUserNameAsync(string userName)
         {
             return await dbContext.Users.FirstOrDefaultAsync(x=>x.UserName==userName);
+        }
+
+        public async Task<bool> Update(User user) {
+            dbContext.Users.Update(user);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<User> GetByDateOfBirth(DateTime dateOfBirth) {
+            return await dbContext.Users.FirstOrDefaultAsync(x=>x.DateOfBirth==dateOfBirth);
         }
     }
 }

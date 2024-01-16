@@ -1,10 +1,13 @@
-﻿using Cactus.Models.ViewModels;
+﻿using Cactus.Models.Database;
+using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -13,10 +16,16 @@ namespace Cactus.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService userService;
+        private readonly IMaterialService materialService;
+        private readonly IMemoryCache cache;
 
-        public AccountController (IUserService userService)
+
+        public AccountController (IUserService userService, IMemoryCache cache,
+            IMaterialService materialService)
         {
             this.userService = userService;
+            this.materialService = materialService;
+            this.cache = cache;
         }
 
         [AllowAnonymous]
@@ -31,7 +40,7 @@ namespace Cactus.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl) {
             if (ModelState.IsValid) {
                 var result = await userService.Login(model);
-                if (result.StatucCode == StatusCodes.Status200OK) {
+                if (result.StatusCode == StatusCodes.Status200OK) {
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(result.Data));
                     return Redirect(returnUrl ?? "/");
@@ -56,7 +65,7 @@ namespace Cactus.Controllers
         public async Task<IActionResult> Registration(RegisterViewModel model, string returnUrl) {
             if (ModelState.IsValid) {
                 var result = await userService.Register(model);
-                if (result.StatucCode==StatusCodes.Status200OK) {
+                if (result.StatusCode==StatusCodes.Status200OK) {
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(result.Data));
                     return Redirect(returnUrl ?? "/");
@@ -68,6 +77,7 @@ namespace Cactus.Controllers
 
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            cache.Remove("AvatarPath");
             return RedirectToAction("Index", "Home");
         }
 

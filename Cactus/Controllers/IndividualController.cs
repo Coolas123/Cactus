@@ -5,7 +5,8 @@ namespace Cactus.Controllers
 {
     [Authorize(Roles = "User")]
     [Authorize(Roles = "Patron")]
-    public class NewsFeedController:Controller
+    [AutoValidateAntiforgeryToken]
+    public class IndividualController:Controller
     {
         public IActionResult Index() {
             return View();

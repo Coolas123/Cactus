@@ -15,6 +15,10 @@ namespace Cactus.Models.Database
         public DbSet<Patron> Patrons { get; set; }
         public DbSet<Individual> Individuals { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<AuthorSubscribe> AuthorSubscribes { get; set; }
+        public DbSet<ProjectSubscribe> ProjectSubscribes { get; set; }
+        public DbSet<MaterialType> MaterialTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -25,6 +29,11 @@ namespace Cactus.Models.Database
             builder.Entity<UserRole>().ToTable("UserRoles");
             builder.Entity<Country>().ToTable("Countries");
             builder.Entity<Individual>().ToTable("Individuals");
+            builder.Entity<Material>().ToTable("Materials");
+            builder.Entity<AuthorSubscribe>().ToTable("AuthorSubscribes");
+            builder.Entity<ProjectSubscribe>().ToTable("ProjectSubscribes");
+            builder.Entity<Project>().ToTable("Projects");
+            builder.Entity<MaterialType>().ToTable("MaterialTypes");
 
             builder.Entity<User>(x =>
             {
@@ -54,6 +63,22 @@ namespace Cactus.Models.Database
                 x.HasData(new Country[]
                 {
                     new Country {Id=1,Name="Russia" }
+                });
+            });
+            builder.Entity<Material>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+            builder.Entity<ProjectSubscribe>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+            builder.Entity<Project>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+            builder.Entity<MaterialType>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+                x.HasData(new MaterialType[]
+                {
+                    new MaterialType {Id=1,Name="Avatar" }
                 });
             });
         }

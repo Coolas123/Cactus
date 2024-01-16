@@ -24,6 +24,7 @@ namespace Cactus
                 opts.UseNpgsql(configuration["ConnectionStrings:CactusConnection"]);
             });
             services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
             services.AddSession();
             services.AddAuthorization();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -37,6 +38,8 @@ namespace Cactus
                 });
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<IUserService,UserService>();
+            services.AddScoped<IMaterialRepository, MaterialRepository>();
+            services.AddScoped<IMaterialService, MaterialService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

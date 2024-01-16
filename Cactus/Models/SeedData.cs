@@ -124,7 +124,7 @@ namespace Cactus.Models
                 };
                 foreach (var user in users) {
                     var result = await userService.Register(user);
-                    if (result.StatucCode==StatusCodes.Status200OK) {
+                    if (result.StatusCode==StatusCodes.Status200OK) {
                     }
                 }
                 context.SaveChanges();

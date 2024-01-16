@@ -1,5 +1,6 @@
 ﻿using Cactus.Infrastructure;
 using Cactus.Infrastructure.Interfaces;
+using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -49,20 +50,22 @@ namespace Cactus.Services.Implementations
                 HashPassword = HashPassword.Generate(model.Password)
             };
             await userRepository.CreateAsync(user);
-            var result = Authenticate(user);
+            User dbUser =await userRepository.GetByEmailAsync(model.Email);
+            var result = Authenticate(user, dbUser.Id);
             return new BaseResponse<ClaimsIdentity>()
             {
                 Data = result,
                 Description = "Пользователь создан",
-                StatucCode = StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status200OK
             };
         }
 
-        public ClaimsIdentity Authenticate(User user)
+        public ClaimsIdentity Authenticate(User user, int id)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType,user.Email),
+                new Claim("Id",id.ToString()),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType,Cactus.Models.Enums.SystemRole.User.ToString()),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType,Cactus.Models.Enums.UserRole.Patron.ToString())
             };
@@ -87,12 +90,50 @@ namespace Cactus.Services.Implementations
                     Description = "Неверный пароль"
                 };
             }
-            var claims = Authenticate(user);
+            var claims = Authenticate(user, user.Id);
             return new BaseResponse<ClaimsIdentity>()
             {
                 Data=claims,
-                StatucCode=StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status200OK
             };
+        }
+
+        public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(ProfileViewModel model, int id) {
+            User user = await userRepository.GetAsync(id);
+
+            ModelErrorsResponse<ClaimsIdentity> response = new ModelErrorsResponse<ClaimsIdentity>()
+            {
+                Descriptions = new Dictionary<string, string>()
+            };
+
+            if (model.UserName != null&& model.UserName!=user.UserName) {
+                User result = await userRepository.GetByUserNameAsync(model.UserName);
+                if (result != null) {
+                    response.Descriptions.Add(nameof(model.UserName), "Пользователь с таким прозвищем уже существует");
+                }
+                else user.UserName = model.UserName;
+            }
+            if (model.DateOfBirth != DateTime.MinValue &&
+                DateOnly.FromDateTime(model.DateOfBirth) == DateOnly.FromDateTime(user.DateOfBirth))
+                user.DateOfBirth = model.DateOfBirth.ToUniversalTime();
+
+            if (model.Password != null)
+                user.HashPassword = HashPassword.Generate(model.Password);
+
+            if (model.Email != null && model.Email != user.Email) {
+                User result = await userRepository.GetByEmailAsync(model.Email);
+                if (result != null) {
+                    response.Descriptions.Add(nameof(model.UserName), "Пользователь с такой почтой уже существует");
+                }
+                else {
+                    user.Email = model.Email;
+                    response.Data = Authenticate(user, id);
+                }
+            }
+            await userRepository.Update(user);
+            if (response.Descriptions.Count() == 0)
+                response.StatusCode = StatusCodes.Status200OK;
+            return response;
         }
     }
 }
