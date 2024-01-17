@@ -17,14 +17,16 @@ namespace Cactus.Controllers
     {
         private readonly IUserService userService;
         private readonly IMaterialService materialService;
+        private readonly IIndividualService individualService;
         private readonly IMemoryCache cache;
 
 
         public AccountController (IUserService userService, IMemoryCache cache,
-            IMaterialService materialService)
+            IMaterialService materialService, IIndividualService individualService)
         {
             this.userService = userService;
             this.materialService = materialService;
+            this.individualService = individualService;
             this.cache = cache;
         }
 
@@ -75,16 +77,29 @@ namespace Cactus.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Patron")]
+        public IActionResult RegisterIndividual(string returnUrl) {
+            //if (User.Identity.IsAuthenticated) {
+            //    return View(new RegisterIndividualViewModel { ReturnUrl = returnUrl });
+            //}
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Patron")]
+        public async Task<IActionResult> RegisterIndividual(RegisterIndividualViewModel model,string returnUrl) {
+            int id = Convert.ToInt32(User.FindFirst("Id").Value);
+            BaseResponse<Individual> result = await individualService.RegisterIndividual(model, id);
+            if (result.StatusCode == StatusCodes.Status200OK) {
+                return View("Index", "Individual");
+            }
+            return View();
+        }
+
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             cache.Remove("AvatarPath");
             return RedirectToAction("Index", "Home");
-        }
-
-        [Authorize(Roles = "User")]
-        [Authorize(Roles = "Patron")]
-        public IActionResult RegisterIndividual() {
-            return View();
         }
     }
 }

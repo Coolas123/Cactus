@@ -54,7 +54,8 @@ namespace Cactus.Models.Database
                 x.HasData(new UserRole[]
                 {
                     new UserRole {Id=1,Name="Legal" },
-                    new UserRole {Id=2,Name="Patron" }
+                    new UserRole {Id=2,Name="Patron" },
+                    new UserRole {Id=3,Name="Individual" }
                 });
             });
             builder.Entity<Country>(x =>

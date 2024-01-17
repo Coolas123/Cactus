@@ -40,6 +40,8 @@ namespace Cactus
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IMaterialRepository, MaterialRepository>();
             services.AddScoped<IMaterialService, MaterialService>();
+            services.AddScoped<IIndividualRepository, IndividualRepository>();
+            services.AddScoped<IIndividualService, IndividualService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

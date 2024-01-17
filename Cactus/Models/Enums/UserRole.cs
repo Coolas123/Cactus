@@ -3,6 +3,7 @@
     public enum UserRole
     {
         Legal=1,
-        Patron=2
+        Patron=2,
+        Individual=3
     }
 }
