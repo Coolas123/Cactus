@@ -23,7 +23,7 @@ namespace Cactus.Services.Implementations
             User user = await userRepository.GetByEmailAsync(model.Email);
             if (user != null)
             {
-                return new BaseResponse<ClaimsIdentity>()
+                return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Пользователь с такой почтой зарегистрирован"
                 };
@@ -31,7 +31,7 @@ namespace Cactus.Services.Implementations
             user = await userRepository.GetByUserNameAsync(model.UserName);
             if (user != null)
             {
-                return new BaseResponse<ClaimsIdentity>()
+                return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Аккаунт с таким прозвищем уже существует"
                 };
@@ -52,7 +52,7 @@ namespace Cactus.Services.Implementations
             await userRepository.CreateAsync(user);
             User dbUser =await userRepository.GetByEmailAsync(model.Email);
             var result = Authenticate(user, dbUser.Id);
-            return new BaseResponse<ClaimsIdentity>()
+            return new BaseResponse<ClaimsIdentity>
             {
                 Data = result,
                 Description = "Пользователь создан",
@@ -66,8 +66,16 @@ namespace Cactus.Services.Implementations
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType,user.Email),
                 new Claim("Id",id.ToString()),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType,Cactus.Models.Enums.SystemRole.User.ToString()),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType,Cactus.Models.Enums.UserRole.Patron.ToString())
+                new Claim(ClaimsIdentity.DefaultRoleClaimType,
+                ((Models.Enums.SystemRole)Enum
+                .GetValues(typeof(Models.Enums.SystemRole))
+                .GetValue(user.SystemRoleId-1))
+                .ToString()),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType,
+                ((Models.Enums.UserRole)Enum
+                .GetValues(typeof(Models.Enums.UserRole))
+                .GetValue(user.UserRoleId-1))
+                .ToString())
             };
             return new ClaimsIdentity(claims, "ApplicationCookie", 
                 ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -78,14 +86,14 @@ namespace Cactus.Services.Implementations
             User user = await userRepository.GetByEmailAsync(model.Email);
             if (user == null)
             {
-                return new BaseResponse<ClaimsIdentity>()
+                return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Неверный логин"
                 };
             }
             if (user.HashPassword != HashPassword.Generate(model.Password))
             {
-                return new BaseResponse<ClaimsIdentity>()
+                return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Неверный пароль"
                 };
@@ -134,6 +142,24 @@ namespace Cactus.Services.Implementations
             if (response.Descriptions.Count() == 0)
                 response.StatusCode = StatusCodes.Status200OK;
             return response;
+        }
+
+        public async Task<BaseResponse<ClaimsIdentity>> ChangeRoleToIndividual(int id) {
+            User user = await userRepository.GetAsync(id);
+            if (user == null) {
+                return new BaseResponse<ClaimsIdentity>
+                {
+                    Description="Пользователь не найден"
+                };
+            }
+            user.UserRoleId = (int)Models.Enums.UserRole.Individual;
+            await userRepository.Update(user);
+            return new BaseResponse<ClaimsIdentity>
+            {
+                Description = "Роль обновлена на Individual",
+                Data = Authenticate(user, id),
+                StatusCode = 200
+            };
         }
     }
 }

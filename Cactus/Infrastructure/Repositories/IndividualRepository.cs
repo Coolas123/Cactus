@@ -1,5 +1,6 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cactus.Infrastructure.Repositories
 {
@@ -12,6 +13,7 @@ namespace Cactus.Infrastructure.Repositories
 
         public async Task<bool> CreateAsync(Individual entity) {
             await dbContext.Individuals.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
             return true;
         }
 
@@ -21,6 +23,10 @@ namespace Cactus.Infrastructure.Repositories
 
         public Task<Individual> GetAsync(int id) {
             throw new NotImplementedException();
+        }
+
+        public async Task<Individual> getByUrlPage(string urlPage) {
+            return await dbContext.Individuals.FirstOrDefaultAsync(x=>x.UrlPage==urlPage);
         }
 
         public Task<IEnumerable<Individual>> SelectAsync() {

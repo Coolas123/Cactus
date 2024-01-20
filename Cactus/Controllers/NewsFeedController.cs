@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "User")]
-    [Authorize(Roles = "Patron")]
+    [Authorize(Roles = "Patron,Individual")]
     public class NewsFeedController:Controller
     {
         public IActionResult Index() {

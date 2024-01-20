@@ -17,7 +17,7 @@ namespace Cactus.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [Authorize(Roles = "Patron")]
+        [Authorize(Roles = "Patron,Individual")]
         [HttpGet]
         public IActionResult Logged() {
             return View();

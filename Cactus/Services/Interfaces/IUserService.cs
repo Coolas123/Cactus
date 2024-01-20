@@ -11,5 +11,6 @@ namespace Cactus.Services.Interfaces
         ClaimsIdentity Authenticate(User user, int id);
         Task<BaseResponse<ClaimsIdentity>> Login(LoginViewModel model);
         Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(ProfileViewModel model, int id);
+        Task<BaseResponse<ClaimsIdentity>> ChangeRoleToIndividual(int id);
     }
 }

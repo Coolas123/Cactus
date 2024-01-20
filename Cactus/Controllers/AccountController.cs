@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
@@ -78,22 +79,26 @@ namespace Cactus.Controllers
         }
 
         [Authorize(Roles = "Patron")]
-        public IActionResult RegisterIndividual(string returnUrl) {
-            //if (User.Identity.IsAuthenticated) {
-            //    return View(new RegisterIndividualViewModel { ReturnUrl = returnUrl });
-            //}
+        public IActionResult RegisterIndividual() {
             return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "Patron")]
-        public async Task<IActionResult> RegisterIndividual(RegisterIndividualViewModel model,string returnUrl) {
-            int id = Convert.ToInt32(User.FindFirst("Id").Value);
-            BaseResponse<Individual> result = await individualService.RegisterIndividual(model, id);
-            if (result.StatusCode == StatusCodes.Status200OK) {
-                return View("Index", "Individual");
+        public async Task<IActionResult> RegisterIndividual(RegisterIndividualViewModel model) {
+            if(ModelState.IsValid) {
+                int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                BaseResponse<ClaimsIdentity> result = await individualService.RegisterIndividual(model, id);
+                if (result.StatusCode != StatusCodes.Status200OK) {
+                    ModelState.AddModelError(nameof(model.UrlPage), result.Description);
+                    return View(model);
+                }
+                await HttpContext.SignOutAsync();
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(result.Data));
+                return RedirectToAction("Index", "Individual");
             }
-            return View();
+            return View(model);
         }
 
         public async Task<IActionResult> LogOut() {

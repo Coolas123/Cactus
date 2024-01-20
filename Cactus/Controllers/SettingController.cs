@@ -13,7 +13,7 @@ using Cactus.Infrastructure.Interfaces;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "User")]
-    [Authorize(Roles = "Patron")]
+    [Authorize(Roles = "Patron,Individual")]
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
     {
@@ -38,6 +38,9 @@ namespace Cactus.Controllers
 
         [HttpPost]
         public async Task<IActionResult> ChangeSettings(ProfileViewModel model) {
+            if (!ModelState.IsValid) {
+                return View(model);
+            }
             if (model.AvatarFile != null) {
                 string email = User.Identity.Name;
                 await materialService.ChangeAvatarAsync(model.AvatarFile, email);

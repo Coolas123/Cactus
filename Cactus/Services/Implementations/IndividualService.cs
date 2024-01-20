@@ -3,30 +3,62 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace Cactus.Services.Implementations
 {
     public class IndividualService:IIndividualService
     {
-        private readonly IUserRepository userRepository;
+        private readonly IUserService userService;
         private readonly IIndividualRepository individualRepository;
+        private readonly IPatronService patronService;
 
-        public IndividualService(IUserRepository userRepository, IIndividualRepository individualRepository) {
-            this.userRepository = userRepository;
+        public IndividualService(IUserService userService, IIndividualRepository individualRepository,
+            IPatronService patronService) {
+            this.userService = userService;
             this.individualRepository = individualRepository;
+            this.patronService = patronService;
         }
 
-        public async Task<BaseResponse<Individual>> RegisterIndividual(RegisterIndividualViewModel model,int id) {
-            User user = await userRepository.GetAsync(id);
-            user.UserRoleId = (int)Models.Enums.UserRole.Individual;
+        public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(RegisterIndividualViewModel model,int id) {
+            Individual pageExist = await individualRepository.getByUrlPage(model.UrlPage);
+            if (pageExist != null) {
+                return new BaseResponse<ClaimsIdentity>
+                {
+                    Description = "Данный адрес уже используется"
+                };
+            }
             var newIndividual = new Individual { UrlPage = model.UrlPage, UserId = id };
-            await individualRepository.CreateAsync(newIndividual);
-            return new BaseResponse<Individual>()
-            {
-                Data = newIndividual,
-                StatusCode = StatusCodes.Status200OK
-            };
+            try {
+                await individualRepository.CreateAsync(newIndividual);
+                var resultPatron = await patronService.DaeleteUser(id);
+                if (resultPatron.StatusCode != 200) {
+                    return new BaseResponse<ClaimsIdentity>
+                    {
+                        Description = resultPatron.Description
+                    };
+                }
+                BaseResponse<ClaimsIdentity> result = await userService.ChangeRoleToIndividual(id);
+                if (result.StatusCode != 200) {
+                    return new BaseResponse<ClaimsIdentity>
+                    {
+                        Description = result.Description
+                    };
+                }
+                return new BaseResponse<ClaimsIdentity>
+                {
+                    Data = result.Data,
+                    Description = result.Description,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+            catch {
+                return new BaseResponse<ClaimsIdentity>
+                {
+                    Description = "Не удалось добавить роль Individual к пользователю"
+                };
+            }
         }
     }
 }

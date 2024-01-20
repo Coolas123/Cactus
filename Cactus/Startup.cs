@@ -5,6 +5,7 @@ using Cactus.Models.Database;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cactus
@@ -42,6 +43,8 @@ namespace Cactus
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IIndividualRepository, IndividualRepository>();
             services.AddScoped<IIndividualService, IndividualService>();
+            services.AddScoped<IPatronRepository, PatronRepository>();
+            services.AddScoped<IPatronService, PatronService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {
