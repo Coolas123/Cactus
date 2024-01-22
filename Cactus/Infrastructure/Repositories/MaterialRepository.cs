@@ -34,7 +34,6 @@ namespace Cactus.Infrastructure.Repositories
                 avatar.Title = entity.Title;
                 avatar.Path = entity.Path;
                 dbContext.Materials.Update(avatar);
-                await dbContext.SaveChangesAsync();
             }
             else {
                 await dbContext.Materials.AddAsync(entity);
@@ -49,6 +48,25 @@ namespace Cactus.Infrastructure.Repositories
 
         public async Task<Material> GetAvatarAsync(int userId) {
             return await dbContext.Materials.FirstOrDefaultAsync(x => x.UserId == userId && x.MaterialTypeId == (int)Models.Enums.MaterialType.Avatar);
+        }
+
+        public async Task<Material> GetBannerAsync(int userId) {
+            return await dbContext.Materials.FirstOrDefaultAsync(x => x.UserId == userId && x.MaterialTypeId == (int)Models.Enums.MaterialType.Banner);
+        }
+
+        public async Task<bool> UpdateBannerAsync(Material entity) {
+            Material banner = dbContext.Materials.SingleOrDefault(x => x.UserId == entity.UserId && x.MaterialTypeId == (int)Models.Enums.MaterialType.Banner);
+            if (banner != null) {
+                banner.Title = entity.Title;
+                banner.Path = entity.Path;
+                dbContext.Materials.Update(banner);
+                await dbContext.SaveChangesAsync();
+            }
+            else {
+                await dbContext.Materials.AddAsync(entity);
+            }
+            await dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

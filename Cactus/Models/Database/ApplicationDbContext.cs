@@ -79,7 +79,8 @@ namespace Cactus.Models.Database
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(new MaterialType[]
                 {
-                    new MaterialType {Id=1,Name="Avatar" }
+                    new MaterialType {Id=1,Name="Avatar" },
+                    new MaterialType {Id=2,Name="Banner" }
                 });
             });
         }

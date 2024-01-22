@@ -9,6 +9,9 @@ namespace Cactus.Models.ViewModels
         [Display(Name = "Аватарка")]
         public IFormFile AvatarFile {  get; set; }
 
+        [Display(Name = "Баннер")]
+        public IFormFile BannerFile { get; set; }
+
         [RegularExpression(@"[A-Za-z0-9]+", ErrorMessage = "Прозвище должно состоять из латинских букв")]
         [Display(Name = "Сменить прозвище")]
         public string UserName { get; set; }
@@ -37,5 +40,6 @@ namespace Cactus.Models.ViewModels
         public User User { get; set; }
 
         public string AvatarPath { get; set; }
+        public string BannerPath { get; set; }
     }
 }

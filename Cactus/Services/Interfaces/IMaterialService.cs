@@ -6,8 +6,11 @@ namespace Cactus.Services.Interfaces
 {
     public interface IMaterialService
     {
-        Task<BaseResponse<bool>> ChangeAvatarAsync(IFormFile file, string email);
+        Task<BaseResponse<string>> ChangeAvatarAsync(IFormFile file, int id);
         Task<BaseResponse<Material>> GetAvatarAsync(string email);
         Task<BaseResponse<Material>> GetAvatarAsync(int id);
+        Task<BaseResponse<Material>> GetBannerAsync(string email);
+        Task<BaseResponse<Material>> GetBannerAsync(int id);
+        Task<BaseResponse<string>> ChangeBannerAsync(IFormFile file, int id);
     }
 }

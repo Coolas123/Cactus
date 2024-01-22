@@ -21,8 +21,8 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Individual> GetAsync(int id) {
-            throw new NotImplementedException();
+        public async Task<Individual> GetAsync(int id) {
+            return await dbContext.Individuals.FirstOrDefaultAsync(x => x.UserId == id);
         }
 
         public async Task<Individual> getByUrlPage(string urlPage) {

@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "Individual")]
+    [Route("Individual")]
     [AutoValidateAntiforgeryToken]
     public class IndividualController:Controller
     {
-        [Route("/{UrlPage}")]
+        [Route("{UrlPage}")]
         public IActionResult Index(string UrlPage) {
+
             return View();
         }
     }

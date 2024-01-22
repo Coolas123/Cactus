@@ -96,14 +96,14 @@ namespace Cactus.Controllers
                 await HttpContext.SignOutAsync();
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(result.Data));
-                return RedirectToAction("Index", "Individual");
+                return RedirectToAction("Index", "Individual", new { UrlPage=model.UrlPage});
             }
             return View(model);
         }
 
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            cache.Remove("AvatarPath");
+            cache.Remove("IndividualProfile");
             return RedirectToAction("Index", "Home");
         }
     }

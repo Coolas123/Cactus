@@ -1,4 +1,4 @@
-﻿﻿
+﻿
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,7 +33,12 @@
                                 Аккаунт
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                                <li><a class="dropdown-item" asp-controller="individual" asp-action="Index">Профиль</a></li>
+                                @if (User.IsInRole("Individual")) {
+                                    @await Component.InvokeAsync("UrlPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value)})
+                                }
+                                else{
+                                    <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index">Профиль</a></li>
+                                }
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" asp-controller="Setting" asp-action="Index">Настройки</a></li>
                                 <li><a class="dropdown-item" asp-controller="Message" asp-action="Index">Сообщения</a></li>
@@ -42,7 +47,7 @@
                             </ul>
                         </li>
                         <li>
-                            @await Component.InvokeAsync("Login", new {userId=Convert.ToInt32(User.FindFirst("Id").Value)})
+                            @await Component.InvokeAsync("AvatarPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value)})
                         </li>
                         <li>
                             <a class="navbar-brand" asp-controller="account" asp-action="logOut">Выйти</a>
@@ -67,6 +72,7 @@
         @RenderBody()
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js"></script>
 </body>
 <style>
     .avatar {
