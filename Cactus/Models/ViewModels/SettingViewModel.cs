@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
 {
-    public class ProfileViewModel
+    public class SettingViewModel
     {
         [Display(Name = "Аватарка")]
         public IFormFile AvatarFile {  get; set; }
@@ -41,5 +41,8 @@ namespace Cactus.Models.ViewModels
 
         public string AvatarPath { get; set; }
         public string BannerPath { get; set; }
+
+        [Range(16, 100, ErrorMessage = "Недопустимый возраст")]
+        public int Years { get; set; }
     }
 }

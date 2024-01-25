@@ -106,7 +106,7 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(ProfileViewModel model, int id) {
+        public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(SettingViewModel model, int id) {
             User user = await userRepository.GetAsync(id);
 
             ModelErrorsResponse<ClaimsIdentity> response = new ModelErrorsResponse<ClaimsIdentity>()

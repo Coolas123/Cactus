@@ -10,7 +10,7 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<ClaimsIdentity>> Register(RegisterViewModel model);
         ClaimsIdentity Authenticate(User user, int id);
         Task<BaseResponse<ClaimsIdentity>> Login(LoginViewModel model);
-        Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(ProfileViewModel model, int id);
+        Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(SettingViewModel model, int id);
         Task<BaseResponse<ClaimsIdentity>> ChangeRoleToIndividual(int id);
     }
 }

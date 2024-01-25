@@ -32,7 +32,7 @@ namespace Cactus.Controllers
             this.cache = cache;
         }
         public async Task<IActionResult> Index() {
-            ProfileViewModel profile= new ProfileViewModel();
+            SettingViewModel profile= new SettingViewModel();
             BaseResponse<Material> response = await materialService.GetAvatarAsync(User.Identity.Name);
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
@@ -46,7 +46,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeSettings(ProfileViewModel model) {
+        public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
             if (model.AvatarFile != null) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
                 BaseResponse<string> path = await materialService.ChangeAvatarAsync(model.AvatarFile, id);
