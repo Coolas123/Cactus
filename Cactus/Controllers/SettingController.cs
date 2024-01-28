@@ -22,14 +22,16 @@ namespace Cactus.Controllers
         private readonly IMaterialService materialService;
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
+        private readonly IIndividualService individualService;
         private readonly IMemoryCache cache;
 
         public SettingController(IMaterialService materialService, IUserService userService,
-            IUserRepository userRepository, IMemoryCache cache) {
+            IUserRepository userRepository, IMemoryCache cache, IIndividualService individualService) {
             this.materialService = materialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.cache = cache;
+            this.individualService = individualService;
         }
         public async Task<IActionResult> Index() {
             SettingViewModel profile= new SettingViewModel();
@@ -87,6 +89,31 @@ namespace Cactus.Controllers
                 return RedirectToAction("Login", "Account");
             }
             return View("Index",model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Patron")]
+        public async Task<IActionResult> RegisterIndividual(SettingViewModel model) {
+            IndividualProfileViewModel profile;
+            cache.TryGetValue("IndividualProfile",out profile);
+            if (profile.User == null) {
+                BaseResponse<User> response =await userService.AddToCacheAsync(User.FindFirstValue(ClaimTypes.Name));
+                model.User = response.Data;
+            }
+            model.User = profile.User;
+            if (ModelState["IndividualSettings.UrlPage"].Errors.Count==0) {
+                int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                BaseResponse<ClaimsIdentity> result = await individualService.RegisterIndividual(model, id);
+                if (result.StatusCode != StatusCodes.Status200OK) {
+                    ModelState.AddModelError(nameof(model.IndividualSettings.UrlPage), result.Description);
+                    return View("Index", model);
+                }
+                await HttpContext.SignOutAsync();
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(result.Data));
+                return RedirectToAction("Index", "Individual", new { UrlPage = model.IndividualSettings.UrlPage });
+            }
+            return View("Index", model);
         }
     }
 }

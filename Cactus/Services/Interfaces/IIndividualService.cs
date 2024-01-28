@@ -7,6 +7,6 @@ namespace Cactus.Services.Interfaces
 {
     public interface IIndividualService
     {
-        Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(RegisterIndividualViewModel model, int id);
+        Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(SettingViewModel model, int id);
     }
 }

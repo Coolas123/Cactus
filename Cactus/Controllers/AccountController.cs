@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cactus.Controllers
 {
@@ -46,6 +47,7 @@ namespace Cactus.Controllers
                 if (result.StatusCode == StatusCodes.Status200OK) {
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(result.Data));
+                    userService.AddToCacheAsync(model.Email);
                     return Redirect(returnUrl ?? "/");
                 }
                 else {
@@ -74,29 +76,6 @@ namespace Cactus.Controllers
                     return Redirect(returnUrl ?? "/");
                 }
                 ModelState.AddModelError("",result.Description);
-            }
-            return View(model);
-        }
-
-        [Authorize(Roles = "Patron")]
-        public IActionResult RegisterIndividual() {
-            return View();
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Patron")]
-        public async Task<IActionResult> RegisterIndividual(RegisterIndividualViewModel model) {
-            if(ModelState.IsValid) {
-                int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                BaseResponse<ClaimsIdentity> result = await individualService.RegisterIndividual(model, id);
-                if (result.StatusCode != StatusCodes.Status200OK) {
-                    ModelState.AddModelError(nameof(model.UrlPage), result.Description);
-                    return View(model);
-                }
-                await HttpContext.SignOutAsync();
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(result.Data));
-                return RedirectToAction("Index", "Individual", new { UrlPage=model.UrlPage});
             }
             return View(model);
         }

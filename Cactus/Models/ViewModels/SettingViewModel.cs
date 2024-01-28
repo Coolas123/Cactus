@@ -42,7 +42,6 @@ namespace Cactus.Models.ViewModels
         public string AvatarPath { get; set; }
         public string BannerPath { get; set; }
 
-        [Range(16, 100, ErrorMessage = "Недопустимый возраст")]
-        public int Years { get; set; }
+        public RegisterIndividualViewModel IndividualSettings { get; set; }
     }
 }

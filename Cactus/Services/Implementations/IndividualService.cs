@@ -21,15 +21,15 @@ namespace Cactus.Services.Implementations
             this.patronService = patronService;
         }
 
-        public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(RegisterIndividualViewModel model,int id) {
-            Individual pageExist = await individualRepository.getByUrlPage(model.UrlPage);
+        public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(SettingViewModel model,int id) {
+            Individual pageExist = await individualRepository.getByUrlPage(model.IndividualSettings.UrlPage);
             if (pageExist != null) {
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Данный адрес уже используется"
                 };
             }
-            var newIndividual = new Individual { UrlPage = model.UrlPage, UserId = id };
+            var newIndividual = new Individual { UrlPage = model.IndividualSettings.UrlPage, UserId = id };
             try {
                 await individualRepository.CreateAsync(newIndividual);
                 var resultPatron = await patronService.DaeleteUser(id);

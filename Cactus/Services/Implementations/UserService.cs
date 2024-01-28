@@ -5,6 +5,7 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace Cactus.Services.Implementations
@@ -12,10 +13,12 @@ namespace Cactus.Services.Implementations
     public class UserService : IUserService
     {
 		private readonly IUserRepository userRepository;
+		private readonly IMemoryCache cache;
 
-		public UserService (IUserRepository dbContext)
+		public UserService (IUserRepository userRepository, IMemoryCache cache)
 		{
-			this.userRepository = dbContext;
+			this.userRepository = userRepository;
+            this.cache = cache;
 		}
 
         public async Task<BaseResponse<ClaimsIdentity>> Register(RegisterViewModel model)
@@ -160,6 +163,16 @@ namespace Cactus.Services.Implementations
                 Data = Authenticate(user, id),
                 StatusCode = 200
             };
+        }
+
+        public async Task<BaseResponse<User>> AddToCacheAsync(string email) {
+            IndividualProfileViewModel profile;
+            cache.TryGetValue("IndividualProfile", out profile);
+            if (profile == null)
+                profile = new IndividualProfileViewModel();
+            profile.User = await userRepository.GetByEmailAsync(email);
+            cache.Set("IndividualProfile", profile);
+            return new BaseResponse<User> { Data = profile.User };
         }
     }
 }
