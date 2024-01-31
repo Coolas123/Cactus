@@ -24,21 +24,14 @@ namespace Cactus.Components
             this.individualRepository = individualRepository;
             this.linkGenerator = linkGenerator;
         }
-        public async Task<IViewComponentResult> InvokeAsync(int id) {
-            IndividualProfileViewModel profile;
-            cache.TryGetValue("IndividualProfile", out profile);
-            if (profile == null) {
-                profile = new IndividualProfileViewModel();
-            }
-            if (profile.UrlPage == null) {
-                Individual individual = await individualRepository.GetAsync(id);
-                profile.UrlPage = individual.UrlPage;
-                cache.Set("IndividualProfile", profile);
-            }
-            var path= linkGenerator.GetPathByAction(
-                "Index", "Individual", new { UrlPage= profile.UrlPage })!;
+        public async Task<IViewComponentResult> InvokeAsync(int id,string html="") {
+            string path = "";
+            Individual individual = await individualRepository.GetAsync(id);
+            if (individual != null)
+            path= linkGenerator.GetPathByAction(
+                "Index", "Individual", new { UrlPage= individual.UrlPage })!;
             return new HtmlContentViewComponentResult(
-                new HtmlString($"<li><a class=\"dropdown-item\" href={path}>Профиль</a></li>"));
+                new HtmlString($"<a {html} href={path}>Профиль</a>"));
         }
     }
 }

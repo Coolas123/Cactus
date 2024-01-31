@@ -4,6 +4,7 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IIndividualRepository:IBaseRepository<Individual>
     {
-        Task<Individual> getByUrlPage(string urlPage);
+        Task<Individual> GetUserByUrlPageAsync(string urlPage);
+        Task<Individual> GetByUrlPageAsync(string urlPage);
     }
 }

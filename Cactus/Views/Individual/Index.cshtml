@@ -1,4 +1,41 @@
-﻿<h1>Individual Профиль</h1>
+﻿@model PagingIndividualViewModel
+
 <div>
-    @await Component.InvokeAsync("BannerPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value)})
+    @await Component.InvokeAsync("BannerPath", new {Model.CurrentUser.Id})
 </div>
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @if (Model.Authors != null)
+                {
+                    @foreach (var p in Model.Authors)
+                    {
+                        <tr>
+                            <td>@p.Author.UserName</td>
+                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id, html = "class=\"dropdown-item nav-link\"" })</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.PagingInfo" page-action="Index"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+    </div>
+    <div class="col">
+        @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
+    </div>
+    <div class="col">
+
+    </div>
+</div>
+<style>
+    .avatarProfile {
+        width: 300px;
+        height: 450px;
+        margin:0;
+        padding:0;
+    }
+</style>

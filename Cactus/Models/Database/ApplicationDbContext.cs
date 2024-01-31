@@ -83,6 +83,9 @@ namespace Cactus.Models.Database
                     new MaterialType {Id=2,Name="Banner" }
                 });
             });
+            builder.Entity<AuthorSubscribe>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
         }
     }
 }

@@ -8,8 +8,7 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         public int UserId { get; set; }
         [ForeignKey("User")]
-        public int SubscriptionId {  get; set; }
-        public User Subscription { get; set; }
-        public int UserRoleId {  get; set; }
+        public int AuthorId {  get; set; }
+        public User Author { get; set; }
     }
 }

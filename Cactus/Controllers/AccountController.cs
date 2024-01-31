@@ -18,18 +18,11 @@ namespace Cactus.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService userService;
-        private readonly IMaterialService materialService;
-        private readonly IIndividualService individualService;
-        private readonly IMemoryCache cache;
 
 
-        public AccountController (IUserService userService, IMemoryCache cache,
-            IMaterialService materialService, IIndividualService individualService)
+        public AccountController (IUserService userService)
         {
             this.userService = userService;
-            this.materialService = materialService;
-            this.individualService = individualService;
-            this.cache = cache;
         }
 
         [AllowAnonymous]
@@ -47,7 +40,6 @@ namespace Cactus.Controllers
                 if (result.StatusCode == StatusCodes.Status200OK) {
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(result.Data));
-                    userService.AddToCacheAsync(model.Email);
                     return Redirect(returnUrl ?? "/");
                 }
                 else {
@@ -82,7 +74,6 @@ namespace Cactus.Controllers
 
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            cache.Remove("IndividualProfile");
             return RedirectToAction("Index", "Home");
         }
     }

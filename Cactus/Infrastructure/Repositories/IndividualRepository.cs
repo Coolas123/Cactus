@@ -25,8 +25,12 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.Individuals.FirstOrDefaultAsync(x => x.UserId == id);
         }
 
-        public async Task<Individual> getByUrlPage(string urlPage) {
+        public async Task<Individual> GetByUrlPageAsync(string urlPage) {
             return await dbContext.Individuals.FirstOrDefaultAsync(x=>x.UrlPage==urlPage);
+        }
+
+        public async Task<Individual> GetUserByUrlPageAsync(string urlPage) {
+            return await dbContext.Individuals.Include(x => x.User).FirstOrDefaultAsync(x => x.UrlPage == urlPage);
         }
 
         public Task<IEnumerable<Individual>> SelectAsync() {

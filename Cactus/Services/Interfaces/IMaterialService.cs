@@ -12,5 +12,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<Material>> GetBannerAsync(string email);
         Task<BaseResponse<Material>> GetBannerAsync(int id);
         Task<BaseResponse<string>> ChangeBannerAsync(IFormFile file, int id);
+        Task<BaseResponse<IndividualProfileViewModel>> GetProfileMaterials(int id);
     }
 }

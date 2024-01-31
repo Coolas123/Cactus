@@ -29,7 +29,9 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                                 @if (User.IsInRole("Individual")) {
-                                    @await Component.InvokeAsync("UrlPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value)})
+                                    <li>
+                                        @await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"dropdown-item\"" })
+                                    </li>
                                 }
                                 else{
                                     <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index">Профиль</a></li>
@@ -42,7 +44,7 @@
                             </ul>
                         </li>
                         <li>
-                            @await Component.InvokeAsync("AvatarPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value)})
+                            @await Component.InvokeAsync("AvatarPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"avatar\"" })
                         </li>
                         <li>
                             <a class="navbar-brand" asp-controller="account" asp-action="logOut">Выйти</a>

@@ -21,8 +21,17 @@ namespace Cactus.Services.Implementations
             this.patronService = patronService;
         }
 
+        public async Task<BaseResponse<Individual>> GetBuyUrlPage(string urlPage) {
+            Individual inidividual =await individualRepository.GetByUrlPageAsync(urlPage);
+            return new BaseResponse<Individual>
+            {
+                Data = inidividual,
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(SettingViewModel model,int id) {
-            Individual pageExist = await individualRepository.getByUrlPage(model.IndividualSettings.UrlPage);
+            Individual pageExist = await individualRepository.GetByUrlPageAsync(model.IndividualSettings.UrlPage);
             if (pageExist != null) {
                 return new BaseResponse<ClaimsIdentity>
                 {
@@ -46,6 +55,7 @@ namespace Cactus.Services.Implementations
                         Description = result.Description
                     };
                 }
+                result.Data.AddClaim(new Claim("UrlPage", model.IndividualSettings.UrlPage));
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Data = result.Data,

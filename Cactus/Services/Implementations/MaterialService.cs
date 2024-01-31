@@ -1,6 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 
 namespace Cactus.Services.Implementations
@@ -137,6 +138,20 @@ namespace Cactus.Services.Implementations
                 Data=path,
                 Description = "Баннер обновлен",
                 StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public async Task<BaseResponse<IndividualProfileViewModel>> GetProfileMaterials(int id) {
+            Material avatarMaterial =await materialRepository.GetAvatarAsync(id);
+            Material bannerMaterial =await materialRepository.GetBannerAsync(id);
+            return new BaseResponse<IndividualProfileViewModel>
+            {
+                Data = new IndividualProfileViewModel
+                {
+                    AvatarPath = avatarMaterial.Path,
+                    BannerPath = bannerMaterial.Path
+                },
+                StatusCode = 200
             };
         }
     }

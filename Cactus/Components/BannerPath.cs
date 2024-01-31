@@ -20,19 +20,11 @@ namespace Cactus.Components
             this.materialService = materialService;
         }
         public async Task<IViewComponentResult> InvokeAsync(int id, string html = "") {
-            IndividualProfileViewModel profile;
-            cache.TryGetValue("IndividualProfile", out profile);
-            if (profile == null)
-                profile = new IndividualProfileViewModel();
-            if (profile.BannerPath == null) {
-                BaseResponse<Material> result = await materialService.GetBannerAsync(id);
-                if (result.StatusCode == StatusCodes.Status200OK) {
-                    profile.BannerPath = result.Data.Path;
-                    cache.Set("IndividualProfile", profile);
-                }
-            }
+            string path = "";
+            BaseResponse<Material> result = await materialService.GetBannerAsync(id);
+            if (result.StatusCode == 200) path = result.Data.Path;
             return new HtmlContentViewComponentResult(
-                new HtmlString($"<img src=\"{profile.BannerPath}\" class=\"banner my-2\" style=\"width:100%; height:250px;\" {html}>"));
+                new HtmlString($"<img src=\"{path}\" class=\"banner my-2\" style=\"width:100%; height:250px;\" {html}>"));
         }
     }
 }

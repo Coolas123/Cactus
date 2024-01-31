@@ -51,25 +51,13 @@ namespace Cactus.Controllers
         public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
             if (model.AvatarFile != null) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                BaseResponse<string> path = await materialService.ChangeAvatarAsync(model.AvatarFile, id);
-                if (path.StatusCode == 200) {
-                    IndividualProfileViewModel profile;
-                    cache.TryGetValue("IndividualProfile", out profile);
-                    profile.AvatarPath = path.Data;
-                    cache.Set("IndividualProfile", profile);
-                }
+                await materialService.ChangeAvatarAsync(model.AvatarFile, id);
             }
 
             if (User.IsInRole("Individual")) {
                 if (model.BannerFile != null) {
                     int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                    BaseResponse<string> path = await materialService.ChangeBannerAsync(model.BannerFile, id);
-                    if (path.StatusCode == 200) {
-                        IndividualProfileViewModel profile;
-                        cache.TryGetValue("IndividualProfile", out profile);
-                        profile.BannerPath = path.Data;
-                        cache.Set("IndividualProfile", profile);
-                    }
+                    await materialService.ChangeBannerAsync(model.BannerFile, id);
                 }
             }
 
@@ -94,13 +82,7 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Patron")]
         public async Task<IActionResult> RegisterIndividual(SettingViewModel model) {
-            IndividualProfileViewModel profile;
-            cache.TryGetValue("IndividualProfile",out profile);
-            if (profile.User == null) {
-                BaseResponse<User> response =await userService.AddToCacheAsync(User.FindFirstValue(ClaimTypes.Name));
-                model.User = response.Data;
-            }
-            model.User = profile.User;
+            model.User =await userRepository.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             if (ModelState["IndividualSettings.UrlPage"].Errors.Count==0) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
                 BaseResponse<ClaimsIdentity> result = await individualService.RegisterIndividual(model, id);

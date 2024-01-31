@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\Files\Account\Documents\**" />
-    <Content Remove="wwwroot\Files\Account\Documents\**" />
-    <EmbeddedResource Remove="wwwroot\Files\Account\Documents\**" />
-    <None Remove="wwwroot\Files\Account\Documents\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
