@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Cactus.Services.Implementations
 {
-    public class IndividualService:IIndividualService
+    public class IndividualService : IIndividualService
     {
         private readonly IUserService userService;
         private readonly IIndividualRepository individualRepository;
@@ -19,6 +19,21 @@ namespace Cactus.Services.Implementations
             this.userService = userService;
             this.individualRepository = individualRepository;
             this.patronService = patronService;
+        }
+
+        public async Task<BaseResponse<Individual>> GetAsync(int id) {
+            Individual individual =  await individualRepository.GetAsync(id);
+            if (individual == null) {
+                return new BaseResponse<Individual>
+                {
+                    Description="Пользователль не найден"
+                };
+            }
+            return new BaseResponse<Individual>
+            {
+                Data=individual,
+                StatusCode=200
+            };
         }
 
         public async Task<BaseResponse<Individual>> GetBuyUrlPage(string urlPage) {

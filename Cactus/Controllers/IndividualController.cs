@@ -1,18 +1,18 @@
-﻿using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Components;
+using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using SportsStore.Models;
-using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
-    [Authorize(Roles = "Individual")]
     [Route("Individual")]
     [AutoValidateAntiforgeryToken]
     public class IndividualController:Controller
@@ -20,15 +20,20 @@ namespace Cactus.Controllers
         private int PageSize = 4;
         private readonly ISubscribeService subscribeService;
         private readonly IUserService userService;
+        private readonly IPostService postService;
+        private readonly LinkGenerator linkGenerator;
         private readonly IIndividualService individualService;
         public IndividualController(ISubscribeService subscribeService, IUserService userService,
-            IIndividualService individualService) {
+           IPostService postService, LinkGenerator linkGenerator, IIndividualService individualService) {
             this.subscribeService = subscribeService;
             this.userService = userService;
+            this.postService = postService;
+            this.linkGenerator = linkGenerator;
             this.individualService = individualService;
         }
 
         [Route("{UrlPage}")]
+        [Authorize(Roles = "Individual,Patron")]
         public async Task<IActionResult> Index(string UrlPage,int authorPage=1) {
             BaseResponse<User> user =await userService.GetUserByUrlPageAsync(UrlPage);
             BaseResponse<IEnumerable<AuthorSubscribe>> subList = await subscribeService.GetPagingSubscribersAsync(user.Data.Id, authorPage, PageSize);
@@ -53,6 +58,17 @@ namespace Cactus.Controllers
                 },
                 CurrentUser = user.Data
             });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Individual")]
+        public async Task<IActionResult> AddPost(PagingIndividualViewModel model) {
+            await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
+            BaseResponse<Individual> response = await individualService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            string path = "";
+            if (response.StatusCode==200)
+                path = linkGenerator.GetPathByAction("Index", "Individual", new { UrlPage = response.Data.UrlPage })!;
+            return Redirect(path); 
         }
     }
 }

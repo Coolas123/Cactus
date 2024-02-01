@@ -6,13 +6,13 @@ using Cactus.Services.Interfaces;
 
 namespace Cactus.Services.Implementations
 {
-    public class MaterialService : IMaterialService
+    public class ProfileMaterialService : IProfileMaterialService
     {
-        private readonly IMaterialRepository materialRepository;
+        private readonly IProfileMaterialRepository materialRepository;
         private readonly IUserRepository userRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public MaterialService(IMaterialRepository dbContext, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository) {
+        public ProfileMaterialService(IProfileMaterialRepository dbContext, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository) {
             this.materialRepository = dbContext;
             this.webHostEnvironment = webHostEnvironment;
             this.userRepository = userRepository;
@@ -20,7 +20,7 @@ namespace Cactus.Services.Implementations
 
         public async Task<BaseResponse<string>> ChangeAvatarAsync(IFormFile file,int id) {
             string path = "/Files/Account/Avatars/" + id + file.FileName;
-            var avatar = new Material
+            var avatar = new ProfileMaterial
             {
                 UserId = id,
                 MaterialTypeId = (int)Models.Enums.MaterialType.Avatar,
@@ -47,65 +47,65 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<Material>> GetAvatarAsync(string email) {
+        public async Task<BaseResponse<ProfileMaterial>> GetAvatarAsync(string email) {
             User user = await userRepository.GetByEmailAsync(email);
-            Material result = await materialRepository.GetAvatarAsync(user.Id);
+            ProfileMaterial result = await materialRepository.GetAvatarAsync(user.Id);
             if (result == null) {
-                return new BaseResponse<Material>
+                return new BaseResponse<ProfileMaterial>
                 {
                     Data=null,
                     Description = "Аватар отсутствует"
                 };
             }
-            return new BaseResponse<Material>
+            return new BaseResponse<ProfileMaterial>
             {
                 Data = result,
                 StatusCode=StatusCodes.Status200OK
             };
         }
 
-        public async Task<BaseResponse<Material>> GetAvatarAsync(int id) {
-            Material result = await materialRepository.GetAvatarAsync(id);
+        public async Task<BaseResponse<ProfileMaterial>> GetAvatarAsync(int id) {
+            ProfileMaterial result = await materialRepository.GetAvatarAsync(id);
             if (result == null) {
-                return new BaseResponse<Material>
+                return new BaseResponse<ProfileMaterial>
                 {
                     Data = null,
                     Description = "Аватарка отсутствует"
                 };
             }
-            return new BaseResponse<Material>
+            return new BaseResponse<ProfileMaterial>
             {
                 Data = result,
                 StatusCode = StatusCodes.Status200OK
             };
         }
-        public async Task<BaseResponse<Material>> GetBannerAsync(string email) {
+        public async Task<BaseResponse<ProfileMaterial>> GetBannerAsync(string email) {
             User user = await userRepository.GetByEmailAsync(email);
-            Material result = await materialRepository.GetBannerAsync(user.Id);
+            ProfileMaterial result = await materialRepository.GetBannerAsync(user.Id);
             if (result == null) {
-                return new BaseResponse<Material>
+                return new BaseResponse<ProfileMaterial>
                 {
                     Data = null,
                     Description = "Баннер отсутствует"
                 };
             }
-            return new BaseResponse<Material>
+            return new BaseResponse<ProfileMaterial>
             {
                 Data = result,
                 StatusCode = StatusCodes.Status200OK
             };
         }
 
-        public async Task<BaseResponse<Material>> GetBannerAsync(int id) {
-            Material result = await materialRepository.GetBannerAsync(id);
+        public async Task<BaseResponse<ProfileMaterial>> GetBannerAsync(int id) {
+            ProfileMaterial result = await materialRepository.GetBannerAsync(id);
             if (result == null) {
-                return new BaseResponse<Material>
+                return new BaseResponse<ProfileMaterial>
                 {
                     Data = null,
                     Description = "Баннер отсутствует"
                 };
             }
-            return new BaseResponse<Material>
+            return new BaseResponse<ProfileMaterial>
             {
                 Data = result,
                 StatusCode = StatusCodes.Status200OK
@@ -114,7 +114,7 @@ namespace Cactus.Services.Implementations
 
         public async Task<BaseResponse<string>> ChangeBannerAsync(IFormFile file, int id) {
             string path = "/Files/Account/Banners/" + id + file.FileName;
-            var banner = new Material
+            var banner = new ProfileMaterial
             {
                 UserId = id,
                 MaterialTypeId = (int)Models.Enums.MaterialType.Banner,
@@ -142,14 +142,13 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<IndividualProfileViewModel>> GetProfileMaterials(int id) {
-            Material avatarMaterial =await materialRepository.GetAvatarAsync(id);
-            Material bannerMaterial =await materialRepository.GetBannerAsync(id);
+            IEnumerable<ProfileMaterial> materiarls =await materialRepository.GetProfileMaterialAsync(id);
             return new BaseResponse<IndividualProfileViewModel>
             {
                 Data = new IndividualProfileViewModel
                 {
-                    AvatarPath = avatarMaterial.Path,
-                    BannerPath = bannerMaterial.Path
+                    AvatarPath = materiarls.Where(x => x.MaterialTypeId == (int)Models.Enums.MaterialType.Avatar).ToArray().Last().Path,
+                    BannerPath = materiarls.Where(x => x.MaterialTypeId == (int)Models.Enums.MaterialType.Banner).ToArray().Last().Path
                 },
                 StatusCode = 200
             };

@@ -14,11 +14,11 @@ namespace Cactus.Services.Implementations
     {
 		private readonly IUserRepository userRepository;
 		private readonly IIndividualRepository individualRepository;
-		private readonly IMaterialService materialService;
+		private readonly IProfileMaterialService materialService;
 		private readonly IMemoryCache cache;
 
 		public UserService (IUserRepository userRepository, IMemoryCache cache,
-            IIndividualRepository individualRepository, IMaterialService materialService)
+            IIndividualRepository individualRepository, IProfileMaterialService materialService)
 		{
 			this.userRepository = userRepository;
             this.cache = cache;
@@ -204,6 +204,20 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<User>
             {
                 Data= individual.User,
+                StatusCode=200
+            };
+        }
+
+        public async Task<BaseResponse<User>> GetUserAsync(int id) {
+            User user = await userRepository.GetAsync(id);
+            if (user==null) {
+                return new BaseResponse<User>
+                {
+                    Description="Пользователь не найден"
+                };
+            }
+            return new BaseResponse<User> { 
+                Data= user, 
                 StatusCode=200
             };
         }

@@ -39,14 +39,18 @@ namespace Cactus
                 });
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<IUserService,UserService>();
-            services.AddScoped<IMaterialRepository, MaterialRepository>();
-            services.AddScoped<IMaterialService, MaterialService>();
+            services.AddScoped<IProfileMaterialRepository, ProfileMaterialRepository>();
+            services.AddScoped<IProfileMaterialService, ProfileMaterialService>();
             services.AddScoped<IIndividualRepository, IndividualRepository>();
             services.AddScoped<IIndividualService, IndividualService>();
             services.AddScoped<IPatronRepository, PatronRepository>();
             services.AddScoped<IPatronService, PatronService>();
             services.AddScoped<ISubscribeRepository, SubscribeRepository>();
             services.AddScoped<ISubscribeService, SubscribeService>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IPostMaterialRepository, PostMaterialRepository>();
+            services.AddScoped<IPostMaterialService, PostMaterialService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

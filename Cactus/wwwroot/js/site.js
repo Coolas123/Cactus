@@ -25,3 +25,17 @@ function changeBanner(input) {
 $("#banner").change(function () {
     changeBanner(this);
 });
+
+function AddPostPhoto(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onloadend = function (e) {
+            $('#myPostPhoto').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$("#postPhoto").change(function () {
+    AddPostPhoto(this);
+});

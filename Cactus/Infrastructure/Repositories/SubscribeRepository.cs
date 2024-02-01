@@ -19,6 +19,7 @@ namespace Cactus.Infrastructure.Repositories
 
         public async Task<bool> CreateAsync(AuthorSubscribe entity) {
             await dbContext.AuthorSubscribes.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
             return true;
         }
 

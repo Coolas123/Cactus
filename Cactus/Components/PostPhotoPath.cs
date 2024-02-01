@@ -10,21 +10,18 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Cactus.Components
 {
-    public class AvatarPath : ViewComponent
+    public class PostPhotoPath : ViewComponent
     {
-        private readonly IMemoryCache cache;
-        private readonly IProfileMaterialService profileMaterialService;
-        public AvatarPath(IMemoryCache cache,
-            IProfileMaterialService profileMaterialService) {
-            this.cache = cache;
-            this.profileMaterialService = profileMaterialService;
+        private readonly IPostMaterialService postMaterialService;
+        public PostPhotoPath(IPostMaterialService postMaterialService) {
+            this.postMaterialService = postMaterialService;
         }
         public async Task<IViewComponentResult> InvokeAsync(int id,string html="") {
             string path = "";
-            BaseResponse<ProfileMaterial> result = await profileMaterialService.GetAvatarAsync(id);
+            BaseResponse<PostMaterial> result = await postMaterialService.GetPhotoAsync(id);
             if(result.StatusCode==200) path=result.Data.Path;
             return new HtmlContentViewComponentResult(
-                new HtmlString($"<img src=\"{path}\" width=\"50\" height=\"50\" {html}>"));
+                new HtmlString($"<img src=\"{path}\" width=\"300\" height=\"450\" {html}>"));
         }
     }
 }

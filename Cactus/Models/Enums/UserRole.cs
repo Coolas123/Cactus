@@ -4,6 +4,6 @@
     {
         Legal=1,
         Patron=2,
-        Individual=3
+        Individual=3,
     }
 }

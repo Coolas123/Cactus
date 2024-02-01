@@ -1,6 +1,7 @@
 ﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Security.Claims;
 
 namespace Cactus.Services.Interfaces
@@ -15,5 +16,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<User>> AddToCacheAsync(string email);
         Task<BaseResponse<IndividualProfileViewModel>> GetPrifileByUrlPage(string urlPage);
         Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage);
+        Task<BaseResponse<User>> GetUserAsync(int id);
     }
 }

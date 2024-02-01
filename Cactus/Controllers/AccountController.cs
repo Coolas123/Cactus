@@ -1,16 +1,10 @@
-﻿using Cactus.Models.Database;
-using Cactus.Models.Responses;
-using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
+﻿using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cactus.Controllers
 {

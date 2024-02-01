@@ -1,16 +1,14 @@
-﻿using Cactus.Models.Database;
+﻿using Cactus.Infrastructure.Interfaces;
+using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Cactus.Infrastructure.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using System.IO;
+using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
@@ -19,15 +17,15 @@ namespace Cactus.Controllers
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
     {
-        private readonly IMaterialService materialService;
+        private readonly IProfileMaterialService profileMaterialService;
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
         private readonly IIndividualService individualService;
         private readonly IMemoryCache cache;
 
-        public SettingController(IMaterialService materialService, IUserService userService,
+        public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
             IUserRepository userRepository, IMemoryCache cache, IIndividualService individualService) {
-            this.materialService = materialService;
+            this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.cache = cache;
@@ -35,13 +33,15 @@ namespace Cactus.Controllers
         }
         public async Task<IActionResult> Index() {
             SettingViewModel profile= new SettingViewModel();
-            BaseResponse<Material> response = await materialService.GetAvatarAsync(User.Identity.Name);
+            BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
             }
-            BaseResponse<Material> banner = await materialService.GetBannerAsync(User.Identity.Name);
-            if (banner.StatusCode == StatusCodes.Status200OK) {
-                profile.BannerPath = banner.Data.Path;
+            if (!User.IsInRole("Patron")) {
+                BaseResponse<ProfileMaterial> banner = await profileMaterialService.GetBannerAsync(User.Identity.Name);
+                if (banner.StatusCode == StatusCodes.Status200OK) {
+                    profile.BannerPath = banner.Data.Path;
+                }
             }
             profile.User= await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
             return View(profile);
@@ -51,13 +51,13 @@ namespace Cactus.Controllers
         public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
             if (model.AvatarFile != null) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                await materialService.ChangeAvatarAsync(model.AvatarFile, id);
+                await profileMaterialService.ChangeAvatarAsync(model.AvatarFile, id);
             }
 
             if (User.IsInRole("Individual")) {
                 if (model.BannerFile != null) {
                     int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                    await materialService.ChangeBannerAsync(model.BannerFile, id);
+                    await profileMaterialService.ChangeBannerAsync(model.BannerFile, id);
                 }
             }
 
@@ -95,6 +95,12 @@ namespace Cactus.Controllers
                             new ClaimsPrincipal(result.Data));
                 return RedirectToAction("Index", "Individual", new { UrlPage = model.IndividualSettings.UrlPage });
             }
+            return View("Index", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Legal")]
+        public async Task<IActionResult> RegisterLegal(SettingViewModel model) {
             return View("Index", model);
         }
     }

@@ -8,5 +8,6 @@ namespace Cactus.Models.ViewModels
         public IEnumerable<AuthorSubscribe> Authors { get; set; }
         public PagingInfo PagingInfo { get; set; }
         public User CurrentUser { get; set; }
+        public PostViewModel Post { get; set; }
     }
 }
