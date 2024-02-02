@@ -19,7 +19,7 @@
                 }
             </tbody>
         </table>
-        <div page-model="@Model.PagingInfo" page-action="Index"
+        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
              page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
              page-class-selected="btn-primary" class="btn-group pull-right m-1">
         </div>
@@ -68,7 +68,21 @@
         </div>
     </div>
     <div class="col">
-
+        <table class="table">
+            <tbody>
+                @if (Model.Posts != null) {
+                    @foreach (var p in Model.Posts) {
+                        <tr>
+                            <td>@p.Title</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.PostsPagingInfo" page-action="Index" type-page="postPage"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
     </div>
 </div>
 <style>

@@ -27,6 +27,7 @@ namespace SportsStore.Infrastructure
         public string PageClass { get; set; }
         public string PageClassNormal { get; set; }
         public string PageClassSelected { get; set; }
+        public string TypePage {  get; set; }
         public override void Process(TagHelperContext context, TagHelperOutput output) {
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
@@ -38,7 +39,7 @@ namespace SportsStore.Infrastructure
             else
             for (int i = 1;i<=PageModel.TotalPages;i++) {
                 TagBuilder tag = new TagBuilder("a");
-                PageUrlValues["authorPage"] = i;
+                PageUrlValues[TypePage] = i;
                 tag.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
                 if (PageClassesEnabled) {
                     tag.AddCssClass(PageClass);

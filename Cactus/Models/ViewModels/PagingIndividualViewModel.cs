@@ -6,7 +6,9 @@ namespace Cactus.Models.ViewModels
     public class PagingIndividualViewModel
     {
         public IEnumerable<AuthorSubscribe> Authors { get; set; }
-        public PagingInfo PagingInfo { get; set; }
+        public IEnumerable<Post> Posts { get; set; }
+        public PagingInfo SubscribesPagingInfo { get; set; }
+        public PagingInfo PostsPagingInfo { get; set; }
         public User CurrentUser { get; set; }
         public PostViewModel Post { get; set; }
     }

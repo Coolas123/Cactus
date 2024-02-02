@@ -1,4 +1,5 @@
 ﻿using Cactus.Infrastructure.Interfaces;
+using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -28,6 +29,28 @@ namespace Cactus.Services.Implementations
             {
                 Data = post,
                 StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Post>>> GetPagingPostsAsync(int authorId, int postPage, int pageSize) {
+            IEnumerable<Post> posts = await postRepository.GetPagingPostsAsync(authorId, postPage, pageSize);
+            if (posts.Count() == 0) {
+                return new BaseResponse<IEnumerable<Post>>
+                {
+                    Description = "Посты отсутствуют"
+                };
+            }
+            return new BaseResponse<IEnumerable<Post>>
+            {
+                Data = posts,
+                StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Post>>> GetPostsAsync(int authorId) {
+            return new BaseResponse<IEnumerable<Post>>
+            {
+                Data = await postRepository.GetPostsAsync(authorId)
             };
         }
     }
