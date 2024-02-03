@@ -9,6 +9,7 @@ namespace Cactus.Models.Database
         [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-        public string Surname { get; set; }
+        public string UrlPage { get; set; }
+        public string? Surname { get; set; }
     }
 }

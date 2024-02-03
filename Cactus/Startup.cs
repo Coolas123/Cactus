@@ -51,6 +51,8 @@ namespace Cactus
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostMaterialRepository, PostMaterialRepository>();
             services.AddScoped<IPostMaterialService, PostMaterialService>();
+            services.AddScoped<ILegalRepository, LegalRepository>();
+            services.AddScoped<ILegalService, LegalService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

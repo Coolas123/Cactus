@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "User")]
-    [Authorize(Roles = "Patron,Individual")]
+    [Authorize(Roles = "Patron,Individual,Legal")]
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
     {
@@ -21,19 +21,23 @@ namespace Cactus.Controllers
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
         private readonly IIndividualService individualService;
+        private readonly ILegalService legalService;
         private readonly IMemoryCache cache;
 
         public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
-            IUserRepository userRepository, IMemoryCache cache, IIndividualService individualService) {
+            IUserRepository userRepository, IMemoryCache cache, IIndividualService individualService,
+            ILegalService legalService) {
             this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.cache = cache;
             this.individualService = individualService;
+            this.legalService = legalService;
         }
         public async Task<IActionResult> Index() {
             SettingViewModel profile= new SettingViewModel();
-            BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            int userId = Convert.ToInt32(User.FindFirstValue("Id"));
+            BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(userId);
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
             }
@@ -43,7 +47,17 @@ namespace Cactus.Controllers
                     profile.BannerPath = banner.Data.Path;
                 }
             }
-            profile.User= await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
+            profile.User= await userRepository.GetAsync(userId);
+            if (User.IsInRole("Individual")) {
+                BaseResponse<Individual> individual = await individualService.GetAsync(userId);
+                if(individual.StatusCode==200)
+                    profile.Individual = individual.Data;
+            }
+            if (User.IsInRole("Legal")) {
+                BaseResponse<Legal> legal = await legalService.GetAsync(userId);
+                if (legal.StatusCode == 200)
+                    profile.Legal = legal.Data;
+            }
             return View(profile);
         }
 
@@ -83,24 +97,38 @@ namespace Cactus.Controllers
         [Authorize(Roles = "Patron")]
         public async Task<IActionResult> RegisterIndividual(SettingViewModel model) {
             model.User =await userRepository.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
-            if (ModelState["IndividualSettings.UrlPage"].Errors.Count==0) {
+            if (ModelState["RegisterIndividual.UrlPage"].Errors.Count==0) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
                 BaseResponse<ClaimsIdentity> result = await individualService.RegisterIndividual(model, id);
                 if (result.StatusCode != StatusCodes.Status200OK) {
-                    ModelState.AddModelError(nameof(model.IndividualSettings.UrlPage), result.Description);
+                    ModelState.AddModelError(nameof(model.RegisterIndividual.UrlPage), result.Description);
                     return View("Index", model);
                 }
                 await HttpContext.SignOutAsync();
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(result.Data));
-                return RedirectToAction("Index", "Individual", new { UrlPage = model.IndividualSettings.UrlPage });
+                return RedirectToAction("Index", "Individual", new { UrlPage = model.RegisterIndividual.UrlPage });
             }
             return View("Index", model);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Legal")]
+        [Authorize(Roles = "Individual")]
         public async Task<IActionResult> RegisterLegal(SettingViewModel model) {
+            model.User = await userRepository.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            if (ModelState["RegisterLegal.UrlPage"].Errors.Count == 0) {
+                int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                //
+                BaseResponse<ClaimsIdentity> result = await legalService.RegisterLegal(model.RegisterLegal, id);
+                if (result.StatusCode != StatusCodes.Status200OK) {
+                    ModelState.AddModelError(nameof(model.RegisterLegal.UrlPage), result.Description);
+                    return View("Index", model);
+                }
+                await HttpContext.SignOutAsync();
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(result.Data));
+                return RedirectToAction("Index", "Legal", new { UrlPage = model.RegisterLegal.UrlPage });
+            }
             return View("Index", model);
         }
     }

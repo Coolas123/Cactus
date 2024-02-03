@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "User")]
-    [Authorize(Roles = "Patron,Individual")]
+    [Authorize(Roles = "Patron,Individual,Legal")]
     [AutoValidateAntiforgeryToken]
     public class MessageController : Controller
     {

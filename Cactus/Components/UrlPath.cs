@@ -17,19 +17,29 @@ namespace Cactus.Components
     {
         private readonly IMemoryCache cache;
         private readonly IIndividualRepository individualRepository;
+        private readonly ILegalRepository legalRepository;
         private readonly LinkGenerator linkGenerator;
         public UrlPath(IMemoryCache cache, IIndividualRepository individualRepository,
-            LinkGenerator linkGenerator) {
+            LinkGenerator linkGenerator, ILegalRepository legalRepository) {
             this.cache = cache;
             this.individualRepository = individualRepository;
             this.linkGenerator = linkGenerator;
+            this.legalRepository = legalRepository;
         }
-        public async Task<IViewComponentResult> InvokeAsync(int id,string html="") {
+        public async Task<IViewComponentResult> InvokeAsync(int id,string role="Individual",string html="") {
             string path = "";
-            Individual individual = await individualRepository.GetAsync(id);
-            if (individual != null)
-            path= linkGenerator.GetPathByAction(
-                "Index", "Individual", new { UrlPage= individual.UrlPage })!;
+            if (role == Models.Enums.UserRole.Individual.ToString()) {
+                Individual individual = await individualRepository.GetAsync(id);
+                if (individual != null)
+                    path = linkGenerator.GetPathByAction(
+                        "Index", "Individual", new { UrlPage = individual.UrlPage })!;
+            }
+            if (role == Models.Enums.UserRole.Legal.ToString()) {
+                Legal legal = await legalRepository.GetAsync(id);
+                if (legal != null)
+                    path = linkGenerator.GetPathByAction(
+                        "Index", "Legal", new { UrlPage = legal.UrlPage })!;
+            }
             return new HtmlContentViewComponentResult(
                 new HtmlString($"<a {html} href={path}>Профиль</a>"));
         }

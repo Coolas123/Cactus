@@ -1,4 +1,5 @@
 ﻿using Cactus.Infrastructure.Interfaces;
+using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -19,6 +20,24 @@ namespace Cactus.Services.Implementations
             this.userService = userService;
             this.individualRepository = individualRepository;
             this.patronService = patronService;
+        }
+
+        public async Task<BaseResponse<Individual>> DaeleteIndividual(int id) {
+            try {
+                Individual individual = await individualRepository.GetAsync(id);
+                await individualRepository.DeleteAsync(individual);
+                return new BaseResponse<Individual>
+                {
+                    Description = "Удалена роль Individual",
+                    StatusCode = 200
+                };
+            }
+            catch {
+                return new BaseResponse<Individual>
+                {
+                    Description = "Не удалось удалить роль Individual"
+                };
+            }
         }
 
         public async Task<BaseResponse<Individual>> GetAsync(int id) {
@@ -46,14 +65,14 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(SettingViewModel model,int id) {
-            Individual pageExist = await individualRepository.GetByUrlPageAsync(model.IndividualSettings.UrlPage);
+            Individual pageExist = await individualRepository.GetByUrlPageAsync(model.RegisterIndividual.UrlPage);
             if (pageExist != null) {
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Данный адрес уже используется"
                 };
             }
-            var newIndividual = new Individual { UrlPage = model.IndividualSettings.UrlPage, UserId = id };
+            var newIndividual = new Individual { UrlPage = model.RegisterIndividual.UrlPage, UserId = id };
             try {
                 await individualRepository.CreateAsync(newIndividual);
                 var resultPatron = await patronService.DaeleteUser(id);
@@ -70,7 +89,7 @@ namespace Cactus.Services.Implementations
                         Description = result.Description
                     };
                 }
-                result.Data.AddClaim(new Claim("UrlPage", model.IndividualSettings.UrlPage));
+                result.Data.AddClaim(new Claim("UrlPage", model.RegisterIndividual.UrlPage));
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Data = result.Data,

@@ -221,5 +221,23 @@ namespace Cactus.Services.Implementations
                 StatusCode=200
             };
         }
+
+        public async Task<BaseResponse<ClaimsIdentity>> ChangeRoleToLegal(int id) {
+            User user = await userRepository.GetAsync(id);
+            if (user == null) {
+                return new BaseResponse<ClaimsIdentity>
+                {
+                    Description = "Пользователь не найден"
+                };
+            }
+            user.UserRoleId = (int)Models.Enums.UserRole.Legal;
+            await userRepository.Update(user);
+            return new BaseResponse<ClaimsIdentity>
+            {
+                Description = "Роль обновлена на Legal",
+                Data = Authenticate(user, id),
+                StatusCode = 200
+            };
+        }
     }
 }

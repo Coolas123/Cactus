@@ -17,5 +17,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<IndividualProfileViewModel>> GetPrifileByUrlPage(string urlPage);
         Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage);
         Task<BaseResponse<User>> GetUserAsync(int id);
+        Task<BaseResponse<ClaimsIdentity>> ChangeRoleToLegal(int id);
     }
 }

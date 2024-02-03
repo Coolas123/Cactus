@@ -33,6 +33,11 @@
                                         @await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"dropdown-item\"" })
                                     </li>
                                 }
+                                else @if (User.IsInRole("Legal")) {
+                                    <li>
+                                        @await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value),role="Legal" ,html = "class=\"dropdown-item\"" })
+                                    </li>
+                                }
                                 else{
                                     <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index">Профиль</a></li>
                                 }

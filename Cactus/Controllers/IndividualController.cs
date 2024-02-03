@@ -33,7 +33,7 @@ namespace Cactus.Controllers
         }
 
         [Route("{UrlPage}")]
-        [Authorize(Roles = "Individual,Patron")]
+        [Authorize(Roles = "Individual,Patron,Legal")]
         public async Task<IActionResult> Index(string UrlPage,int authorPage=1,int postPage=1) {
             BaseResponse<User> user =await userService.GetUserByUrlPageAsync(UrlPage);
             BaseResponse<IEnumerable<AuthorSubscribe>> subList = await subscribeService.GetPagingSubscribersAsync(user.Data.Id, authorPage, PageSize);

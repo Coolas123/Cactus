@@ -10,11 +10,11 @@
         <div class="col d-flex flex-column align-items-end">
             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <button class="btn btn-outline-secondary active m-1" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Профиль</button>
-                @if (!User.IsInRole("Individual")){
+                @if (User.IsInRole("Patron")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-registerIndividual-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerIndividual" type="button" role="tab" aria-controls="v-pills-registerIndividual" aria-selected="true">Стать автором</button>
                 }
                 @if (User.IsInRole("Individual")) {
-                    <button class="btn btn-outline-secondary m-1" id="v-pills-registerLegal-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerLegal" type="button" role="tab" aria-controls="v-pills-registerLegal" aria-selected="true">Стать автором</button>
+                    <button class="btn btn-outline-secondary m-1" id="v-pills-registerLegal-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerLegal" type="button" role="tab" aria-controls="v-pills-registerLegal" aria-selected="true">Стать автором<br>(юридическое лицо)</button>
                 }
                 <button class="btn btn-outline-secondary m-1" id="v-pills-privacy-tab" data-bs-toggle="pill" data-bs-target="#v-pills-privacy" type="button" role="tab" aria-controls="v-pills-privacy" aria-selected="true">Приватность</button>
             </div>
@@ -29,8 +29,7 @@
                             <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('avatar').click()">Изменить аватарку</button>
                             <input type='file' id="avatar" style="display:none" asp-for="AvatarFile">
                         </div>
-                        @if (User.IsInRole("Individual") || User.IsInRole("Legal"))
-                        {
+                        @if (User.IsInRole("Individual") || User.IsInRole("Legal") || User.IsInRole("Patron")) {
                             <div> 
                                 <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('banner').click()">Изменить баннер</button>
                                 <input type='file' id="banner" style="display:none" asp-for="BannerFile">
@@ -65,7 +64,7 @@
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="d-flex form-control">
                             <input class="form-control-plaintext" value="www.cactus.ru/" readonly style="text-align:right" />
-                            <input class="form-control-plaintext" asp-for="@Model.IndividualSettings.UrlPage" placeholder="Адрес страницы" />
+                            <input class="form-control-plaintext" asp-for="@Model.RegisterIndividual.UrlPage" placeholder="Адрес страницы" />
                         </div>
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -95,11 +94,12 @@
                 <div class="tab-pane fade" id="v-pills-registerLegal" role="tabpanel" aria-labelledby="v-pills-registerLegal-tab">
                     <form asp-controller="setting" asp-action="RegisterLegal" method="post">
                         <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="d-flex form-control">
+                        <label>Введите новый адрес страницы или оставьте прежний</label>
+                        <div class="d-flex form-group">
                             <input class="form-control-plaintext" value="www.cactus.ru/" readonly style="text-align:right" />
-                            <input class="form-control-plaintext" asp-for="@Model.IndividualSettings.UrlPage" placeholder="Адрес страницы" />
+                            <input class="form-control-plaintext" asp-for="@Model.RegisterLegal.UrlPage" value="@Model.Individual?.UrlPage" placeholder="Адрес страницы" />
                         </div>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="legalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#legalModal">
                                 Стать автором
                             </button>
                         </div>

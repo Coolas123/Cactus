@@ -41,7 +41,10 @@ namespace Cactus.Models.ViewModels
 
         public string AvatarPath { get; set; }
         public string BannerPath { get; set; }
+        public Legal Legal { get; set; }
+        public Individual Individual { get; set; }
 
-        public RegisterIndividualViewModel IndividualSettings { get; set; }
+        public RegisterIndividualViewModel RegisterIndividual { get; set; }
+        public RegisterLegalViewModel RegisterLegal { get; set; }
     }
 }
