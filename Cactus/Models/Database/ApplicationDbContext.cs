@@ -24,6 +24,9 @@ namespace Cactus.Models.Database
         public DbSet<Category> Categories { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostMaterial> PostMaterials { get; set; }
+        public DbSet<ProjectStatus> ProjectStatues { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -45,6 +48,8 @@ namespace Cactus.Models.Database
             builder.Entity<Category>().ToTable("Categories");
             builder.Entity<PostCategory>().ToTable("PostCategories");
             builder.Entity<PostMaterial>().ToTable("PostMaterials");
+            builder.Entity<ProjectStatus>().ToTable("ProjectStatues");
+            builder.Entity<Organization>().ToTable("Organizations");
 
             builder.Entity<User>(x =>
             {
@@ -86,6 +91,16 @@ namespace Cactus.Models.Database
             builder.Entity<Project>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
             });
+            builder.Entity<ProjectStatus>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+                x.HasData(new MaterialType[]
+                {
+                    new MaterialType {Id=1,Name="SentForReview" },
+                    new MaterialType {Id=2,Name="Verification" },
+                    new MaterialType {Id=3,Name="Denied" },
+                    new MaterialType {Id=4,Name="Approved" }
+                });
+            });
             builder.Entity<MaterialType>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(new MaterialType[]
@@ -114,6 +129,9 @@ namespace Cactus.Models.Database
                 x.HasKey(p => new { p.PostId, p.CategoryId });
             });
             builder.Entity<PostMaterial>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+            builder.Entity<Organization>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
             });
         }

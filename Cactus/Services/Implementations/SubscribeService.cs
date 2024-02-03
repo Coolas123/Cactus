@@ -1,7 +1,10 @@
-﻿using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Components;
+using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
 {
@@ -53,6 +56,33 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<IEnumerable<AuthorSubscribe>>
             {
                 Data = await subscribeRepository.GetSubscribersAsync(subcriberId)
+            };
+        }
+
+        public async Task<BaseResponse<PagingAuthorViewModel>> GetUserViewSubscribersAsync(int userId, int authorPage, int PageSize) {
+            BaseResponse<IEnumerable<AuthorSubscribe>> subList = await GetPagingSubscribersAsync(userId, authorPage, PageSize);
+            BaseResponse<IEnumerable<AuthorSubscribe>> allSub = await GetSubscribersAsync(userId);
+
+            var response = new PagingAuthorViewModel();
+            if (subList.StatusCode == 200) {
+                response.Authors = subList.Data;
+                response.SubscribesPagingInfo = new PagingInfo
+                {
+                    CurrentPage = authorPage,
+                    ItemsPerPage = PageSize,
+                    TotalItems = allSub.Data.Count()
+                };
+            }
+            else {
+                response.SubscribesPagingInfo = new PagingInfo
+                {
+                    Description = subList.Description
+                };
+            }
+            return new BaseResponse<PagingAuthorViewModel>
+            {
+                Data = response,
+                StatusCode=200
             };
         }
     }

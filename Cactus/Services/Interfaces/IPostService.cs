@@ -9,5 +9,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<Post>> AddPost(PostViewModel model, int id);
         Task<BaseResponse<IEnumerable<Post>>> GetPagingPostsAsync(int authorId, int postPage, int pageSize);
         Task<BaseResponse<IEnumerable<Post>>> GetPostsAsync(int authorId);
+        Task<BaseResponse<PagingAuthorViewModel>> GetUserViewPostsAsync(int userId, int postPage, int PageSize);
     }
 }

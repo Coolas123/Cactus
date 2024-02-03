@@ -31,5 +31,8 @@ namespace Cactus.Infrastructure.Repositories
         public Task<IEnumerable<Legal>> SelectAsync() {
             throw new NotImplementedException();
         }
+        public async Task<Legal> GetUserByUrlPageAsync(string urlPage) {
+            return await dbContext.Legals.Include(x => x.User).FirstOrDefaultAsync(x => x.UrlPage == urlPage);
+        }
     }
 }

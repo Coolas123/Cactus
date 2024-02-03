@@ -23,7 +23,8 @@ namespace Cactus.Services.Implementations
 
         public async Task<BaseResponse<Legal>> GetAsync(int id) {
             return new BaseResponse<Legal>{
-                Data = await legalRepository.GetAsync(id)
+                Data = await legalRepository.GetAsync(id),
+                StatusCode=200
             };
         }
 
@@ -66,6 +67,20 @@ namespace Cactus.Services.Implementations
                     Description = "Не удалось добавить роль Legal к пользователю"
                 };
             }
+        }
+        public async Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage) {
+            Legal legal = await legalRepository.GetUserByUrlPageAsync(urlPage);
+            if (legal == null) {
+                return new BaseResponse<User>
+                {
+                    Description = "профиль не найден"
+                };
+            }
+            return new BaseResponse<User>
+            {
+                Data = legal.User,
+                StatusCode = 200
+            };
         }
     }
 }

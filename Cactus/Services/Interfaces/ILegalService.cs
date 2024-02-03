@@ -9,5 +9,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<ClaimsIdentity>> RegisterLegal(RegisterLegalViewModel model, int id);
         Task<BaseResponse<Legal>> GetAsync(int id);
+        Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage);
     }
 }

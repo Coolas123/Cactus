@@ -3,7 +3,7 @@ using SportsStore.Models;
 
 namespace Cactus.Models.ViewModels
 {
-    public class PagingIndividualViewModel
+    public class PagingAuthorViewModel
     {
         public IEnumerable<AuthorSubscribe> Authors { get; set; }
         public IEnumerable<Post> Posts { get; set; }

@@ -1,9 +1,11 @@
-﻿using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Components;
+using Cactus.Infrastructure.Interfaces;
 using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
 {
@@ -51,6 +53,32 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<IEnumerable<Post>>
             {
                 Data = await postRepository.GetPostsAsync(authorId)
+            };
+        }
+
+        public async Task<BaseResponse<PagingAuthorViewModel>> GetUserViewPostsAsync(int userId, int postPage, int PageSize) {
+            BaseResponse<IEnumerable<Post>> postList = await GetPagingPostsAsync(userId, postPage, PageSize);
+            BaseResponse<IEnumerable<Post>> allPost = await GetPostsAsync(userId);
+
+            var response = new PagingAuthorViewModel();
+            if (postList.StatusCode == 200) {
+                response.Posts = postList.Data;
+                response.PostsPagingInfo = new PagingInfo
+                {
+                    CurrentPage = postPage,
+                    ItemsPerPage = PageSize,
+                    TotalItems = allPost.Data.Count()
+                };
+            }
+            else {
+                response.PostsPagingInfo = new PagingInfo
+                {
+                    Description = postList.Description
+                };
+            }
+            return new BaseResponse<PagingAuthorViewModel> { 
+                Data = response,
+                StatusCode=200
             };
         }
     }

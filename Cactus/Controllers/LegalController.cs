@@ -1,5 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Cactus.Models.Database;
+using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
+using Cactus.Services.Implementations;
+using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Models;
+using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
@@ -8,10 +15,52 @@ namespace Cactus.Controllers
     [AutoValidateAntiforgeryToken]
     public class LegalController: Controller
     {
+        private int PageSize = 4;
+        private readonly ISubscribeService subscribeService;
+        private readonly IUserService userService;
+        private readonly IPostService postService;
+        private readonly LinkGenerator linkGenerator;
+        private readonly ILegalService legalService;
+        public LegalController(ISubscribeService subscribeService, IUserService userService,
+           IPostService postService, LinkGenerator linkGenerator, ILegalService legalService) {
+            this.subscribeService = subscribeService;
+            this.userService = userService;
+            this.postService = postService;
+            this.linkGenerator = linkGenerator;
+            this.legalService = legalService;
+        }
+
         [Route("{UrlPage}")]
         [Authorize(Roles = "Individual,Patron,Legal")]
-        public IActionResult Index(string UrlPage) {
-            return View();
+        public async Task<IActionResult> Index(string UrlPage, int authorPage = 1, int postPage = 1) {
+            var response = new PagingAuthorViewModel();
+            BaseResponse<User> user = await legalService.GetUserByUrlPageAsync(UrlPage);
+            if (user.StatusCode == 200) {
+                BaseResponse<PagingAuthorViewModel> subs = await subscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
+                if (subs.StatusCode == 200) {
+                    response.SubscribesPagingInfo = subs.Data.SubscribesPagingInfo;
+                    response.Authors = subs.Data.Authors;
+                }
+
+                BaseResponse<PagingAuthorViewModel> posts = await postService.GetUserViewPostsAsync(user.Data.Id, postPage, PageSize);
+                if (posts.StatusCode == 200) {
+                    response.PostsPagingInfo = posts.Data.PostsPagingInfo;
+                    response.Posts = posts.Data.Posts;
+                }
+            }
+            response.CurrentUser = user.Data;
+            return View(response);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Legal")]
+        public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
+            await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
+            BaseResponse<Legal> response = await legalService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            string path = "";
+            if (response.StatusCode == 200)
+                path = linkGenerator.GetPathByAction("Index", "Legal", new { UrlPage = response.Data.UrlPage })!;
+            return Redirect(path);
         }
     }
 }

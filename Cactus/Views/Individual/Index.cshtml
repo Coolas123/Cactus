@@ -1,4 +1,4 @@
-﻿@model PagingIndividualViewModel
+﻿@model PagingAuthorViewModel
 
 <div>
     @await Component.InvokeAsync("BannerPath", new {Model.CurrentUser.Id})
@@ -25,6 +25,9 @@
         </div>
     </div>
     <div class="col">
+        <div>
+            <h3 class="text-center">@Model.CurrentUser.UserName</h3>
+        </div>
         @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
         
         <div class="d-flex justify-content-center">

@@ -1,1 +1,98 @@
-﻿<h1>legal</h1>
+﻿@model PagingAuthorViewModel
+
+<div>
+    @await Component.InvokeAsync("BannerPath", new { Model.CurrentUser.Id })
+</div>
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @if (Model.Authors != null) {
+                    @foreach (var p in Model.Authors) {
+                        <tr>
+                            <td>@p.Author.UserName</td>
+                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id,role="Legal" ,html = "class=\"dropdown-item nav-link\"" })</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+    </div>
+    <div class="col">
+        <div>
+            <h3 class="text-center">@Model.CurrentUser.UserName</h3>
+        </div>
+        @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
+
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Создать пост
+            </button>
+        </div>
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Стать автором</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-controller="Legal" asp-action="AddPost" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <input type="hidden" name="Id" value="@Model.CurrentUser.Id" />
+                                <div class="form-control">
+                                    <img width="300" height="450" id="myPostPhoto" class="postPhoto">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('postPhoto').click()">Добавить фото</button>
+                                    <input type='file' id="postPhoto" style="display:none" asp-for="Post.PostPhoto">
+                                </div>
+                                <div class="form-control">
+                                    <label asp-for="Post.Title"></label>
+                                    <input class="form-control" asp-for="Post.Title">
+                                </div>
+                                <div class="form-control">
+                                    <label asp-for="Post.Description"></label>
+                                    <textarea class="form-control" asp-for="Post.Description"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Опубликовать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @if (Model.Posts != null) {
+                    @foreach (var p in Model.Posts) {
+                        <tr>
+                            <td>@p.Title</td>
+                            <td>@p.Description</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.PostsPagingInfo" page-action="Index" type-page="postPage"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+    </div>
+</div>
+<style>
+    .avatarProfile {
+        width: 300px;
+        height: 450px;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

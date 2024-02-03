@@ -13,17 +13,12 @@ namespace Cactus.Services.Implementations
     public class UserService : IUserService
     {
 		private readonly IUserRepository userRepository;
-		private readonly IIndividualRepository individualRepository;
-		private readonly IProfileMaterialService materialService;
 		private readonly IMemoryCache cache;
 
-		public UserService (IUserRepository userRepository, IMemoryCache cache,
-            IIndividualRepository individualRepository, IProfileMaterialService materialService)
+		public UserService (IUserRepository userRepository, IMemoryCache cache)
 		{
 			this.userRepository = userRepository;
             this.cache = cache;
-            this.individualRepository = individualRepository;
-            this.materialService = materialService;
 		}
 
         public async Task<BaseResponse<ClaimsIdentity>> Register(RegisterViewModel model)
@@ -178,34 +173,6 @@ namespace Cactus.Services.Implementations
             profile.User = await userRepository.GetByEmailAsync(email);
             cache.Set("IndividualProfile", profile);
             return new BaseResponse<User> { Data = profile.User };
-        }
-
-        public async Task<BaseResponse<IndividualProfileViewModel>> GetPrifileByUrlPage(string urlPage) {
-            Individual individual = await individualRepository.GetUserByUrlPageAsync(urlPage);
-            if (individual!=null) {
-                return new BaseResponse<IndividualProfileViewModel>
-                {
-                    Description = "Профиль не найден"
-                };
-            }
-            BaseResponse<IndividualProfileViewModel> profileMaterials = await materialService.GetProfileMaterials(individual.UserId);
-            profileMaterials.Data.User = individual.User;
-            return profileMaterials;
-        }
-
-        public async Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage) {
-            Individual individual = await individualRepository.GetUserByUrlPageAsync(urlPage);
-            if (individual==null) {
-                return new BaseResponse<User>
-                {
-                    Description = "Профиль не найден"
-                };
-            }
-            return new BaseResponse<User>
-            {
-                Data= individual.User,
-                StatusCode=200
-            };
         }
 
         public async Task<BaseResponse<User>> GetUserAsync(int id) {

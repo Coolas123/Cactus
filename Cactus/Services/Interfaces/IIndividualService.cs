@@ -12,5 +12,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<Individual>> GetBuyUrlPage(string urlPage);
         Task<BaseResponse<Individual>> GetAsync(int id);
         Task<BaseResponse<Individual>> DaeleteIndividual(int id);
+        Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage);
     }
 }
