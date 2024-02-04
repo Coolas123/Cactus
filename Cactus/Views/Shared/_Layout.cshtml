@@ -28,7 +28,12 @@
                                 Аккаунт
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                                @if (User.IsInRole("Individual")) {
+                                @if (User.IsInRole("Patron")) {
+                                    <li>
+                                    <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index" asp-route-id="@Convert.ToInt32(@User.FindFirst("Id").Value)">Профиль</a></li>
+                                    </li>
+                                }
+                                else @if (User.IsInRole("Individual")) {
                                     <li>
                                         @await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"dropdown-item\"" })
                                     </li>
@@ -37,9 +42,6 @@
                                     <li>
                                         @await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value),role="Legal" ,html = "class=\"dropdown-item\"" })
                                     </li>
-                                }
-                                else{
-                                    <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index">Профиль</a></li>
                                 }
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" asp-controller="Setting" asp-action="Index">Настройки</a></li>

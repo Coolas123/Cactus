@@ -206,5 +206,20 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<User>> GetAsync(int id) {
+            User user = await userRepository.GetAsync(id);
+            if (user == null) {
+                return new BaseResponse<User>
+                {
+                    Description="Пользователь не найден"
+                };
+            }
+            return new BaseResponse<User>
+            {
+                Data=user,
+                StatusCode = 200
+            };
+        }
     }
 }

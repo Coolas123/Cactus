@@ -2,7 +2,7 @@
 
 namespace Cactus.Infrastructure.Interfaces
 {
-    public interface ISubscribeRepository:IBaseRepository<AuthorSubscribe>
+    public interface IAuthorSubscribeRepository:IBaseRepository<AuthorSubscribe>
     {
         Task<AuthorSubscribe> GetSubscriptionAsync(int subcriberId, int authorId);
         Task<IEnumerable<AuthorSubscribe>> GetPagingSubscribersAsync(int subcriberId, int authorPage, int pageSize);

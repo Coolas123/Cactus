@@ -45,14 +45,18 @@ namespace Cactus
             services.AddScoped<IIndividualService, IndividualService>();
             services.AddScoped<IPatronRepository, PatronRepository>();
             services.AddScoped<IPatronService, PatronService>();
-            services.AddScoped<ISubscribeRepository, SubscribeRepository>();
-            services.AddScoped<ISubscribeService, SubscribeService>();
+            services.AddScoped<IAuthorSubscribeRepository, AuthorSubscribeRepository>();
+            services.AddScoped<IAuthorSubscribeService, AuthorSubscribeService>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostMaterialRepository, PostMaterialRepository>();
             services.AddScoped<IPostMaterialService, PostMaterialService>();
             services.AddScoped<ILegalRepository, LegalRepository>();
             services.AddScoped<ILegalService, LegalService>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IProjectSubscribeRepository, ProjectSubscribeRepository>();
+            services.AddScoped<IProjectSubscribeService, ProjectSubscribeService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

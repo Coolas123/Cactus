@@ -1,1 +1,54 @@
-﻿<h1>Patron профиль</h1>
+﻿@model PagingPatronViewModel
+
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @if (Model.AuthorSubscribe != null) {
+                    @foreach (var p in Model.AuthorSubscribe) {
+                        <tr>
+                            <td>@p.Author.UserName</td>
+                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+    </div>
+    <div class="col">
+        <div>
+            <h3 class="text-center">@Model.CurrentUser.UserName</h3>
+        </div>
+        @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
+    </div>
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @if (Model.ProjectSubscribe != null) {
+                    @foreach (var p in Model.ProjectSubscribe) {
+                        <tr>
+                            <td>@p.Project.Title</td>
+                            <td>@await Component.InvokeAsync("UrlProject", new { id = @p.Project })</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
+             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+    </div>
+</div>
+<style>
+    .avatarProfile {
+        width: 300px;
+        height: 450px;
+        margin: 0;
+        padding: 0;
+    }
+</style>

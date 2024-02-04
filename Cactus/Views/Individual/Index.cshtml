@@ -13,7 +13,7 @@
                     {
                         <tr>
                             <td>@p.Author.UserName</td>
-                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id, html = "class=\"dropdown-item nav-link\"" })</td>
+                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
                         </tr>
                     }
                 }

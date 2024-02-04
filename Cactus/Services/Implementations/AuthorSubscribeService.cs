@@ -8,10 +8,10 @@ using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
 {
-    public class SubscribeService : ISubscribeService
+    public class AuthorSubscribeService : IAuthorSubscribeService
     {
-        private readonly ISubscribeRepository subscribeRepository;
-        public SubscribeService(ISubscribeRepository subscribeRepository) {
+        private readonly IAuthorSubscribeRepository subscribeRepository;
+        public AuthorSubscribeService(IAuthorSubscribeRepository subscribeRepository) {
             this.subscribeRepository = subscribeRepository;
         }
 

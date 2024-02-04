@@ -18,14 +18,14 @@ namespace Cactus.Controllers
     public class IndividualController:Controller
     {
         private int PageSize = 4;
-        private readonly ISubscribeService subscribeService;
+        private readonly IAuthorSubscribeService authorSubscribeService;
         private readonly IUserService userService;
         private readonly IPostService postService;
         private readonly LinkGenerator linkGenerator;
         private readonly IIndividualService individualService;
-        public IndividualController(ISubscribeService subscribeService, IUserService userService,
+        public IndividualController(IAuthorSubscribeService authorSubscribeService, IUserService userService,
            IPostService postService, LinkGenerator linkGenerator, IIndividualService individualService) {
-            this.subscribeService = subscribeService;
+            this.authorSubscribeService = authorSubscribeService;
             this.userService = userService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -33,12 +33,12 @@ namespace Cactus.Controllers
         }
 
         [Route("{UrlPage}")]
-        [Authorize(Roles = "Individual,Patron,Legal")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string UrlPage,int authorPage=1,int postPage=1) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> user =await individualService.GetUserByUrlPageAsync(UrlPage);
             if (user.StatusCode == 200) {
-                BaseResponse<PagingAuthorViewModel> subs = await subscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
+                BaseResponse<PagingAuthorViewModel> subs = await authorSubscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
                 if (subs.StatusCode == 200) {
                     response.SubscribesPagingInfo = subs.Data.SubscribesPagingInfo;
                     response.Authors = subs.Data.Authors;

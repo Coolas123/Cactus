@@ -4,7 +4,7 @@ using Cactus.Models.ViewModels;
 
 namespace Cactus.Services.Interfaces
 {
-    public interface ISubscribeService
+    public interface IAuthorSubscribeService
     {
         Task<BaseResponse<AuthorSubscribe>> SubscribeToAuthor(int subcriberId, int authorId);
         Task<BaseResponse<IEnumerable<AuthorSubscribe>>> GetPagingSubscribersAsync(int subcriberId, int authorPage, int pageSize);

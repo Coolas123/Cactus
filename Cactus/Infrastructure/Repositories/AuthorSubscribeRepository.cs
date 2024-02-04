@@ -6,10 +6,10 @@ using SportsStore.Models;
 
 namespace Cactus.Infrastructure.Repositories
 {
-    public class SubscribeRepository : ISubscribeRepository
+    public class AuthorSubscribeRepository : IAuthorSubscribeRepository
     {
         private readonly ApplicationDbContext dbContext;
-        public SubscribeRepository(ApplicationDbContext dbContext) {
+        public AuthorSubscribeRepository(ApplicationDbContext dbContext) {
             this.dbContext = dbContext;
         }
 

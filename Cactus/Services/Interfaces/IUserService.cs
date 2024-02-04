@@ -16,5 +16,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<User>> AddToCacheAsync(string email);
         Task<BaseResponse<User>> GetUserAsync(int id);
         Task<BaseResponse<ClaimsIdentity>> ChangeRoleToLegal(int id);
+        Task<BaseResponse<User>> GetAsync(int id);
     }
 }

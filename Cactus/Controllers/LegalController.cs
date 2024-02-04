@@ -10,33 +10,30 @@ using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
-    [Authorize(Roles = "Legal")]
     [Route("Legal")]
     [AutoValidateAntiforgeryToken]
     public class LegalController: Controller
     {
         private int PageSize = 4;
-        private readonly ISubscribeService subscribeService;
-        private readonly IUserService userService;
+        private readonly IAuthorSubscribeService authorSubscribeService;
         private readonly IPostService postService;
         private readonly LinkGenerator linkGenerator;
         private readonly ILegalService legalService;
-        public LegalController(ISubscribeService subscribeService, IUserService userService,
+        public LegalController(IAuthorSubscribeService authorSubscribeService,
            IPostService postService, LinkGenerator linkGenerator, ILegalService legalService) {
-            this.subscribeService = subscribeService;
-            this.userService = userService;
+            this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
             this.legalService = legalService;
         }
 
         [Route("{UrlPage}")]
-        [Authorize(Roles = "Individual,Patron,Legal")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string UrlPage, int authorPage = 1, int postPage = 1) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> user = await legalService.GetUserByUrlPageAsync(UrlPage);
             if (user.StatusCode == 200) {
-                BaseResponse<PagingAuthorViewModel> subs = await subscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
+                BaseResponse<PagingAuthorViewModel> subs = await authorSubscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
                 if (subs.StatusCode == 200) {
                     response.SubscribesPagingInfo = subs.Data.SubscribesPagingInfo;
                     response.Authors = subs.Data.Authors;

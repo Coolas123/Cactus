@@ -28,5 +28,20 @@ namespace Cactus.Services.Implementations
                 };
             }
         }
+
+        public async Task<BaseResponse<Patron>> GetAsync(int id) {
+            Patron patron = await patronRepository.GetAsync(id);
+            if (patron == null) {
+                return new BaseResponse<Patron>
+                {
+                    Description="Пользователь не найден"
+                };
+            }
+            return new BaseResponse<Patron>
+            {
+                Data=patron,
+                StatusCode = 200
+            };
+        }
     }
 }
