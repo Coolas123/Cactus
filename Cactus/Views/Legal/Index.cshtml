@@ -1,4 +1,5 @@
-﻿@model PagingAuthorViewModel
+﻿@using Cactus.Models.Database
+@model PagingAuthorViewModel
 
 <div>
     @await Component.InvokeAsync("BannerPath", new { Model.CurrentUser.Id })
@@ -62,6 +63,10 @@
                                 <div class="form-control">
                                     <label asp-for="Post.Description"></label>
                                     <textarea class="form-control" asp-for="Post.Description"></textarea>
+                                </div>
+                                <div>
+                                    <label asp-for="Post.CategoryId">Выберите категорию</label>
+                                    <select asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-danger">Опубликовать</button>

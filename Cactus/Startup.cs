@@ -58,6 +58,10 @@ namespace Cactus
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IProjectSubscribeRepository, ProjectSubscribeRepository>();
             services.AddScoped<IProjectSubscribeService, ProjectSubscribeService>();
+            services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
+            services.AddScoped<IPostCategoryService, PostCategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

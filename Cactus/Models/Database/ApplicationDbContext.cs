@@ -123,6 +123,11 @@ namespace Cactus.Models.Database
             });
             builder.Entity<Category>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
+                x.HasData([
+                    new { Id = 1, Name = "Games" },
+                    new { Id = 2, Name = "Art" },
+                    new { Id = 3, Name = "Music" }
+                ]);
             });
             builder.Entity<PostCategory>(x => {
                 x.HasKey(p => new { p.PostId, p.CategoryId });

@@ -1,5 +1,6 @@
 ﻿using Cactus.Models.Database;
 using SportsStore.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
 {
@@ -11,5 +12,6 @@ namespace Cactus.Models.ViewModels
         public PagingInfo PostsPagingInfo { get; set; }
         public User CurrentUser { get; set; }
         public PostViewModel Post { get; set; }
+        public IEnumerable<Category> Categories {  get; set; }
     }
 }

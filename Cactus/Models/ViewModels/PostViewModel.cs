@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Cactus.Models.Database;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
 {
@@ -10,5 +11,7 @@ namespace Cactus.Models.ViewModels
         public string Description { get; set; }
         public IFormFile PostPhoto { get; set; }
         public string PostPhotoPath { get; set; }
+        [Display(Name = "Категории")]
+        public int CategoryId {  get; set; }
     }
 }

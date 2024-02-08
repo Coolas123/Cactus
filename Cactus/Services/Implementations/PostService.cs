@@ -11,9 +11,12 @@ namespace Cactus.Services.Implementations
     {
         private readonly IPostRepository postRepository;
         private readonly IPostMaterialService postMaterialService;
-        public PostService(IPostRepository postRepository, IPostMaterialService postMaterialService) {
+        private readonly IPostCategoryService postCategoryService;
+        public PostService(IPostRepository postRepository, IPostMaterialService postMaterialService,
+            IPostCategoryService postCategoryService) {
             this.postRepository = postRepository;
             this.postMaterialService = postMaterialService;
+            this.postCategoryService = postCategoryService;
         }
         public async Task<BaseResponse<Post>> AddPost(PostViewModel model, int id) {
             var created = DateTime.Now.ToUniversalTime();
@@ -26,6 +29,7 @@ namespace Cactus.Services.Implementations
             };
             await postRepository.CreateAsync(post);
             Post lastPost = await postRepository.GetLastAsync(created);
+            await postCategoryService.CreateAsync(lastPost.Id,model.CategoryId);
             if (model.PostPhoto != null)
                 await postMaterialService.AddPhotoAsync(model.PostPhoto, lastPost.Id);
             return new BaseResponse<Post>

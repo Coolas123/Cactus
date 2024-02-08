@@ -22,12 +22,14 @@ namespace Cactus.Controllers
         private readonly IPostService postService;
         private readonly LinkGenerator linkGenerator;
         private readonly IIndividualService individualService;
-        public IndividualController(IAuthorSubscribeService authorSubscribeService,
+        private readonly ICategoryService categoryService;
+        public IndividualController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            IPostService postService, LinkGenerator linkGenerator, IIndividualService individualService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
             this.individualService = individualService;
+            this.categoryService = categoryService;
         }
 
         [Route("{UrlPage}")]
@@ -47,6 +49,8 @@ namespace Cactus.Controllers
                     response.PostsPagingInfo= posts.Data.PostsPagingInfo;
                     response.Posts= posts.Data.Posts;
                 }
+                BaseResponse<IEnumerable<Category>> categories = await categoryService.GetAll();
+                response.Categories = categories.Data;
             }
             response.CurrentUser = user.Data;
             return View(response);
