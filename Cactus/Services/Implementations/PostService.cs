@@ -1,6 +1,4 @@
-﻿using Cactus.Components;
-using Cactus.Infrastructure.Interfaces;
-using Cactus.Infrastructure.Repositories;
+﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -22,7 +20,8 @@ namespace Cactus.Services.Implementations
             {
                 UserId = id,
                 Title = model.Title,
-                Description = model.Description
+                Description = model.Description,
+                Created= DateTime.Now.ToUniversalTime(),
             };
             await postRepository.CreateAsync(post);
             if (model.PostPhoto != null)
@@ -49,10 +48,33 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<Post>> GetPostByIdAsync(int postId) {
+            Post post = await postRepository.GetPostByIdAsync(postId);
+            if (post == null) {
+                return new BaseResponse<Post>
+                {
+                    Description="Пост не найден"
+                };
+            }
+            return new BaseResponse<Post>
+            {
+                Data = await postRepository.GetPostByIdAsync(postId),
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<IEnumerable<Post>>> GetPostsAsync(int authorId) {
+            IEnumerable<Post> posts = await postRepository.GetPostsAsync(authorId);
+            if (posts == null) {
+                return new BaseResponse<IEnumerable<Post>>
+                {
+                    Description = "Посты не найдены"
+                };
+            }
             return new BaseResponse<IEnumerable<Post>>
             {
-                Data = await postRepository.GetPostsAsync(authorId)
+                Data = await postRepository.GetPostsAsync(authorId),
+                StatusCode = 200
             };
         }
 

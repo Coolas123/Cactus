@@ -19,14 +19,12 @@ namespace Cactus.Controllers
     {
         private int PageSize = 4;
         private readonly IAuthorSubscribeService authorSubscribeService;
-        private readonly IUserService userService;
         private readonly IPostService postService;
         private readonly LinkGenerator linkGenerator;
         private readonly IIndividualService individualService;
-        public IndividualController(IAuthorSubscribeService authorSubscribeService, IUserService userService,
+        public IndividualController(IAuthorSubscribeService authorSubscribeService,
            IPostService postService, LinkGenerator linkGenerator, IIndividualService individualService) {
             this.authorSubscribeService = authorSubscribeService;
-            this.userService = userService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
             this.individualService = individualService;
@@ -47,7 +45,7 @@ namespace Cactus.Controllers
                 BaseResponse<PagingAuthorViewModel> posts = await postService.GetUserViewPostsAsync(user.Data.Id, postPage, PageSize);
                 if (posts.StatusCode == 200) {
                     response.PostsPagingInfo= posts.Data.PostsPagingInfo;
-                    response.Posts= posts.Data.Posts;
+                    response.Posts= posts.Data.Posts.OrderBy(x=>x.Created);
                 }
             }
             response.CurrentUser = user.Data;

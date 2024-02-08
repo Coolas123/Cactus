@@ -25,6 +25,7 @@ namespace Cactus
                 opts.UseNpgsql(configuration["ConnectionStrings:CactusConnection"]);
             });
             services.AddDistributedMemoryCache();
+            services.AddRazorPages();
             services.AddMemoryCache();
             services.AddSession();
             services.AddAuthorization();
@@ -72,6 +73,7 @@ namespace Cactus
             app.UseAuthorization();
             app.UseEndpoints(endpoints => {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
             new SeedData().fill(app);
         }

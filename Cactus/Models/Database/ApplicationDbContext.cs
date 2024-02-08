@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cactus.Models.Database
 {
@@ -58,29 +57,29 @@ namespace Cactus.Models.Database
             builder.Entity<SystemRole>(x =>
             {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(new SystemRole[]
-                {
-                    new SystemRole {Id=1,Name="User" },
-                    new SystemRole {Id=2,Name="Admin" }
-                });
+                x.HasData(
+                [
+                    new {Id=1,Name="User" },
+                    new {Id=2,Name="Admin" }
+                ]);
             });
             builder.Entity<UserRole>(x =>
             {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(new UserRole[]
-                {
-                    new UserRole {Id=1,Name="Legal" },
-                    new UserRole {Id=2,Name="Patron" },
-                    new UserRole {Id=3,Name="Individual" }
-                });
+                x.HasData(
+                [
+                    new {Id=1,Name="Legal" },
+                    new {Id=2,Name="Patron" },
+                    new {Id=3,Name="Individual" }
+                ]);
             });
             builder.Entity<Country>(x =>
             {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(new Country[]
-                {
-                    new Country {Id=1,Name="Russia" }
-                });
+                x.HasData(
+                [
+                    new {Id=1,Name="Russia" }
+                ]);
             });
             builder.Entity<ProfileMaterial>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
@@ -93,22 +92,22 @@ namespace Cactus.Models.Database
             });
             builder.Entity<ProjectStatus>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(new MaterialType[]
-                {
-                    new MaterialType {Id=1,Name="SentForReview" },
-                    new MaterialType {Id=2,Name="Verification" },
-                    new MaterialType {Id=3,Name="Denied" },
-                    new MaterialType {Id=4,Name="Approved" }
-                });
+                x.HasData(
+                [
+                    new {Id=1,Name="SentForReview" },
+                    new {Id=2,Name="Verification" },
+                    new {Id=3,Name="Denied" },
+                    new {Id=4,Name="Approved" }
+                ]);
             });
             builder.Entity<MaterialType>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(new MaterialType[]
-                {
-                    new MaterialType {Id=1,Name="Avatar" },
-                    new MaterialType {Id=2,Name="Banner" },
-                    new MaterialType {Id=3,Name="PostPhoto" }
-                });
+                x.HasData(
+                [
+                    new {Id=1,Name="Avatar" },
+                    new {Id=2,Name="Banner" },
+                    new {Id=3,Name="PostPhoto" }
+                ]);
             });
             builder.Entity<AuthorSubscribe>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();

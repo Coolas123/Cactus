@@ -1,0 +1,28 @@
+﻿@page "{postId:int}"
+@model Cactus.Pages.PostModel
+
+<div class="row">
+    <div class="col">
+
+    </div>
+    <div class="col">
+        <div class="sm">
+            <p>@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
+        </div>
+        <div>
+            <h3 class="text-center">@Model.Post.Title</h3>
+            <hr/>
+        </div>
+        <div>
+            <img class="m-2" src="@Model.Material.Path"/>
+        </div>
+        <div>
+            <p>
+                @Model.Post.Description
+            </p>
+        </div>
+    </div>
+    <div class="col">
+
+    </div>
+</div>

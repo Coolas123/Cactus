@@ -1,4 +1,6 @@
-﻿namespace Cactus.Models.Database
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cactus.Models.Database
 {
     public class Project
     {
@@ -13,6 +15,7 @@
         public decimal Pledged { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal Goal { get; set; }
     }
 }

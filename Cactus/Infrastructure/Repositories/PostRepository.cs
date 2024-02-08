@@ -26,7 +26,11 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Post>> GetPagingPostsAsync(int authorId, int postPage, int pageSize) {
-            return await dbContext.Posts.Where(x => x.UserId == authorId).OrderBy(x => x.Title).Skip((postPage - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await dbContext.Posts.Where(x => x.UserId == authorId).Skip((postPage - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<Post> GetPostByIdAsync(int postId) {
+            return await dbContext.Posts.FirstOrDefaultAsync(x=>x.Id==postId);
         }
 
         public async Task<IEnumerable<Post>> GetPostsAsync(int authorId) {

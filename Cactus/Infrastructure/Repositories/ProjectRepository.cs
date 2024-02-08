@@ -24,7 +24,7 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Project>> GetPagingProjectsAsync(int authorId, int projectPage, int pageSize) {
-            return await dbContext.Projects.Where(x => x.UserId == authorId).OrderBy(x => x.Title).Skip((projectPage - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await dbContext.Projects.Where(x => x.UserId == authorId).Skip((projectPage - 1) * pageSize).Take(pageSize).ToListAsync();
         }
 
         public async Task<IEnumerable<Project>> GetProjectsAsync(int authorId) {

@@ -6,5 +6,6 @@ namespace Cactus.Infrastructure.Interfaces
     {
         Task<IEnumerable<Post>> GetPagingPostsAsync(int authorId, int postPage, int pageSize);
         Task<IEnumerable<Post>> GetPostsAsync(int authorId);
+        Task<Post> GetPostByIdAsync(int postId);
     }
 }
