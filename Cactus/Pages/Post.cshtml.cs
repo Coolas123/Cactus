@@ -25,10 +25,11 @@ namespace Cactus.Pages
             BaseResponse<Post> post = await postService.GetPostByIdAsync(postId);
             if (post.StatusCode == 200) {
                 Post = post.Data;
-            }
-            BaseResponse<PostMaterial> material = await postMaterialService.GetPhotoAsync(Convert.ToInt32(User.FindFirstValue("Id")));
-            if (material.StatusCode == 200) {
-                Material = material.Data;
+
+                BaseResponse<PostMaterial> material = await postMaterialService.GetPhotoAsync(Post.Id);
+                if (material.StatusCode == 200) {
+                    Material = material.Data;
+                }
             }
             return Page ();
         }

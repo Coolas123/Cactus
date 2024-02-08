@@ -16,16 +16,18 @@ namespace Cactus.Services.Implementations
             this.postMaterialService = postMaterialService;
         }
         public async Task<BaseResponse<Post>> AddPost(PostViewModel model, int id) {
+            var created = DateTime.Now.ToUniversalTime();
             var post = new Post
             {
                 UserId = id,
                 Title = model.Title,
                 Description = model.Description,
-                Created= DateTime.Now.ToUniversalTime(),
+                Created= created
             };
             await postRepository.CreateAsync(post);
+            Post lastPost = await postRepository.GetLastAsync(created);
             if (model.PostPhoto != null)
-                await postMaterialService.AddPhotoAsync(model.PostPhoto, id);
+                await postMaterialService.AddPhotoAsync(model.PostPhoto, lastPost.Id);
             return new BaseResponse<Post>
             {
                 Data = post,
@@ -84,7 +86,7 @@ namespace Cactus.Services.Implementations
 
             var response = new PagingAuthorViewModel();
             if (postList.StatusCode == 200) {
-                response.Posts = postList.Data;
+                response.Posts = postList.Data.OrderBy(x => x.Created);
                 response.PostsPagingInfo = new PagingInfo
                 {
                     CurrentPage = postPage,

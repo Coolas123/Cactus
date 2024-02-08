@@ -45,7 +45,7 @@ namespace Cactus.Controllers
                 BaseResponse<PagingAuthorViewModel> posts = await postService.GetUserViewPostsAsync(user.Data.Id, postPage, PageSize);
                 if (posts.StatusCode == 200) {
                     response.PostsPagingInfo= posts.Data.PostsPagingInfo;
-                    response.Posts= posts.Data.Posts.OrderBy(x=>x.Created);
+                    response.Posts= posts.Data.Posts;
                 }
             }
             response.CurrentUser = user.Data;

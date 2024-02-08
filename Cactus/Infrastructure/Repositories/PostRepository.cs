@@ -25,6 +25,10 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<Post> GetLastAsync(DateTime time) {
+            return await dbContext.Posts.Where(x=>x.Created==time).FirstAsync();
+        }
+
         public async Task<IEnumerable<Post>> GetPagingPostsAsync(int authorId, int postPage, int pageSize) {
             return await dbContext.Posts.Where(x => x.UserId == authorId).Skip((postPage - 1) * pageSize).Take(pageSize).ToListAsync();
         }
