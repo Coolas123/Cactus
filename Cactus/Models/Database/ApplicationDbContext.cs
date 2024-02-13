@@ -21,6 +21,7 @@ namespace Cactus.Models.Database
         public DbSet<Category> Categories { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostMaterial> PostMaterials { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -39,6 +40,7 @@ namespace Cactus.Models.Database
             builder.Entity<Category>().ToTable("Categories");
             builder.Entity<PostCategory>().ToTable("PostCategories");
             builder.Entity<PostMaterial>().ToTable("PostMaterials");
+            builder.Entity<PostComment>().ToTable("PostComments");
 
             builder.Entity<User>(x =>
             {
@@ -106,6 +108,9 @@ namespace Cactus.Models.Database
                 x.HasKey(p => new { p.PostId, p.CategoryId });
             });
             builder.Entity<PostMaterial>(x => {
+                x.Property(p => p.Id).ValueGeneratedOnAdd();
+            });
+            builder.Entity<PostComment>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
             });
         }
