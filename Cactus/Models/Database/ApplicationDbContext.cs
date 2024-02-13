@@ -10,36 +10,28 @@ namespace Cactus.Models.Database
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Legal> Legals { get; set; }
         public DbSet<Patron> Patrons { get; set; }
-        public DbSet<Individual> Individuals { get; set; }
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<ProfileMaterial> ProfileMaterials { get; set; }
         public DbSet<AuthorSubscribe> AuthorSubscribes { get; set; }
-        public DbSet<ProjectSubscribe> ProjectSubscribes { get; set; }
         public DbSet<MaterialType> MaterialTypes { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostTag> PostTags { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostMaterial> PostMaterials { get; set; }
-        public DbSet<ProjectStatus> ProjectStatues { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Organization> Organizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             builder.Entity<User>().ToTable("Users");
             builder.Entity<SystemRole>().ToTable("SystemRoles");
-            builder.Entity<Legal>().ToTable("Legals");
             builder.Entity<Patron>().ToTable("Patrons");
             builder.Entity<UserRole>().ToTable("UserRoles");
             builder.Entity<Country>().ToTable("Countries");
-            builder.Entity<Individual>().ToTable("Individuals");
+            builder.Entity<Author>().ToTable("Authors");
             builder.Entity<ProfileMaterial>().ToTable("ProfileMaterials");
             builder.Entity<AuthorSubscribe>().ToTable("AuthorSubscribes");
-            builder.Entity<ProjectSubscribe>().ToTable("ProjectSubscribes");
-            builder.Entity<Project>().ToTable("Projects");
             builder.Entity<MaterialType>().ToTable("MaterialTypes");
             builder.Entity<Post>().ToTable("Posts");
             builder.Entity<Tag>().ToTable("Tags");
@@ -47,8 +39,6 @@ namespace Cactus.Models.Database
             builder.Entity<Category>().ToTable("Categories");
             builder.Entity<PostCategory>().ToTable("PostCategories");
             builder.Entity<PostMaterial>().ToTable("PostMaterials");
-            builder.Entity<ProjectStatus>().ToTable("ProjectStatues");
-            builder.Entity<Organization>().ToTable("Organizations");
 
             builder.Entity<User>(x =>
             {
@@ -68,9 +58,8 @@ namespace Cactus.Models.Database
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(
                 [
-                    new {Id=1,Name="Legal" },
-                    new {Id=2,Name="Patron" },
-                    new {Id=3,Name="Individual" }
+                    new {Id=1,Name="Patron" },
+                    new {Id=2,Name="Individual" }
                 ]);
             });
             builder.Entity<Country>(x =>
@@ -83,22 +72,6 @@ namespace Cactus.Models.Database
             });
             builder.Entity<ProfileMaterial>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<ProjectSubscribe>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<Project>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<ProjectStatus>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-                x.HasData(
-                [
-                    new {Id=1,Name="SentForReview" },
-                    new {Id=2,Name="Verification" },
-                    new {Id=3,Name="Denied" },
-                    new {Id=4,Name="Approved" }
-                ]);
             });
             builder.Entity<MaterialType>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
@@ -133,9 +106,6 @@ namespace Cactus.Models.Database
                 x.HasKey(p => new { p.PostId, p.CategoryId });
             });
             builder.Entity<PostMaterial>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<Organization>(x => {
                 x.Property(p => p.Id).ValueGeneratedOnAdd();
             });
         }

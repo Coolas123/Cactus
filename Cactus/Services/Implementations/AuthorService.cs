@@ -1,64 +1,61 @@
-﻿using Cactus.Components;
-using Cactus.Infrastructure.Interfaces;
-using Cactus.Infrastructure.Repositories;
+﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace Cactus.Services.Implementations
 {
-    public class IndividualService : IIndividualService
+    public class AuthorService : IAuthorService
     {
         private readonly IUserService userService;
-        private readonly IIndividualRepository individualRepository;
+        private readonly IAuthorRepository authorRepository;
         private readonly IPatronService patronService;
 
-        public IndividualService(IUserService userService, IIndividualRepository individualRepository,
+        public AuthorService(IUserService userService, IAuthorRepository authorRepository,
             IPatronService patronService) {
             this.userService = userService;
-            this.individualRepository = individualRepository;
+            this.authorRepository = authorRepository;
             this.patronService = patronService;
         }
 
-        public async Task<BaseResponse<Individual>> DaeleteIndividual(int id) {
+        public async Task<BaseResponse<Author>> DaeleteAuthor(int id) {
             try {
-                Individual individual = await individualRepository.GetAsync(id);
-                await individualRepository.DeleteAsync(individual);
-                return new BaseResponse<Individual>
+                Author individual = await authorRepository.GetAsync(id);
+                await authorRepository.DeleteAsync(individual);
+                return new BaseResponse<Author>
                 {
                     Description = "Удалена роль Individual",
                     StatusCode = 200
                 };
             }
             catch {
-                return new BaseResponse<Individual>
+                return new BaseResponse<Author>
                 {
                     Description = "Не удалось удалить роль Individual"
                 };
             }
         }
 
-        public async Task<BaseResponse<Individual>> GetAsync(int id) {
-            Individual individual =  await individualRepository.GetAsync(id);
+        public async Task<BaseResponse<Author>> GetAsync(int id) {
+            Author individual =  await authorRepository.GetAsync(id);
             if (individual == null) {
-                return new BaseResponse<Individual>
+                return new BaseResponse<Author>
                 {
                     Description="Пользователль не найден"
                 };
             }
-            return new BaseResponse<Individual>
+            return new BaseResponse<Author>
             {
                 Data=individual,
                 StatusCode=200
             };
         }
 
-        public async Task<BaseResponse<Individual>> GetBuyUrlPage(string urlPage) {
-            Individual inidividual =await individualRepository.GetByUrlPageAsync(urlPage);
-            return new BaseResponse<Individual>
+        public async Task<BaseResponse<Author>> GetBuyUrlPage(string urlPage) {
+            Author inidividual =await authorRepository.GetByUrlPageAsync(urlPage);
+            return new BaseResponse<Author>
             {
                 Data = inidividual,
                 StatusCode = 200
@@ -66,7 +63,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage) {
-            Individual individual = await individualRepository.GetUserByUrlPageAsync(urlPage);
+            Author individual = await authorRepository.GetUserByUrlPageAsync(urlPage);
             if (individual == null) {
                 return new BaseResponse<User>
                 {
@@ -80,17 +77,17 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<ClaimsIdentity>> RegisterIndividual(SettingViewModel model,int id) {
-            Individual pageExist = await individualRepository.GetByUrlPageAsync(model.RegisterIndividual.UrlPage);
+        public async Task<BaseResponse<ClaimsIdentity>> RegisterAuthor(SettingViewModel model,int id) {
+            Author pageExist = await authorRepository.GetByUrlPageAsync(model.RegisterAuthor.UrlPage);
             if (pageExist != null) {
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Данный адрес уже используется"
                 };
             }
-            var newIndividual = new Individual { UrlPage = model.RegisterIndividual.UrlPage, UserId = id };
+            var newIndividual = new Author { UrlPage = model.RegisterAuthor.UrlPage, UserId = id };
             try {
-                await individualRepository.CreateAsync(newIndividual);
+                await authorRepository.CreateAsync(newIndividual);
                 var resultPatron = await patronService.DaeleteUser(id);
                 if (resultPatron.StatusCode != 200) {
                     return new BaseResponse<ClaimsIdentity>
@@ -98,14 +95,14 @@ namespace Cactus.Services.Implementations
                         Description = resultPatron.Description
                     };
                 }
-                BaseResponse<ClaimsIdentity> result = await userService.ChangeRoleToIndividual(id);
+                BaseResponse<ClaimsIdentity> result = await userService.ChangeRoleToAuthor(id);
                 if (result.StatusCode != 200) {
                     return new BaseResponse<ClaimsIdentity>
                     {
                         Description = result.Description
                     };
                 }
-                result.Data.AddClaim(new Claim("UrlPage", model.RegisterIndividual.UrlPage));
+                result.Data.AddClaim(new Claim("UrlPage", model.RegisterAuthor.UrlPage));
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Data = result.Data,
@@ -116,7 +113,7 @@ namespace Cactus.Services.Implementations
             catch {
                 return new BaseResponse<ClaimsIdentity>
                 {
-                    Description = "Не удалось добавить роль Individual к пользователю"
+                    Description = "Не удалось добавить роль Author к пользователю"
                 };
             }
         }

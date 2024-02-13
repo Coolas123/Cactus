@@ -1,6 +1,5 @@
 ﻿using Cactus.Infrastructure;
 using Cactus.Infrastructure.Interfaces;
-using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -42,8 +41,6 @@ namespace Cactus.Services.Implementations
             user = new User
             {
                 UserName=model.UserName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth.ToUniversalTime(),
                 Gender = model.Gender,
                 Email = model.Email,
@@ -147,7 +144,7 @@ namespace Cactus.Services.Implementations
             return response;
         }
 
-        public async Task<BaseResponse<ClaimsIdentity>> ChangeRoleToIndividual(int id) {
+        public async Task<BaseResponse<ClaimsIdentity>> ChangeRoleToAuthor(int id) {
             User user = await userRepository.GetAsync(id);
             if (user == null) {
                 return new BaseResponse<ClaimsIdentity>
@@ -155,11 +152,11 @@ namespace Cactus.Services.Implementations
                     Description="Пользователь не найден"
                 };
             }
-            user.UserRoleId = (int)Models.Enums.UserRole.Individual;
+            user.UserRoleId = (int)Models.Enums.UserRole.Author;
             await userRepository.Update(user);
             return new BaseResponse<ClaimsIdentity>
             {
-                Description = "Роль обновлена на Individual",
+                Description = "Роль обновлена на Author",
                 Data = Authenticate(user, id),
                 StatusCode = 200
             };
@@ -167,44 +164,12 @@ namespace Cactus.Services.Implementations
 
         public async Task<BaseResponse<User>> AddToCacheAsync(string email) {
             IndividualProfileViewModel profile;
-            cache.TryGetValue("IndividualProfile", out profile);
+            cache.TryGetValue("AuthorProfile", out profile);
             if (profile == null)
                 profile = new IndividualProfileViewModel();
             profile.User = await userRepository.GetByEmailAsync(email);
-            cache.Set("IndividualProfile", profile);
+            cache.Set("AuthorProfile", profile);
             return new BaseResponse<User> { Data = profile.User };
-        }
-
-        public async Task<BaseResponse<User>> GetUserAsync(int id) {
-            User user = await userRepository.GetAsync(id);
-            if (user==null) {
-                return new BaseResponse<User>
-                {
-                    Description="Пользователь не найден"
-                };
-            }
-            return new BaseResponse<User> { 
-                Data= user, 
-                StatusCode=200
-            };
-        }
-
-        public async Task<BaseResponse<ClaimsIdentity>> ChangeRoleToLegal(int id) {
-            User user = await userRepository.GetAsync(id);
-            if (user == null) {
-                return new BaseResponse<ClaimsIdentity>
-                {
-                    Description = "Пользователь не найден"
-                };
-            }
-            user.UserRoleId = (int)Models.Enums.UserRole.Legal;
-            await userRepository.Update(user);
-            return new BaseResponse<ClaimsIdentity>
-            {
-                Description = "Роль обновлена на Legal",
-                Data = Authenticate(user, id),
-                StatusCode = 200
-            };
         }
 
         public async Task<BaseResponse<User>> GetAsync(int id) {

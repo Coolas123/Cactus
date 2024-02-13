@@ -1,5 +1,4 @@
-﻿using Cactus.Components;
-using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;

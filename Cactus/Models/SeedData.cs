@@ -1,10 +1,7 @@
 ﻿using Cactus.Models.Database;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Cactus.Models
 {
@@ -25,8 +22,6 @@ namespace Cactus.Models
                     new RegisterViewModel
                     {
                         UserName="Anton",
-                        FirstName = "Антон",
-                        LastName = "Глухов",
                         DateOfBirth = DateTime.Now.AddYears(-1).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "mail@mail.ru",
@@ -35,8 +30,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Дима",
-                        LastName = "Дима2",
                         DateOfBirth = DateTime.Now.AddYears(-2).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "dima@mail.ru",
@@ -46,8 +39,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Саша",
-                        LastName = "Саша2",
                         DateOfBirth = DateTime.Now.AddYears(-3).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "sasha@mail.ru",
@@ -57,8 +48,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Анна",
-                        LastName = "Анна2",
                         DateOfBirth = DateTime.Now.AddYears(-5).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "anna@mail.ru",
@@ -68,8 +57,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Алена",
-                        LastName = "Алена2",
                         DateOfBirth = DateTime.Now.AddYears(-6).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "alena@mail.ru",
@@ -79,8 +66,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Женя",
-                        LastName = "Женя2",
                         DateOfBirth = DateTime.Now.AddYears(-7).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "sesa@mail.ru",
@@ -90,8 +75,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Дина",
-                        LastName = "Дина2",
                         DateOfBirth = DateTime.Now.AddYears(-8).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "dina@mail.ru",
@@ -101,8 +84,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Ольга",
-                        LastName = "Ольга2",
                         DateOfBirth = DateTime.Now.AddYears(-9).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "olga@mail.ru",
@@ -112,8 +93,6 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        FirstName = "Данил",
-                        LastName = "Данил2",
                         DateOfBirth = DateTime.Now.AddYears(-10).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "danil@mail.ru",

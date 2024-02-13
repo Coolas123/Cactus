@@ -1,34 +1,29 @@
-﻿using Cactus.Components;
-using Cactus.Infrastructure.Repositories;
-using Cactus.Models.Database;
+﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using SportsStore.Models;
-using System.IO;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
-    [Route("Individual")]
+    [Route("Author")]
     [AutoValidateAntiforgeryToken]
-    public class IndividualController:Controller
+    public class AuthorController:Controller
     {
         private int PageSize = 4;
         private readonly IAuthorSubscribeService authorSubscribeService;
         private readonly IPostService postService;
         private readonly LinkGenerator linkGenerator;
-        private readonly IIndividualService individualService;
+        private readonly IAuthorService authorService;
         private readonly ICategoryService categoryService;
-        public IndividualController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
-           IPostService postService, LinkGenerator linkGenerator, IIndividualService individualService) {
+        public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
+           IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
-            this.individualService = individualService;
+            this.authorService = authorService;
             this.categoryService = categoryService;
         }
 
@@ -36,7 +31,7 @@ namespace Cactus.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string UrlPage,int authorPage=1,int postPage=1) {
             var response = new PagingAuthorViewModel();
-            BaseResponse<User> user =await individualService.GetUserByUrlPageAsync(UrlPage);
+            BaseResponse<User> user =await authorService.GetUserByUrlPageAsync(UrlPage);
             if (user.StatusCode == 200) {
                 BaseResponse<PagingAuthorViewModel> subs = await authorSubscribeService.GetUserViewSubscribersAsync(user.Data.Id, authorPage, PageSize);
                 if (subs.StatusCode == 200) {
@@ -57,13 +52,13 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Individual")]
+        [Authorize(Roles = "Author")]
         public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
             await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
-            BaseResponse<Individual> response = await individualService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";
             if (response.StatusCode==200)
-                path = linkGenerator.GetPathByAction("Index", "Individual", new { UrlPage = response.Data.UrlPage })!;
+                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage })!;
             return Redirect(path); 
         }
     }

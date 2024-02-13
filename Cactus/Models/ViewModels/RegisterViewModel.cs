@@ -12,18 +12,6 @@ namespace Cactus.Models.ViewModels
         public string UserName { get; set; }
 
 
-        [Required]
-        [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Имя должно состоять из букв")]
-        [Display(Name = "Имя")]
-        public string FirstName { get; set; }
-
-
-        [Required]
-        [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Фамилия должно состоять из букв")]
-        [Display(Name = "Фамилия")]
-        public string LastName { get; set; }
-
-
         [DataType(DataType.Date)]
         [DateTimeRange(minAge:16,maxAge:100)]
         [Display(Name = "Дата рождения")]

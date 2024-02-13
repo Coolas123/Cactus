@@ -26,22 +26,7 @@
         @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
     </div>
     <div class="col">
-        <table class="table">
-            <tbody>
-                @if (Model.ProjectSubscribe != null) {
-                    @foreach (var p in Model.ProjectSubscribe) {
-                        <tr>
-                            <td>@p.Project.Title</td>
-                            <td>@await Component.InvokeAsync("UrlProject", new { id = @p.Project })</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
-             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
-             page-class-selected="btn-primary" class="btn-group pull-right m-1">
-        </div>
+        
     </div>
 </div>
 <style>

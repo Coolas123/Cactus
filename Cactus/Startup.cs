@@ -5,7 +5,6 @@ using Cactus.Models.Database;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cactus
@@ -42,8 +41,8 @@ namespace Cactus
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IProfileMaterialRepository, ProfileMaterialRepository>();
             services.AddScoped<IProfileMaterialService, ProfileMaterialService>();
-            services.AddScoped<IIndividualRepository, IndividualRepository>();
-            services.AddScoped<IIndividualService, IndividualService>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IPatronRepository, PatronRepository>();
             services.AddScoped<IPatronService, PatronService>();
             services.AddScoped<IAuthorSubscribeRepository, AuthorSubscribeRepository>();
@@ -52,12 +51,6 @@ namespace Cactus
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostMaterialRepository, PostMaterialRepository>();
             services.AddScoped<IPostMaterialService, PostMaterialService>();
-            services.AddScoped<ILegalRepository, LegalRepository>();
-            services.AddScoped<ILegalService, LegalService>();
-            services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<IProjectSubscribeRepository, ProjectSubscribeRepository>();
-            services.AddScoped<IProjectSubscribeService, ProjectSubscribeService>();
             services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
             services.AddScoped<IPostCategoryService, PostCategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();

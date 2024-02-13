@@ -2,7 +2,7 @@
 
 namespace Cactus.Models.ViewModels
 {
-    public class RegisterIndividualViewModel
+    public class RegisterAuthorViewModel
     {
         [Required]
         [Display(Name ="Адрес страницы")]

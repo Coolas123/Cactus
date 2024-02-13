@@ -1,10 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
-using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
-using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Cactus.Services.Implementations
 {

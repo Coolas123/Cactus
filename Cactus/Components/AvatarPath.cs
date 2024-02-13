@@ -1,7 +1,5 @@
-﻿using Cactus.Infrastructure.Interfaces;
-using Cactus.Models.Database;
+﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
-using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;

@@ -41,10 +41,18 @@ namespace Cactus.Models.ViewModels
 
         public string AvatarPath { get; set; }
         public string BannerPath { get; set; }
-        public Legal Legal { get; set; }
-        public Individual Individual { get; set; }
+        public Author Author { get; set; }
 
-        public RegisterIndividualViewModel RegisterIndividual { get; set; }
-        public RegisterLegalViewModel RegisterLegal { get; set; }
+        public RegisterAuthorViewModel RegisterAuthor { get; set; }
+
+
+        [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Имя должно состоять из букв")]
+        [Display(Name = "Имя")]
+        public string FirstName { get; set; }
+
+
+        [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Фамилия должно состоять из букв")]
+        [Display(Name = "Фамилия")]
+        public string LastName { get; set; }
     }
 }
