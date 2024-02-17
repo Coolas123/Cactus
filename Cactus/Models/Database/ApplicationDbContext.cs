@@ -22,33 +22,14 @@ namespace Cactus.Models.Database
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostMaterial> PostMaterials { get; set; }
         public DbSet<PostComment> PostComments { get; set; }
+        public DbSet<GrayListAuthor> GrayListAuthors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
-            builder.Entity<User>().ToTable("Users");
-            builder.Entity<SystemRole>().ToTable("SystemRoles");
-            builder.Entity<Patron>().ToTable("Patrons");
-            builder.Entity<UserRole>().ToTable("UserRoles");
-            builder.Entity<Country>().ToTable("Countries");
-            builder.Entity<Author>().ToTable("Authors");
-            builder.Entity<ProfileMaterial>().ToTable("ProfileMaterials");
-            builder.Entity<AuthorSubscribe>().ToTable("AuthorSubscribes");
-            builder.Entity<MaterialType>().ToTable("MaterialTypes");
-            builder.Entity<Post>().ToTable("Posts");
-            builder.Entity<Tag>().ToTable("Tags");
-            builder.Entity<PostTag>().ToTable("PostTags");
-            builder.Entity<Category>().ToTable("Categories");
-            builder.Entity<PostCategory>().ToTable("PostCategories");
-            builder.Entity<PostMaterial>().ToTable("PostMaterials");
-            builder.Entity<PostComment>().ToTable("PostComments");
 
-            builder.Entity<User>(x =>
-            {
-                x.Property(p=>p.Id).ValueGeneratedOnAdd();
-            });
+
             builder.Entity<SystemRole>(x =>
             {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(
                 [
                     new {Id=1,Name="User" },
@@ -57,7 +38,6 @@ namespace Cactus.Models.Database
             });
             builder.Entity<UserRole>(x =>
             {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(
                 [
                     new {Id=1,Name="Patron" },
@@ -66,17 +46,12 @@ namespace Cactus.Models.Database
             });
             builder.Entity<Country>(x =>
             {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(
                 [
                     new {Id=1,Name="Russia" }
                 ]);
             });
-            builder.Entity<ProfileMaterial>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
             builder.Entity<MaterialType>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData(
                 [
                     new {Id=1,Name="Avatar" },
@@ -84,20 +59,10 @@ namespace Cactus.Models.Database
                     new {Id=3,Name="PostPhoto" }
                 ]);
             });
-            builder.Entity<AuthorSubscribe>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<Post>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<Tag>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
             builder.Entity<PostTag>(x => {
                 x.HasKey(p => new { p.PostId, p.TagId });
             });
             builder.Entity<Category>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
                 x.HasData([
                     new { Id = 1, Name = "Games" },
                     new { Id = 2, Name = "Art" },
@@ -106,12 +71,6 @@ namespace Cactus.Models.Database
             });
             builder.Entity<PostCategory>(x => {
                 x.HasKey(p => new { p.PostId, p.CategoryId });
-            });
-            builder.Entity<PostMaterial>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
-            });
-            builder.Entity<PostComment>(x => {
-                x.Property(p => p.Id).ValueGeneratedOnAdd();
             });
         }
     }

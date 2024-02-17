@@ -27,15 +27,17 @@
                     @foreach (var p in Model.PostComments) {
                         <div>
                             <h6>@p.User.UserName</h6>
+                            <p>Оставлен @p.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
                             <p>@p.Comment</p>
                         </div>
                     }
                 }
                 else {<div><h3>@Model.CommentDescription</h3></div>}
             </div>
+            <hr/>
             <form method="post">
                 <div>
-                    <textarea class="form-control" asp-for="PostComment.Comment"></textarea>
+                    <textarea class="form-control" asp-for="PostComment.Comment" placeholder="Оставить комментарий"></textarea>
                     <input type="hidden" asp-for="PostComment.PostId" value="@Model.Post.Id" />
                     <input type="hidden" asp-for="PostComment.UserId" value="@User.FindFirst("Id").Value" />
                     <input type="hidden" asp-for="PostComment.Created" value="@DateTime.Now" />
