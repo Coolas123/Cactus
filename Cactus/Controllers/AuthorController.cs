@@ -39,7 +39,8 @@ namespace Cactus.Controllers
             }
             if (author.StatusCode == 200) {
                 BaseResponse<UninterestingAuthor> uninterestings = await uninterestingAuthorService.GetAuthorAsync(Convert.ToInt32(User.FindFirstValue("Id")), author.Data.Id);
-                response.IsUninteresting = true;
+                if(uninterestings.StatusCode==200)
+                    response.IsUninteresting = true;
                 
                 BaseResponse<PagingAuthorViewModel> subs = await authorSubscribeService.GetUserViewSubscribersAsync(author.Data.Id, authorPage, PageSize);
                 if (subs.StatusCode == 200) {

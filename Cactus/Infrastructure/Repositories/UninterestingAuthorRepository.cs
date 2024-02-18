@@ -17,8 +17,10 @@ namespace Cactus.Infrastructure.Repositories
             return true;
         }
 
-        public Task<bool> DeleteAsync(UninterestingAuthor entity) {
-            throw new NotImplementedException();
+        public async Task<bool> DeleteAsync(UninterestingAuthor entity) {
+            dbContext.Remove(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
         }
 
         public Task<UninterestingAuthor> GetAsync(int id) {

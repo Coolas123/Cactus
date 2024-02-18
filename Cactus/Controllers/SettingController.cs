@@ -116,5 +116,12 @@ namespace Cactus.Controllers
             }
             return View("Index", model);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RemoveUninterestingAuthor(int authorId) {
+            BaseResponse<bool> response = await uninterestingAuthorService.RemoveUninterestingAuthor(Convert.ToInt32(User.FindFirstValue("Id")),authorId);
+            return RedirectToAction("Index");
+        }
     }
 }

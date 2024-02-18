@@ -107,5 +107,21 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<bool>> RemoveUninterestingAuthor(int userId, int authorId) {
+            UninterestingAuthor uninteresting =await uninterestingAuthorRepository.GetAuthorAsync(userId, authorId);
+            bool response = await uninterestingAuthorRepository.DeleteAsync(uninteresting);
+            if (!response) {
+                return new BaseResponse<bool>
+                {
+                    Description="Не удалось удалить из списка"
+                };
+            }
+            return new BaseResponse<bool>
+            {
+                Data=true,
+                StatusCode=200
+            };
+        }
     }
 }

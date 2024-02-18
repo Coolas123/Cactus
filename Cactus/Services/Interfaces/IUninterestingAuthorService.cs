@@ -11,5 +11,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<IEnumerable<UninterestingAuthor>>> GetUninterestingsAsync(int userId);
         Task<BaseResponse<PagingUninterestingAuthorsViewModel>> GetUninterestingAuthorsViewAsync(int userId, int authorPage, int PageSize);
         Task<BaseResponse<UninterestingAuthor>> GetAuthorAsync(int userId, int authorId);
+        Task<BaseResponse<bool>> RemoveUninterestingAuthor(int userId, int authorId);
     }
 }
