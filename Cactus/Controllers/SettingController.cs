@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -17,25 +16,41 @@ namespace Cactus.Controllers
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
     {
+        private int PageSize = 4;
         private readonly IProfileMaterialService profileMaterialService;
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
         private readonly IAuthorService authorService;
+        private readonly IUninterestingAuthorService uninterestingAuthorService;
 
         public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
-            IUserRepository userRepository, IAuthorService authorService) {
+            IUserRepository userRepository, IAuthorService authorService,
+            IUninterestingAuthorService uninterestingAuthorService) {
+
             this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.authorService = authorService;
+            this.uninterestingAuthorService = uninterestingAuthorService;
         }
-        public async Task<IActionResult> Index() {
+        public async Task<IActionResult> Index(int UninterestingPage=1) {
             SettingViewModel profile= new SettingViewModel();
             int userId = Convert.ToInt32(User.FindFirstValue("Id"));
             BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(userId);
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
             }
+            BaseResponse<PagingUninterestingAuthorsViewModel> uninterestings = 
+                await uninterestingAuthorService
+                .GetUninterestingAuthorsViewAsync(userId, UninterestingPage, PageSize);
+            if (uninterestings.StatusCode == 200) {
+                profile.PagingUninterestingAuthors = new PagingUninterestingAuthorsViewModel
+                {
+                    PagingInfo = uninterestings.Data.PagingInfo,
+                    UninterestingAuthors = uninterestings.Data.UninterestingAuthors
+                };
+            }
+           
             if (!User.IsInRole("Patron")) {
                 BaseResponse<ProfileMaterial> banner = await profileMaterialService.GetBannerAsync(User.Identity.Name);
                 if (banner.StatusCode == StatusCodes.Status200OK) {

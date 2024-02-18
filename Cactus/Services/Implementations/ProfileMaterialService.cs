@@ -12,8 +12,8 @@ namespace Cactus.Services.Implementations
         private readonly IUserRepository userRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public ProfileMaterialService(IProfileMaterialRepository dbContext, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository) {
-            this.materialRepository = dbContext;
+        public ProfileMaterialService(IProfileMaterialRepository materialRepository, IWebHostEnvironment webHostEnvironment, IUserRepository userRepository) {
+            this.materialRepository = materialRepository;
             this.webHostEnvironment = webHostEnvironment;
             this.userRepository = userRepository;
         }

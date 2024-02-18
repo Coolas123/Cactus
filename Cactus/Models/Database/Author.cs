@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cactus.Models.Database
+namespace Cactus.Models.Database 
 {
     [Table("author")]
     public class Author

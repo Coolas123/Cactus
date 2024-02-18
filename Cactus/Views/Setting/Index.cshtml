@@ -13,6 +13,9 @@
                 @if (User.IsInRole("Patron")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-registerAuthor-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerAuthor" type="button" role="tab" aria-controls="v-pills-registerAuthor" aria-selected="true">Стать автором</button>
                 }
+                @if (User.IsInRole("User")) {
+                    <button class="btn btn-outline-secondary m-1" id="v-pills-UninterestingAuthors-tab" data-bs-toggle="pill" data-bs-target="#v-pills-UninterestingAuthors" type="button" role="tab" aria-controls="v-pills-UninterestingAuthors" aria-selected="true">Список неинтересного</button>
+                }
                 <button class="btn btn-outline-secondary m-1" id="v-pills-privacy-tab" data-bs-toggle="pill" data-bs-target="#v-pills-privacy" type="button" role="tab" aria-controls="v-pills-privacy" aria-selected="true">Приватность</button>
             </div>
         </div>
@@ -86,6 +89,28 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <div class="tab-pane fade" id="v-pills-UninterestingAuthors" role="tabpanel" aria-labelledby="v-pills-UninterestingAuthors-tab">
+                    <div>
+                        <table class="table">
+                            <tbody>
+                                @if (Model.PagingUninterestingAuthors?.UninterestingAuthors != null) {
+                                    @foreach (var p in Model.PagingUninterestingAuthors.UninterestingAuthors) {
+                                        <tr>
+                                            <td>@p.User.UserName</td>
+                                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.User.Id })</td>
+                                            <td><a class="btn btn-primary" asp-controller="AuthorController" asp-action="Index" asp-route-UrlPage="@p.Author.UrlPage"></a></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div page-model="@Model.PagingUninterestingAuthors.PagingInfo" page-action="Index" type-page="UninterestingAuthorsPage"
+                             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+                             page-class-selected="btn-primary" class="btn-group pull-right m-1">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab">

@@ -13,5 +13,7 @@ namespace Cactus.Models.ViewModels
         public User CurrentUser { get; set; }
         public PostViewModel Post { get; set; }
         public IEnumerable<Category> Categories {  get; set; }
+        public bool IsOwner {  get; set; }
+        public bool IsUninteresting { get; set; }
     }
 }

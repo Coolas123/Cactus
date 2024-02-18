@@ -22,7 +22,7 @@ namespace Cactus.Models.Database
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostMaterial> PostMaterials { get; set; }
         public DbSet<PostComment> PostComments { get; set; }
-        public DbSet<GrayListAuthor> GrayListAuthors { get; set; }
+        public DbSet<UninterestingAuthor> UninterestingAuthors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

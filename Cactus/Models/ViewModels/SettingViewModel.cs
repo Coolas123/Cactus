@@ -1,5 +1,6 @@
 ﻿using Cactus.Infrastructure;
 using Cactus.Models.Database;
+using SportsStore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
@@ -54,5 +55,9 @@ namespace Cactus.Models.ViewModels
         [RegularExpression(@"[А-Яа-яЁёA-Za-z]+", ErrorMessage = "Фамилия должно состоять из букв")]
         [Display(Name = "Фамилия")]
         public string LastName { get; set; }
+
+
+        public PagingUninterestingAuthorsViewModel PagingUninterestingAuthors { get; set; }
+
     }
 }
