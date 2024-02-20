@@ -45,5 +45,20 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<IEnumerable<Tag>>> GetPostTagsAsync(int postId) {
+            IEnumerable<Tag> tags =await postTagRepository.GetPostTagsAsync(postId);
+            if (tags != null) {
+                return new BaseResponse<IEnumerable<Tag>>
+                {
+                    Data=tags,
+                    StatusCode = 200
+                };
+            }
+            return new BaseResponse<IEnumerable<Tag>>
+            {
+                Description="Теги отсутствуют"
+            };
+        }
     }
 }

@@ -12,11 +12,13 @@ namespace Cactus.Pages
         private readonly IPostService postService;
         private readonly IPostMaterialService postMaterialService;
         private readonly IPostCommentService postCommentService;
+        private readonly IPostTagService postTagService;
         public PostModel(IPostService postService, IPostMaterialService postMaterialService,
-            IPostCommentService postCommentService) {
+            IPostCommentService postCommentService, IPostTagService postTagService) {
             this.postService = postService;
             this.postMaterialService = postMaterialService;
             this.postCommentService = postCommentService;
+            this.postTagService = postTagService;
         }
 
         public string ReturnUrl { get; set; }
@@ -25,6 +27,7 @@ namespace Cactus.Pages
         [BindProperty]
         public CommentViewModel PostComment { get; set; }
         public IEnumerable<PostComment> PostComments { get; set; }=new List<PostComment>();
+        public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
         public string CommentDescription {  get; set; }
 
         public async Task<IActionResult> OnGetAsync(int postId)
@@ -41,6 +44,11 @@ namespace Cactus.Pages
                 BaseResponse<IEnumerable<PostComment>> comments = await postCommentService.GetComments(Post.Id);
                 if (comments.StatusCode == 200) {
                     PostComments = comments.Data.ToList();
+                }
+
+                BaseResponse<IEnumerable<Tag>> tags = await postTagService.GetPostTagsAsync(post.Data.Id);
+                if (tags.StatusCode == 200) {
+                    PostTags = tags.Data;
                 }
             }
             return Page ();

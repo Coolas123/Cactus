@@ -35,6 +35,15 @@
                 else {<div><h3>@Model.CommentDescription</h3></div>}
             </div>
             <hr/>
+            @if (Model.PostTags.Any()) {
+                <div class="text-end">
+                    <p>
+                        @foreach (var p in Model.PostTags) {
+                            @('#'+p.Name)
+                        }
+                    </p>
+                </div>
+            }
             <form method="post">
                 <div>
                     <textarea class="form-control" asp-for="PostComment.Comment" placeholder="Оставить комментарий"></textarea>
