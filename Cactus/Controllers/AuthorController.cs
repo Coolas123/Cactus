@@ -6,6 +6,7 @@ using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -45,7 +46,11 @@ namespace Cactus.Controllers
                 BaseResponse<UninterestingAuthor> uninterestings = await uninterestingAuthorService.GetAuthorAsync(Convert.ToInt32(User.FindFirstValue("Id")), author.Data.Id);
                 if(uninterestings.StatusCode==200)
                     response.IsUninteresting = true;
-                
+                BaseResponse<AuthorSubscribe> sub = await authorSubscribeService.GetSubscribe(Convert.ToInt32(User.FindFirstValue("Id")),author.Data.Id);
+                if (sub.StatusCode == 200) {
+                    response.IsSubscribe = true;
+                }
+
                 BaseResponse<PagingAuthorViewModel> subs = await authorSubscribeService.GetUserViewSubscribersAsync(author.Data.Id, authorPage, PageSize);
                 if (subs.StatusCode == 200) {
                     response.SubscribesPagingInfo = subs.Data.SubscribesPagingInfo;
@@ -86,6 +91,17 @@ namespace Cactus.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> AddUninterestingAuthor(int authorId) {
             await uninterestingAuthorService.AddUninterestingAuthor(Convert.ToInt32(User.FindFirstValue("Id")), authorId);
+            BaseResponse<Author> response = await authorService.GetAsync(authorId);
+            string path = "";
+            if (response.StatusCode == 200)
+                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage })!;
+            return Redirect(path);
+        }
+
+        [HttpGet("/subscribe")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> SubscribeToAuthor(int authorId) {
+            await authorSubscribeService.SubscribeToAuthor(Convert.ToInt32(User.FindFirstValue("Id")),authorId);
             BaseResponse<Author> response = await authorService.GetAsync(authorId);
             string path = "";
             if (response.StatusCode == 200)

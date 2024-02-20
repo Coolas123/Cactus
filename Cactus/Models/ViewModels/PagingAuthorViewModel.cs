@@ -1,6 +1,5 @@
 ﻿using Cactus.Models.Database;
 using SportsStore.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
 {
@@ -15,5 +14,6 @@ namespace Cactus.Models.ViewModels
         public IEnumerable<Category> Categories {  get; set; }
         public bool IsOwner {  get; set; }
         public bool IsUninteresting { get; set; }
+        public bool IsSubscribe { get; set; }
     }
 }

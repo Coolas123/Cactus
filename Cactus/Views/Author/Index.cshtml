@@ -57,6 +57,20 @@
                 </button>
             </div>
         }
+        @if (!Model.IsSubscribe && !Model.IsOwner) {
+            <div class="text-center m-1">
+                <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                    Подписаться
+                </a>
+            </div>
+        }
+        else {
+            <div class="text-center m-1">
+                <a class="btn btn-danger disabled">
+                    Отписаться
+                </a>
+            </div>
+        }
         <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

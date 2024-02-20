@@ -10,5 +10,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<IEnumerable<AuthorSubscribe>>> GetPagingSubscribersAsync(int subcriberId, int authorPage, int pageSize);
         Task<BaseResponse<IEnumerable<AuthorSubscribe>>> GetSubscribersAsync(int subcriberId);
         Task<BaseResponse<PagingAuthorViewModel>> GetUserViewSubscribersAsync(int userId, int authorPage, int PageSize);
+        Task<BaseResponse<AuthorSubscribe>> GetSubscribe(int userId, int authorId);
     }
 }

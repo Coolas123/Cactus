@@ -42,5 +42,9 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<IEnumerable<AuthorSubscribe>> GetSubscribersAsync(int subcriberId) {
             return await dbContext.AuthorSubscribes.Where(x=>x.UserId==subcriberId).ToListAsync();
         }
+
+        public async Task<AuthorSubscribe> GetSubscribe(int userId, int authorId) {
+            return await dbContext.AuthorSubscribes.FirstOrDefaultAsync(x=>x.AuthorId== authorId&&x.UserId==userId);
+        }
     }
 }

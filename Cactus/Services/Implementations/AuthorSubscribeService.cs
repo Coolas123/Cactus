@@ -84,5 +84,20 @@ namespace Cactus.Services.Implementations
                 StatusCode=200
             };
         }
+
+        public async Task<BaseResponse<AuthorSubscribe>> GetSubscribe(int userId, int authorId) {
+            AuthorSubscribe subscribe = await subscribeRepository.GetSubscribe(userId, authorId);
+            if (subscribe == null) {
+                return new BaseResponse<AuthorSubscribe>
+                {
+                    Description="Подписка отсутствует"
+                };
+            }
+            return new BaseResponse<AuthorSubscribe>
+            {
+                Data= subscribe,
+                StatusCode=200
+            };
+        }
     }
 }
