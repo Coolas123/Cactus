@@ -13,5 +13,9 @@ namespace Cactus.Models.ViewModels
         public string PostPhotoPath { get; set; }
         [Display(Name = "Категории")]
         public int CategoryId {  get; set; }
+        [Display(Name ="Теги поста")]
+        [RegularExpression(@"#\\?[A-Za-z]+", ErrorMessage = "Тег должен состоять из латинских букв без спец символов в конце")]
+        public DateTime Created {  get; set; }
+        public string? Tags { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
+using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -18,15 +20,17 @@ namespace Cactus.Controllers
         private readonly IAuthorService authorService;
         private readonly ICategoryService categoryService;
         private readonly IUninterestingAuthorService uninterestingAuthorService;
+        private readonly IPostTagService postTagService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService,
-           IUninterestingAuthorService uninterestingAuthorService) {
+           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
             this.authorService = authorService;
             this.categoryService = categoryService;
             this.uninterestingAuthorService = uninterestingAuthorService;
+            this.postTagService = postTagService;
         }
 
         [Route("{UrlPage}")]
@@ -63,7 +67,14 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author")]
         public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
+            model.Post.Created=DateTime.Now.ToUniversalTime();
             await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
+            
+            var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
+            BaseResponse<Post> post =await postService.GetLastAsync(model.Post.Created);
+            if(tags is not null)
+                await postTagService.AddTagsToPost(post.Data.Id, tags);
+            
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";
             if (response.StatusCode == 200)

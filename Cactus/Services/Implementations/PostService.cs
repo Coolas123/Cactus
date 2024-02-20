@@ -3,6 +3,7 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
@@ -19,16 +20,15 @@ namespace Cactus.Services.Implementations
             this.postCategoryService = postCategoryService;
         }
         public async Task<BaseResponse<Post>> AddPost(PostViewModel model, int id) {
-            var created = DateTime.Now.ToUniversalTime();
             var post = new Post
             {
                 UserId = id,
                 Title = model.Title,
                 Description = model.Description,
-                Created= created
+                Created= model.Created
             };
             await postRepository.CreateAsync(post);
-            Post lastPost = await postRepository.GetLastAsync(created);
+            Post lastPost = await postRepository.GetLastAsync(model.Created);
             await postCategoryService.CreateAsync(lastPost.Id,model.CategoryId);
             if (model.PostPhoto != null)
                 await postMaterialService.AddPhotoAsync(model.PostPhoto, lastPost.Id);
@@ -36,6 +36,21 @@ namespace Cactus.Services.Implementations
             {
                 Data = post,
                 StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<Post>> GetLastAsync(DateTime created) {
+            Post lastPost = await postRepository.GetLastAsync(created);
+            if (lastPost == null) {
+                return new BaseResponse<Post>
+                {
+                    Description="Пост не найден"
+                };
+            }
+            return new BaseResponse<Post>
+            {
+                Data= lastPost,
+                StatusCode=200
             };
         }
 

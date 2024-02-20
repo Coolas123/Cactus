@@ -37,7 +37,7 @@
                         Еще
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuAuthor">
-                        @if (!Model.IsUninteresting) {
+                        @if (!Model.IsUninteresting&&!Model.IsOwner) {
                             <li>
                                 <a class="dropdown-item" asp-controller="Author" asp-action="AddUninterestingAuthor" asp-route-authorId="@Model.CurrentUser.Id">
                                     Добавить в список неинтересного
@@ -52,7 +52,7 @@
         @if (Model.IsOwner)
         {
             <div class="text-center">
-                <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal">
+                <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Создать пост
                 </button>
             </div>
@@ -84,7 +84,16 @@
                                 </div>
                                 <div>
                                     <label asp-for="Post.CategoryId">Выберите категорию</label>
-                                    <select asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
+                                    <select class="form-control" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
+                                </div>
+                                <div>
+                                    <label asp-for="Post.Tags">Выбранные теги поста</label>
+                                    <input class="form-control" type="text" readonly id="allTags" />
+                                    <label asp-for="Post.Tags">Напишите теги начиная c знака #</label>
+                                    <input class="form-control" asp-for="Post.Tags" id="myTag" />
+                                    <div class="text-end">
+                                        <button class="btn btn-secondary m-1" type="button" id="postTag" onClick="getTag()">Добавить тег</button>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-danger">Опубликовать</button>
@@ -125,3 +134,15 @@
     }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function getTag() {
+        var inputElement = document.getElementById("myTag");
+        var result = inputElement.value.match(/#[a-zA-Z]/);
+        if (inputElement.value.indexOf(' ') == -1 && result != null) {
+            document.getElementById("allTags").value += inputElement.value;
+        }
+    }
+    // $("#postTag").click(function () {
+    //     getTag(this);
+    // });
+</script>
