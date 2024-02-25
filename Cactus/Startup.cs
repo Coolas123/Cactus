@@ -63,6 +63,7 @@ namespace Cactus
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IPostTagRepository, PostTagRepository>();
             services.AddScoped<IPostTagService, PostTagService>();
+            services.AddScoped<INewsFeedService, NewsFeedService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

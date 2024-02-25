@@ -41,6 +41,10 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.Posts.Where(x => x.UserId == authorId).ToListAsync();
         }
 
+        public async Task<IEnumerable<Post>> GetPostsByTitleAsync(IEnumerable<string> titles) {
+            return await dbContext.Posts.Where(x=>titles.Contains(x.Title)).ToListAsync();
+        }
+
         public Task<IEnumerable<Post>> SelectAsync() {
             throw new NotImplementedException();
         }

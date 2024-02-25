@@ -6,5 +6,8 @@ namespace Cactus.Infrastructure.Interfaces
     {
         Task<bool> AddTagsToPost(IEnumerable<PostTag> tags);
         Task<IEnumerable<Tag>> GetPostTagsAsync(int postId);
+        Task<IEnumerable<Post>> GetPostsByTagsAsync(IEnumerable<Tag> tags);
+        Task<IEnumerable<Author>> GetAuthorsByTagsAsync(IEnumerable<Tag> tags);
+
     }
 }

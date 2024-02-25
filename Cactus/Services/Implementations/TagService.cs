@@ -12,7 +12,7 @@ namespace Cactus.Services.Implementations
             this.tagRepository = tagRepository;
         }
 
-        public async Task<BaseResponse<bool>> CreateAsync(ICollection<string> tags) {
+        public async Task<BaseResponse<bool>> CreateAsync(IEnumerable<string> tags) {
             var newTags = new List<Tag>();
             foreach (var tag in tags) {
                 newTags.Add(new Tag { Name = tag });
@@ -48,7 +48,7 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<IEnumerable<Tag>>> GetAllByNames(ICollection<string> tags) {
+        public async Task<BaseResponse<IEnumerable<Tag>>> GetAllByNames(IEnumerable<string> tags) {
             IEnumerable<Tag> Dbtags= await tagRepository.GetAllByNamesAsync(tags);
             if (!Dbtags.Any())
             {

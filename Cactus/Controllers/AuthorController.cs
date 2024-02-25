@@ -1,12 +1,9 @@
 ﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -79,7 +76,8 @@ namespace Cactus.Controllers
             BaseResponse<Post> post =await postService.GetLastAsync(model.Post.Created);
             if(tags is not null)
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
-            
+
+
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";
             if (response.StatusCode == 200)

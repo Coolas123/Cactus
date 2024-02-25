@@ -6,6 +6,7 @@ namespace Cactus.Models.Database
     public class PostTag {
         [Column("post_id")]
         public int PostId { get; set; }
+        public Post Post { get; set; }
         [Column("tag_id")]
         public int TagId { get; set; }
         public Tag Tag { get; set; }

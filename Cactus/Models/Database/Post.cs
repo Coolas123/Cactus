@@ -9,6 +9,7 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_id")]
         public int UserId {  get; set; }
+        public Author User {  get; set; }
         [Column("title")]
         public string? Title { get; set; }
         [Column("description")]

@@ -6,7 +6,7 @@ namespace Cactus.Services.Interfaces
     public interface ITagService
     {
         Task<BaseResponse<IEnumerable<Tag>>> GetAll();
-        Task<BaseResponse<IEnumerable<Tag>>> GetAllByNames(ICollection<string> tags);
-        Task<BaseResponse<bool>> CreateAsync(ICollection<string> tags);
+        Task<BaseResponse<IEnumerable<Tag>>> GetAllByNames(IEnumerable<string> tags);
+        Task<BaseResponse<bool>> CreateAsync(IEnumerable<string> tags);
     }
 }

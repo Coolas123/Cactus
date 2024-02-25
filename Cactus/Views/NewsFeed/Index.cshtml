@@ -1,1 +1,52 @@
-﻿<h1>Новостная лента</h1>
+﻿@model SearchViewModel
+
+<h1>Новостная лента</h1>
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <form asp-controller="newsfeed" asp-action="Search" method="post">
+            <div class="input-group text-center">
+                <input class="form-control" asp-for="SearchText"/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-danger btn-secondary btn0 text-white" type="submit">Button</button>
+                </div>
+            </div>
+            <div class="text-start">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" asp-for="IsAuthor" />
+                    <label class="form-check-label">Авторы</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" asp-for="IsPost" />
+                    <label class="form-check-label">Посты</label>
+                </div>
+            </div>
+        </form>
+        <div>
+            @if (Model?.searchResponse.Authors != null) {
+                foreach (var a in Model.searchResponse.Authors) {
+                    <div class="form-control">
+                        <h6>@a.User.UserName</h6>
+                        <div>@await Component.InvokeAsync("UrlPath", new { id = a.UserId })</div>
+                    </div>
+                }
+            }
+            @if (Model?.searchResponse.Posts != null) {
+                foreach (var p in Model.searchResponse.Posts) {
+                    <div class="form-control">
+                        <h6>@p.Title</h6>
+                        <p>@p.Description</p>
+                        <a asp-page="/Post" asp-route-postId="@p.Id">Открыть</a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="col"></div>
+</div>
+<style>
+    .btn0{
+        border-radius: 0px !important;
+    }
+</style>

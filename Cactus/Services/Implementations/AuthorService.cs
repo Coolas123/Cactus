@@ -62,6 +62,21 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<Author>> GetUserByNameAsync(IEnumerable<string> names) {
+            Author author = await authorRepository.GetUserByNameAsync(names);
+            if (author != null) {
+                return new BaseResponse<Author>
+                {
+                    Data=author,
+                    StatusCode=200
+                };
+            }
+            return new BaseResponse<Author>
+            {
+                Description="Автор не найден"
+            };
+        }
+
         public async Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage) {
             Author individual = await authorRepository.GetUserByUrlPageAsync(urlPage);
             if (individual == null) {

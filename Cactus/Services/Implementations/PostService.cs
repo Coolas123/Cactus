@@ -1,9 +1,9 @@
 ﻿using Cactus.Infrastructure.Interfaces;
+using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
@@ -13,11 +13,16 @@ namespace Cactus.Services.Implementations
         private readonly IPostRepository postRepository;
         private readonly IPostMaterialService postMaterialService;
         private readonly IPostCategoryService postCategoryService;
+        private readonly ITagService tagService;
+        private readonly IPostTagService postTagService;
         public PostService(IPostRepository postRepository, IPostMaterialService postMaterialService,
-            IPostCategoryService postCategoryService) {
+            IPostCategoryService postCategoryService, ITagService tagService,
+            IPostTagService postTagService) {
             this.postRepository = postRepository;
             this.postMaterialService = postMaterialService;
             this.postCategoryService = postCategoryService;
+            this.tagService = tagService;
+            this.postTagService = postTagService;
         }
         public async Task<BaseResponse<Post>> AddPost(PostViewModel model, int id) {
             var post = new Post
@@ -32,6 +37,7 @@ namespace Cactus.Services.Implementations
             await postCategoryService.CreateAsync(lastPost.Id,model.CategoryId);
             if (model.PostPhoto != null)
                 await postMaterialService.AddPhotoAsync(model.PostPhoto, lastPost.Id);
+
             return new BaseResponse<Post>
             {
                 Data = post,
@@ -96,6 +102,39 @@ namespace Cactus.Services.Implementations
             {
                 Data = await postRepository.GetPostsAsync(authorId),
                 StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Post>>> GetPostsByTagsAsync(IEnumerable<string> tags) {
+            BaseResponse<IEnumerable<Tag>> dbTags = await tagService.GetAllByNames(tags);
+            if (dbTags.StatusCode==200) {
+                BaseResponse<IEnumerable<Post>> postTags= await postTagService.GetPostsByTagsAsync(dbTags.Data);
+                if (postTags.StatusCode==200) {
+                    return new BaseResponse<IEnumerable<Post>>
+                    {
+                        Data=postTags.Data,
+                        StatusCode=200
+                    };
+                }
+            }
+            return new BaseResponse<IEnumerable<Post>>
+            {
+                Description=dbTags.Description
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Post>>> GetPostsByTitleAsync(IEnumerable<string> titles) {
+            IEnumerable<Post> posts = await postRepository.GetPostsByTitleAsync(titles);
+            if (posts.Any()) {
+                return new BaseResponse<IEnumerable<Post>>
+                {
+                    Data = posts,
+                    StatusCode = 200
+                };
+            }
+            return new BaseResponse<IEnumerable<Post>>
+            {
+                Description="Посты не найдены"
             };
         }
 

@@ -13,5 +13,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<Author>> GetAsync(int id);
         Task<BaseResponse<Author>> DaeleteAuthor(int id);
         Task<BaseResponse<User>> GetUserByUrlPageAsync(string urlPage);
+        Task<BaseResponse<Author>> GetUserByNameAsync(IEnumerable<string> names);
     }
 }

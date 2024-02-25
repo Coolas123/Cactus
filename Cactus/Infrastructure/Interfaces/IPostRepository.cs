@@ -8,5 +8,6 @@ namespace Cactus.Infrastructure.Interfaces
         Task<IEnumerable<Post>> GetPostsAsync(int authorId);
         Task<Post> GetPostByIdAsync(int postId);
         Task<Post> GetLastAsync(DateTime time);
+        Task<IEnumerable<Post>> GetPostsByTitleAsync(IEnumerable<string> titles);
     }
 }

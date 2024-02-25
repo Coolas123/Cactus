@@ -6,5 +6,6 @@ namespace Cactus.Infrastructure.Interfaces
     {
         Task<Author> GetUserByUrlPageAsync(string urlPage);
         Task<Author> GetByUrlPageAsync(string urlPage);
+        Task<Author> GetUserByNameAsync(IEnumerable<string> names);
     }
 }
