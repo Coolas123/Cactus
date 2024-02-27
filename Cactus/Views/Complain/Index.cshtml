@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ComplainViewModel>
+
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <br>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Ко-во жалоб</th>
+                    <th scope="col">Тип контента</th>
+                    <th scope="col">Тип жалобы</th>
+                    <th scope="col">Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any()) {
+                    @foreach (var complains in Model) {
+                        @foreach (var c in complains.Complains) {
+                            <tr>
+                                <td>@complains.Complains[5].Created</td>
+                                <td>@complains.Complains.Count()</td>
+                                <td>@((Cactus.Models.Enums.ComplainType)c.ComplainTypeId)</td>
+                                @if (c.PostId != null) {
+                                    <td>@((Cactus.Models.Enums.ContentType)c.PostId)</td>
+                                }
+                                else if (c.UserId != null) {
+                                    <td>@((Cactus.Models.Enums.ContentType)c.UserId)</td>
+                                }
+                                else if (c.CommentId != null) {
+                                    <td>@((Cactus.Models.Enums.ContentType)c.CommentId)</td>
+                                }
+                                <td>@((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId)</td>
+                            </tr>
+                            break;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col"></div>
+</div>

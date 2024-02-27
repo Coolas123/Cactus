@@ -24,6 +24,9 @@ namespace Cactus.Models.Database
         public DbSet<PostMaterial> PostMaterials { get; set; }
         public DbSet<PostComment> PostComments { get; set; }
         public DbSet<UninterestingAuthor> UninterestingAuthors { get; set; }
+        public DbSet<Complain> Complains { get; set; }
+        public DbSet<ComplainStatus> ComplainStatues { get; set; }
+        public DbSet<ComplainType> ComplainTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -72,6 +75,18 @@ namespace Cactus.Models.Database
             });
             builder.Entity<PostCategory>(x => {
                 x.HasKey(p => new { p.PostId, p.CategoryId });
+            });
+            builder.Entity<ComplainStatus>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "NotReviewed" },
+                    new { Id = 2, Name = "Reviewed" },
+                ]);
+            });
+            builder.Entity<ComplainType>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Spam" },
+                    new { Id = 2, Name = "Deception" },
+                ]);
             });
         }
     }

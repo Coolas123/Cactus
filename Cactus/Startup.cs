@@ -64,6 +64,8 @@ namespace Cactus
             services.AddScoped<IPostTagRepository, PostTagRepository>();
             services.AddScoped<IPostTagService, PostTagService>();
             services.AddScoped<INewsFeedService, NewsFeedService>();
+            services.AddScoped<IComplainRepository, ComplainRepository>();
+            services.AddScoped<IComplainService, ComplainService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {
