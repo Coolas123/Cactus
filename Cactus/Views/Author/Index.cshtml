@@ -26,6 +26,11 @@
         </div>
     </div>
     <div class="col">
+        @if (ViewData["ComplainError"] != null) {
+            <script type="text/javascript">
+                alert();
+            </script>
+        }
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -44,6 +49,14 @@
                                 </a>
                             </li>
                         }
+                        <li>
+                            <div class="text-center">
+                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#complainModal">
+                                    Пожаловаться
+                                </button>
+                            </div>
+                            
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -118,6 +131,36 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="modal fade" id="complainModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Пожаловаться</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <input type="hidden" asp-for="NewComplain.UserId" value="@Model.CurrentUser.Id" />
+                                <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                                <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
+                                <div>
+                                    <label asp-for="NewComplain.ComplainTypeId"></label>
+                                    <select class="form-control m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
+                                </div>
+                                <div>
+                                    <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Отправить</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col">
         <table class="table">
@@ -161,5 +204,9 @@
         if (inputElement.value.indexOf(' ') == -1 && result != null) {
             document.getElementById("allTags").value += inputElement.value;
         }
+    }
+
+    function alert() {
+        Swal.fire("SweetAlert2 is working!");
     }
 </script>

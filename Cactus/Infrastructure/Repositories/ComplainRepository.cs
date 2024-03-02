@@ -12,6 +12,12 @@ namespace Cactus.Infrastructure.Repositories
             this.dbContext = dbContext;
         }
 
+        public async Task<bool> AddComplain(Complain entity) {
+            await dbContext.Complains.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public Task<bool> CreateAsync(Complain entity) {
             throw new NotImplementedException();
         }
@@ -24,14 +30,13 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ComplainViewModel>> GetNotReviewedComplains(int minCountComplains, DateTime date) {
+        public async Task<IEnumerable<ComplainViewModel>> GetNotReviewedComplains(DateTime date) {
             return await dbContext.Complains
                 .Where(
                     x => x.Created >= date.ToUniversalTime()&&
                     x.ComplainStatusId==(int)Models.Enums.ComplainStatus.NotReviewed
                 )
                 .GroupBy(x => new { x.PostId, x.UserId, x.CommentId })
-                .Where(x => x.Count()>= minCountComplains)
                 .Select(x => new ComplainViewModel { 
                     Complains = x.ToList() 
                 })

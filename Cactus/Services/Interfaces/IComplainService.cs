@@ -6,6 +6,7 @@ namespace Cactus.Services.Interfaces
 {
     public interface IComplainService
     {
-        Task<BaseResponse<IEnumerable<ComplainViewModel>>> GetNotReviewedComplains(int minCountComplains, DateTime date);
+        Task<BaseResponse<IEnumerable<ComplainViewModel>>> GetNotReviewedComplains(DateTime date);
+        Task<BaseResponse<bool>> AddComplain(NewComplainViewModel model);
     }
 }

@@ -8,7 +8,6 @@
             <thead>
                 <tr>
                     <th scope="col">Дата</th>
-                    <th scope="col">Ко-во жалоб</th>
                     <th scope="col">Тип контента</th>
                     <th scope="col">Тип жалобы</th>
                     <th scope="col">Статус</th>
@@ -20,7 +19,6 @@
                         @foreach (var c in complains.Complains) {
                             <tr>
                                 <td>@complains.Complains[5].Created</td>
-                                <td>@complains.Complains.Count()</td>
                                 <td>@((Cactus.Models.Enums.ComplainType)c.ComplainTypeId)</td>
                                 @if (c.PostId != null) {
                                     <td>@((Cactus.Models.Enums.ContentType)c.PostId)</td>
@@ -33,7 +31,6 @@
                                 }
                                 <td>@((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId)</td>
                             </tr>
-                            break;
                         }
                     }
                 }

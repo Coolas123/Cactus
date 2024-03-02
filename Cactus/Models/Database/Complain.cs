@@ -16,11 +16,11 @@ namespace Cactus.Models.Database
         [Column("comment_id")]
         public int? CommentId { get; set; }
         [Column("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [Column("created")]
         public DateTime Created { get; set; }
         [Column("admin_id")]
-        public int AdminId { get; set; }
+        public int? AdminId { get; set; }
         [Column("complain_status_id")]
         public int ComplainStatusId { get; set; }
         [Column("complain_type_id")]

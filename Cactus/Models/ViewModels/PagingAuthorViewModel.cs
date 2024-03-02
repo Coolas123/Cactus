@@ -15,5 +15,6 @@ namespace Cactus.Models.ViewModels
         public bool IsOwner {  get; set; }
         public bool IsUninteresting { get; set; }
         public bool IsSubscribe { get; set; }
+        public NewComplainViewModel NewComplain { get; set; }
     }
 }
