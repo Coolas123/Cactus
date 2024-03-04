@@ -30,7 +30,7 @@ namespace Cactus.Pages
         public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
         public string CommentDescription {  get; set; }
         public NewComplainViewModel NewComplain { get; set; }
-
+        
         public async Task<IActionResult> OnGetAsync(int postId)
         {
             BaseResponse<Post> post = await postService.GetPostByIdAsync(postId);

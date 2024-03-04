@@ -5,7 +5,7 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IComplainRepository:IBaseRepository<Complain>
     {
-        Task<IEnumerable<ComplainViewModel>> GetNotReviewedComplains(DateTime date);
+        Task<IEnumerable<Complain>> GetNotReviewedComplains(DateTime date);
         Task<bool> AddComplain(Complain entity);
     }
 }

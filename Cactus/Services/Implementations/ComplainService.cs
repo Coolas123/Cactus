@@ -14,16 +14,16 @@ namespace Cactus.Services.Implementations
             this.complainRepository = complainRepository;
         }
 
-        public async Task<BaseResponse<IEnumerable<ComplainViewModel>>> GetNotReviewedComplains(DateTime date) {
+        public async Task<BaseResponse<IEnumerable<Complain>>> GetNotReviewedComplains(DateTime date) {
             var complains = await complainRepository.GetNotReviewedComplains(date.ToUniversalTime());
             if (complains != null) {
-                return new BaseResponse<IEnumerable<ComplainViewModel>>
+                return new BaseResponse<IEnumerable<Complain>>
                 {
                     Data = complains,
                     StatusCode = 200
                 };
             }
-            return new BaseResponse<IEnumerable<ComplainViewModel>>
+            return new BaseResponse<IEnumerable<Complain>>
             {
                 Description="Жалобы не найдены"
             };

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ComplainViewModel>
+﻿@model IEnumerable<Cactus.Models.Database.Complain>
 
 <div class="row">
     <div class="col"></div>
@@ -15,23 +15,21 @@
             </thead>
             <tbody>
                 @if (Model.Any()) {
-                    @foreach (var complains in Model) {
-                        @foreach (var c in complains.Complains) {
-                            <tr>
-                                <td>@complains.Complains[5].Created</td>
-                                <td>@((Cactus.Models.Enums.ComplainType)c.ComplainTypeId)</td>
-                                @if (c.PostId != null) {
-                                    <td>@((Cactus.Models.Enums.ContentType)c.PostId)</td>
-                                }
-                                else if (c.UserId != null) {
-                                    <td>@((Cactus.Models.Enums.ContentType)c.UserId)</td>
-                                }
-                                else if (c.CommentId != null) {
-                                    <td>@((Cactus.Models.Enums.ContentType)c.CommentId)</td>
-                                }
-                                <td>@((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId)</td>
-                            </tr>
-                        }
+                    @foreach (var c in Model) {
+                        <tr>
+                            <td>@c.Created</td>
+                            @if (c.PostId != null) {
+                                <td>@(Cactus.Models.Enums.ContentType.Post.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            else if (c.UserId != null) {
+                                <td>@(Cactus.Models.Enums.ContentType.User.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            else if (c.CommentId != null) {
+                                <td>@(Cactus.Models.Enums.ContentType.Comment.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            <td>@(((Cactus.Models.Enums.ComplainType)c.ComplainTypeId).GetAttribute<DisplayAttribute>().Name)</td>
+                            <td>@(((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId).GetAttribute<DisplayAttribute>().Name)</td>
+                        </tr>
                     }
                 }
             </tbody>

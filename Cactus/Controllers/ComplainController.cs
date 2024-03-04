@@ -1,9 +1,12 @@
-﻿using Cactus.Models.Responses;
+﻿using Cactus.Infrastructure;
+using Cactus.Models.Database;
+using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 namespace Cactus.Controllers
@@ -18,7 +21,7 @@ namespace Cactus.Controllers
         }
         public async Task<IActionResult> Index() {
             var date = DateTime.Now.AddYears(-10);
-            BaseResponse<IEnumerable<ComplainViewModel>> complains = await complainService.GetNotReviewedComplains(date);
+            BaseResponse<IEnumerable<Complain>> complains = await complainService.GetNotReviewedComplains(date);
             if (complains.StatusCode == 200) {
                 return View(complains.Data);
             }

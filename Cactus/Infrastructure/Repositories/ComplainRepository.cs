@@ -30,16 +30,12 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ComplainViewModel>> GetNotReviewedComplains(DateTime date) {
+        public async Task<IEnumerable<Complain>> GetNotReviewedComplains(DateTime date) {
             return await dbContext.Complains
                 .Where(
                     x => x.Created >= date.ToUniversalTime()&&
                     x.ComplainStatusId==(int)Models.Enums.ComplainStatus.NotReviewed
                 )
-                .GroupBy(x => new { x.PostId, x.UserId, x.CommentId })
-                .Select(x => new ComplainViewModel { 
-                    Complains = x.ToList() 
-                })
                 .ToListAsync();
         }
 
