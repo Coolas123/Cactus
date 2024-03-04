@@ -6,8 +6,8 @@
 
     </div>
     <div class="col">
-        <div class="sm">
-            <p>@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
+        <div>
+            <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
         </div>
         <div>
             <h3 class="text-center">@Model.Post.Title</h3>
@@ -24,12 +24,17 @@
         <div>
             <div>
                 @if (Model.PostComments is not null) {
+                    <div><h3>Комментарии</h3></div>
                     @foreach (var p in Model.PostComments) {
                         <div>
                             <h6>@p.User.UserName</h6>
+                            <button id="complainId" onClick="complainId()" type="button" class="btn btn-outline-secondary btn-sm" value="@p.Id" data-bs-toggle="modal" data-bs-target="#complainModal">
+                                Пожаловаться на комментарий
+                            </button>
                             <p>Оставлен @p.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
                             <p>@p.Comment</p>
                         </div>
+                        <hr />
                     }
                 }
                 else {<div><h3>@Model.CommentDescription</h3></div>}
@@ -51,13 +56,49 @@
                     <input type="hidden" asp-for="PostComment.UserId" value="@User.FindFirst("Id").Value" />
                     <input type="hidden" asp-for="PostComment.Created" value="@DateTime.Now" />
                 </div>
-                <button type="submit" class="btn btn-danger">Отправить</button>
+                <button type="submit" class="btn btn-danger m-1">Отправить</button>
             </form>
+        </div>
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="modal fade" id="complainModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Пожаловаться</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <input type="hidden" asp-for="NewComplain.CommentId" value="@Model.PostComments" />
+                                <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                                <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
+                                <div>
+                                    <label asp-for="NewComplain.ComplainTypeId"></label>
+                                    <select class="form-control m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
+                                </div>
+                                <div>
+                                    <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Отправить</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col">
 
     </div>
 </div>
-
+<script type="text/javascript">
+    function complainId() {
+        var commentId = document.getElementById("complainId").value
+        console.log(commentId)
+        document.getElementById('NewComplain_CommentId').value = commentId;
+    }
+</script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">

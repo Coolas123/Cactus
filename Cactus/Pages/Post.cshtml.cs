@@ -29,6 +29,7 @@ namespace Cactus.Pages
         public IEnumerable<PostComment> PostComments { get; set; }=new List<PostComment>();
         public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
         public string CommentDescription {  get; set; }
+        public NewComplainViewModel NewComplain { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int postId)
         {
