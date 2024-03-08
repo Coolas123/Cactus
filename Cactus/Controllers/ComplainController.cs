@@ -1,13 +1,9 @@
-﻿using Cactus.Infrastructure;
-using Cactus.Models.Database;
+﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 
 namespace Cactus.Controllers
 {

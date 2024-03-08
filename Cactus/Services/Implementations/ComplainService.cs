@@ -33,9 +33,8 @@ namespace Cactus.Services.Implementations
             Complain complain = new Complain
             {
                 SenderId = model.SenderId,
-                UserId = model.UserId,
-                PostId = model.PostId,
-                CommentId = model.CommentId,
+                ComplainTargetTypeId=model.ComplainTargetTypeId,
+                ComplainTargetId=model.ComplainTargetId,
                 Description = model.Description,
                 Created = model.Created.ToUniversalTime(),
                 ComplainStatusId = (int)Models.Enums.ComplainStatus.NotReviewed,

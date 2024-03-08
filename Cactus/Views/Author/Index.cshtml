@@ -142,7 +142,8 @@
                         <div class="modal-body">
                             <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
                                 <div asp-validation-summary="All" class="text-danger"></div>
-                                <input type="hidden" asp-for="NewComplain.UserId" value="@Model.CurrentUser.Id" />
+                                <input type="hidden" asp-for="NewComplain.ComplainTargetId" value="@Model.CurrentUser.Id" />
+                                <input type="hidden" asp-for="NewComplain.ComplainTargetTypeId" value="@((int)Cactus.Models.Enums.ComplainTargetType.User)" />
                                 <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
                                 <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
                                 <div>

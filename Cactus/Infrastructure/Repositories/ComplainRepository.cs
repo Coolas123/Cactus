@@ -1,6 +1,5 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
-using Cactus.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cactus.Infrastructure.Repositories

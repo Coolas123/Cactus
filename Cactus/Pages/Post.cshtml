@@ -73,8 +73,8 @@
                         <div class="modal-body">
                             <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
                                 <div asp-validation-summary="All" class="text-danger"></div>
-                                <input type="hidden" asp-for="NewComplain.CommentId"/>
-                                <input type="hidden" asp-for="NewComplain.PostId"/>
+                                <input type="hidden" asp-for="NewComplain.ComplainTargetId"/>
+                                <input type="hidden" asp-for="NewComplain.ComplainTargetTypeId"/>
                                 <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
                                 <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
                                 <div>
@@ -102,12 +102,14 @@
     function commentId() {
         var commentId = document.getElementById("commentId").value
         console.log(commentId)
-        document.getElementById('NewComplain_CommentId').value = commentId;
+        document.getElementById('NewComplain_ComplainTargetId').value = commentId;
+        document.getElementById('NewComplain_ComplainTargetTypeId').value=3
     }
     function postId() {
         var postId = document.getElementById("postId").value
         console.log(commentId)
-        document.getElementById('NewComplain_PostId').value = postId;
+        document.getElementById('NewComplain_ComplainTargetId').value = postId;
+        document.getElementById('NewComplain_ComplainTargetTypeId').value=1
     }
 </script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">

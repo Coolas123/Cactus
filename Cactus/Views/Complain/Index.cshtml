@@ -18,14 +18,14 @@
                     @foreach (var c in Model) {
                         <tr>
                             <td>@c.Created</td>
-                            @if (c.PostId != null) {
-                                <td>@(Cactus.Models.Enums.ContentType.Post.GetAttribute<DisplayAttribute>().Name)</td>
+                            @if (c.ComplainTargetTypeId == (int)Cactus.Models.Enums.ComplainTargetType.Post) {
+                                <td>@(Cactus.Models.Enums.ComplainTargetType.Post.GetAttribute<DisplayAttribute>().Name)</td>
                             }
-                            else if (c.UserId != null) {
-                                <td>@(Cactus.Models.Enums.ContentType.User.GetAttribute<DisplayAttribute>().Name)</td>
+                            else if (c.ComplainTargetTypeId == (int)Cactus.Models.Enums.ComplainTargetType.User) {
+                                <td>@(Cactus.Models.Enums.ComplainTargetType.User.GetAttribute<DisplayAttribute>().Name)</td>
                             }
-                            else if (c.CommentId != null) {
-                                <td>@(Cactus.Models.Enums.ContentType.Comment.GetAttribute<DisplayAttribute>().Name)</td>
+                            else if (c.ComplainTargetTypeId == (int)Cactus.Models.Enums.ComplainTargetType.Comment) {
+                                <td>@(Cactus.Models.Enums.ComplainTargetType.Comment.GetAttribute<DisplayAttribute>().Name)</td>
                             }
                             <td>@(((Cactus.Models.Enums.ComplainType)c.ComplainTypeId).GetAttribute<DisplayAttribute>().Name)</td>
                             <td>@(((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId).GetAttribute<DisplayAttribute>().Name)</td>

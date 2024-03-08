@@ -27,6 +27,8 @@ namespace Cactus.Models.Database
         public DbSet<Complain> Complains { get; set; }
         public DbSet<ComplainStatus> ComplainStatues { get; set; }
         public DbSet<ComplainType> ComplainTypes { get; set; }
+        public DbSet<MonetizationType> MonetizationTypes { get; set; }
+        public DbSet<ComplainTargetType> ComplainTargetTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -86,6 +88,19 @@ namespace Cactus.Models.Database
                 x.HasData([
                     new { Id = 1, Name = "Spam" },
                     new { Id = 2, Name = "Deception" },
+                ]);
+            });
+            builder.Entity<MonetizationType>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "OneTimePurchase" },
+                    new { Id = 2, Name = "SubLevel" },
+                ]);
+            });
+            builder.Entity<ComplainTargetType>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Post" },
+                    new { Id = 2, Name = "User" },
+                    new { Id = 3, Name = "Comment" },
                 ]);
             });
         }

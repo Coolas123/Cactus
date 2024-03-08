@@ -9,12 +9,6 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("sender_id")]
         public int SenderId { get; set; }
-        [Column("user_id")]
-        public int? UserId { get; set; }
-        [Column("post_id")]
-        public int? PostId { get; set; }
-        [Column("comment_id")]
-        public int? CommentId { get; set; }
         [Column("description")]
         public string? Description { get; set; }
         [Column("created")]
@@ -25,5 +19,9 @@ namespace Cactus.Models.Database
         public int ComplainStatusId { get; set; }
         [Column("complain_type_id")]
         public int ComplainTypeId { get; set; }
+        [Column("complain_target_type_id")]
+        public int ComplainTargetTypeId { get; set; }
+        [Column("complain_target_id")]
+        public int ComplainTargetId { get; set; }
     }
 }
