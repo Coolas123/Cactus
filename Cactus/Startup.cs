@@ -72,6 +72,8 @@ namespace Cactus
             services.AddScoped<IDonatorRepository, DonatorRepository>();
             services.AddScoped<IPostDonationOptionService, PostDonationOptionService>();
             services.AddScoped<IPostDonationOptionRepository, PostDonationOptionRepository>();
+            services.AddScoped<ISubLevelMaterialService, SubLevelMaterialService>();
+            services.AddScoped<ISubLevelMaterialRepository, SubLevelMaterialRepository>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

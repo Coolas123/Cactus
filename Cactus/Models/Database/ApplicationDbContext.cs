@@ -33,6 +33,7 @@ namespace Cactus.Models.Database
         public DbSet<DonationOption> DonationOptions { get; set; }
         public DbSet<Donator> Donators { get; set; }
         public DbSet<PostDonationOption> PostDonationOptions { get; set; }
+        public DbSet<SubLevelMaterial> SubLevelMaterials { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -66,7 +67,8 @@ namespace Cactus.Models.Database
                 [
                     new {Id=1,Name="Avatar" },
                     new {Id=2,Name="Banner" },
-                    new {Id=3,Name="PostPhoto" }
+                    new {Id=3,Name="PostPhoto" },
+                    new {Id=4,Name= "SubLevelCover" }
                 ]);
             });
             builder.Entity<PostTag>(x => {

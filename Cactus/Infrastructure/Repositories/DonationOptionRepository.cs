@@ -24,6 +24,10 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<DonationOption> GetByPriceAsync(decimal price) {
+            return await dbContext.DonationOptions.FirstOrDefaultAsync(x=>x.MinPrice== price);
+        }
+
         public async Task<IEnumerable<DonationOption>> GetOptionsAsync(int authorId) {
             return await dbContext.DonationOptions.Where(x=>x.AuthorId== authorId).ToListAsync();
         }

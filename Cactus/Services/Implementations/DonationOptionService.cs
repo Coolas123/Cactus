@@ -39,6 +39,21 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<DonationOption>> GetByPriceAsync(decimal price) {
+            DonationOption donationOption = await donationOptionRepository.GetByPriceAsync(price);
+            if (donationOption == null) {
+                return new BaseResponse<DonationOption>
+                {
+                    Description = "Опция не найдена"
+                };
+            }
+            return new BaseResponse<DonationOption>
+            {
+                Data= donationOption,
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<IEnumerable<DonationOption>>> GetOptionsAsync(int authorId) {
             IEnumerable<DonationOption> options =await donationOptionRepository.GetOptionsAsync(authorId);
             if (!options.Any()) {

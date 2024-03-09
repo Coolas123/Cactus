@@ -59,5 +59,7 @@ namespace Cactus.Models.ViewModels
 
         public PagingUninterestingAuthorsViewModel PagingUninterestingAuthors { get; set; }
 
+        public NewSubLevelDonationOptionViewModel NewSubLevelDonationOption { get;set; }
+
     }
 }

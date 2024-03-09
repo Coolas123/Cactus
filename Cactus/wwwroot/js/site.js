@@ -39,3 +39,17 @@ function AddPostPhoto(input) {
 $("#postPhoto").change(function () {
     AddPostPhoto(this);
 });
+
+function AddsubLevelCover(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onloadend = function (e) {
+            $('#mySubLevelCover').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$("#subLevelCover").change(function () {
+    AddsubLevelCover(this);
+});

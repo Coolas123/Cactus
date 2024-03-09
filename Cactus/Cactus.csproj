@@ -36,6 +36,7 @@
     <Folder Include="wwwroot\Files\Account\Avatars\" />
     <Folder Include="wwwroot\Files\Account\Banners\" />
     <Folder Include="wwwroot\Files\Posts\Photos\" />
+    <Folder Include="wwwroot\Files\SubLevel\" />
   </ItemGroup>
 
 </Project>

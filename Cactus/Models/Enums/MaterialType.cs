@@ -4,6 +4,7 @@
     {
         Avatar=1,
         Banner=2,
-        PostPhoto=3
+        PostPhoto=3,
+        SubLevelCover = 4
     }
 }
