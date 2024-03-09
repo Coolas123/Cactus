@@ -19,9 +19,10 @@ namespace Cactus.Controllers
         private readonly ICategoryService categoryService;
         private readonly IUninterestingAuthorService uninterestingAuthorService;
         private readonly IPostTagService postTagService;
+        private readonly IDonationOptionService donationOptionService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService,
-           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService) {
+           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService, IDonationOptionService donationOptionService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -29,6 +30,7 @@ namespace Cactus.Controllers
             this.categoryService = categoryService;
             this.uninterestingAuthorService = uninterestingAuthorService;
             this.postTagService = postTagService;
+            this.donationOptionService = donationOptionService;
         }
 
         [Route("{UrlPage}")]
@@ -59,6 +61,10 @@ namespace Cactus.Controllers
                     response.PostsPagingInfo = posts.Data.PostsPagingInfo;
                     response.Posts = posts.Data.Posts;
                 }
+                BaseResponse<IEnumerable<DonationOption>> options = await donationOptionService.GetOptionsAsync(author.Data.Id);
+                if (options.StatusCode == 200) {
+                    response.DonationOptions = options.Data;
+                }
                 BaseResponse<IEnumerable<Category>> categories = await categoryService.GetAll();
                 response.Categories = categories.Data;
             }
@@ -77,6 +83,8 @@ namespace Cactus.Controllers
             if(tags is not null)
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
 
+            if(model.SelectedDonationOption==0)
+                await donationOptionService.AddOptionAsync(model.NewDonationOption); 
 
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";

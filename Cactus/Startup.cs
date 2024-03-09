@@ -66,6 +66,8 @@ namespace Cactus
             services.AddScoped<INewsFeedService, NewsFeedService>();
             services.AddScoped<IComplainRepository, ComplainRepository>();
             services.AddScoped<IComplainService, ComplainService>();
+            services.AddScoped<IDonationOptionRepository, DonationOptionRepository>();
+            services.AddScoped<IDonationOptionService, DonationOptionService>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

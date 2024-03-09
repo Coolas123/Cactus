@@ -29,6 +29,9 @@ namespace Cactus.Models.Database
         public DbSet<ComplainType> ComplainTypes { get; set; }
         public DbSet<MonetizationType> MonetizationTypes { get; set; }
         public DbSet<ComplainTargetType> ComplainTargetTypes { get; set; }
+        public DbSet<DonationTargetType> DonationTargetTypes { get; set; }
+        public DbSet<DonationOption> DonationOptions { get; set; }
+        public DbSet<Donator> Donators { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -81,26 +84,32 @@ namespace Cactus.Models.Database
             builder.Entity<ComplainStatus>(x => {
                 x.HasData([
                     new { Id = 1, Name = "NotReviewed" },
-                    new { Id = 2, Name = "Reviewed" },
+                    new { Id = 2, Name = "Reviewed" }
                 ]);
             });
             builder.Entity<ComplainType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "Spam" },
-                    new { Id = 2, Name = "Deception" },
+                    new { Id = 2, Name = "Deception" }
                 ]);
             });
             builder.Entity<MonetizationType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "OneTimePurchase" },
-                    new { Id = 2, Name = "SubLevel" },
+                    new { Id = 2, Name = "SubLevel" }
                 ]);
             });
             builder.Entity<ComplainTargetType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "Post" },
                     new { Id = 2, Name = "User" },
-                    new { Id = 3, Name = "Comment" },
+                    new { Id = 3, Name = "Comment" }
+                ]);
+            });
+            builder.Entity<DonationTargetType>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Post" },
+                    new { Id = 2, Name = "User" }
                 ]);
             });
         }

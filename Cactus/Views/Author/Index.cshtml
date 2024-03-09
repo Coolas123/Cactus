@@ -111,7 +111,7 @@
                                 </div>
                                 <div>
                                     <label asp-for="Post.CategoryId">Выберите категорию</label>
-                                    <select class="form-control" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
+                                    <select class="form-select" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
                                 </div>
                                 <div>
                                     <label asp-for="Post.Tags">Выбранные теги поста</label>
@@ -120,6 +120,33 @@
                                     <input class="form-control" asp-for="Post.Tags" id="myTag" />
                                     <div class="text-end">
                                         <button class="btn btn-secondary m-1" type="button" id="postTag" onClick="getTag()">Добавить тег</button>
+                                    </div>
+                                </div>
+                                <hr />
+                                <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
+                                <div>
+                                    @if (Model.DonationOptions is not null) {
+                                        <h5>Созданные опции</h5>
+                                        <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(Model.DonationOptions, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
+                                            <option value="0" selected>Создать новую опцию</option>
+                                        </select>
+                                    }
+                                </div>
+                                <div id="newOption">
+                                    <div>
+                                        <h5>Добавить новый вид монетизации</h5>
+                                        <label asp-for="NewDonationOption.OptionName"></label>
+                                        <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                                    </div>
+                                    <div>
+                                        <label asp-for="NewDonationOption.Description"></label>
+                                        <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                                    </div>
+                                    <div>
+                                        <label>Введите сумму за просмотр поста</label>
+                                        <input class="form-control" asp-for="NewDonationOption.MinPrice" />
+                                        <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
+                                        <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -148,7 +175,7 @@
                                 <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
                                 <div>
                                     <label asp-for="NewComplain.ComplainTypeId"></label>
-                                    <select class="form-control m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
+                                    <select class="form-select m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
                                 </div>
                                 <div>
                                     <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
@@ -206,8 +233,12 @@
             document.getElementById("allTags").value += inputElement.value;
         }
     }
-
-    function alert() {
-        Swal.fire("SweetAlert2 is working!");
+    function newOption() {
+        var sel = document.getElementById('SelectedDonationOption')
+        var newOption = document.getElementById('newOption')
+        if (sel.value > 0) {
+            newOption.style.display = 'none'
+        }
+        else newOption.style.display = 'block'
     }
 </script>
