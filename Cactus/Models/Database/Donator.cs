@@ -9,8 +9,6 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_id")]
         public int UserId { get; set; }
-        [Column("author_id")]
-        public int AuthorId { get; set; }
         [Column("donation_target_id")]
         public int DonationTargetId { get; set; }
         [Column("donation_option_id")]

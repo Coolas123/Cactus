@@ -32,6 +32,7 @@ namespace Cactus.Models.Database
         public DbSet<DonationTargetType> DonationTargetTypes { get; set; }
         public DbSet<DonationOption> DonationOptions { get; set; }
         public DbSet<Donator> Donators { get; set; }
+        public DbSet<PostDonationOption> PostDonationOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -111,6 +112,9 @@ namespace Cactus.Models.Database
                     new { Id = 1, Name = "Post" },
                     new { Id = 2, Name = "User" }
                 ]);
+            });
+            builder.Entity<PostDonationOption>(x => {
+                x.HasKey(p => new { p.PostId, p.DonationOptionId });
             });
         }
     }
