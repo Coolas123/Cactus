@@ -2,6 +2,7 @@
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Services.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Cactus.Services.Implementations
 {
@@ -11,6 +12,29 @@ namespace Cactus.Services.Implementations
         public PostDonationOptionService(IPostDonationOptionRepository postDonationOptionRepository) {
             this.postDonationOptionRepository = postDonationOptionRepository;
         }
+
+        public async Task<BaseResponse<bool>> AddOptionToPostAsync(int postId, int optionId) {
+            var PostDonationOption = new PostDonationOption
+            {
+                PostId=postId,
+                DonationOptionId= optionId
+            };
+            try {
+                await postDonationOptionRepository.AddOptionToPostAsync(PostDonationOption);
+            }
+            catch (Exception ex) {
+                return new BaseResponse<bool>
+                {
+                    Description = "Не удалось добавить опцию"
+                };
+            }
+            return new BaseResponse<bool>
+            {
+                Data = true,
+                StatusCode=200
+            };
+        }
+
         public async Task<BaseResponse<PostDonationOption>> GetOption(int postId) {
             PostDonationOption option = await postDonationOptionRepository.GetOption(postId);
             if (option == null) {

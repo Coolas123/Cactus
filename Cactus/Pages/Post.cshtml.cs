@@ -66,15 +66,15 @@ namespace Cactus.Pages
                     PostTags = tags.Data;
                 }
 
-                BaseResponse<Donator> donator = await donatorService.GetDonator(post.Data.Id,(int)Models.Enums.DonationTargetType.Post,Convert.ToInt32(User.FindFirstValue("Id")));
-                if (donator.StatusCode == 200) {
-                    CurrentDonator = donator.Data;
-                }
-                else PostAccessDescription = donator.Description;
-
                 BaseResponse<PostDonationOption> donationOption = await postDonationOptionService.GetOption(post.Data.Id);
                 if (donationOption.StatusCode == 200) {
                     DonationOption = donationOption.Data;
+
+                    BaseResponse<Donator> donator = await donatorService.GetDonator(post.Data.Id, (int)Models.Enums.DonationTargetType.Post, Convert.ToInt32(User.FindFirstValue("Id")));
+                    if (donator.StatusCode == 200) {
+                        CurrentDonator = donator.Data;
+                    }
+                    else PostAccessDescription = donator.Description;
                 }
             }
             return Page ();

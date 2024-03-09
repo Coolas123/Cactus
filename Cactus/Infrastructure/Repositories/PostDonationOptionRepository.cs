@@ -12,6 +12,12 @@ namespace Cactus.Infrastructure.Repositories
             this.dbContext = dbContext;
         }
 
+        public async Task<bool> AddOptionToPostAsync(PostDonationOption entity) {
+            await dbContext.PostDonationOptions.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public Task<bool> CreateAsync(PostDonationOption entity) {
             throw new NotImplementedException();
         }

@@ -20,9 +20,11 @@ namespace Cactus.Controllers
         private readonly IUninterestingAuthorService uninterestingAuthorService;
         private readonly IPostTagService postTagService;
         private readonly IDonationOptionService donationOptionService;
+        private readonly IPostDonationOptionService postDonationOptionService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService,
-           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService, IDonationOptionService donationOptionService) {
+           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService, IDonationOptionService donationOptionService,
+           IPostDonationOptionService postDonationOptionService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -31,6 +33,7 @@ namespace Cactus.Controllers
             this.uninterestingAuthorService = uninterestingAuthorService;
             this.postTagService = postTagService;
             this.donationOptionService = donationOptionService;
+            this.postDonationOptionService = postDonationOptionService;
         }
 
         [Route("{UrlPage}")]
@@ -83,8 +86,12 @@ namespace Cactus.Controllers
             if(tags is not null)
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
 
-            if(model.SelectedDonationOption==0)
-                await donationOptionService.AddOptionAsync(model.NewDonationOption); 
+            if (model.SelectedDonationOption == 0) {
+                await donationOptionService.AddOptionAsync(model.NewDonationOption);
+            }
+            else {
+                await postDonationOptionService.AddOptionToPostAsync(post.Data.Id,model.SelectedDonationOption);
+            }
 
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";
