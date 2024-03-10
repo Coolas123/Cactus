@@ -16,7 +16,7 @@
             <h3 class="text-center">@Model.Post.Title</h3>
             <hr/>
         </div>
-        @if (Model.IsOwner||Model.DonationOption != null && Model.DonationOption.OptionName == Model.CurrentDonator?.DonationOption.OptionName) {
+        @if (Model.IsOwner||Model.DonationOption == null || Model.DonationOption?.OptionName == Model.CurrentDonator?.DonationOption.OptionName) {
             <div>
                 <img class="m-2" src="@Model.Material?.Path"/>
             </div>

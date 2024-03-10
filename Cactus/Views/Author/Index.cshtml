@@ -77,7 +77,7 @@
                 </a>
             </div>
         }
-        else {
+        else if (!Model.IsOwner) {
             <div class="text-center m-1">
                 <a class="btn btn-danger disabled">
                     Отписаться
@@ -125,28 +125,34 @@
                                 <hr />
                                 <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
                                 <div>
-                                    @if (Model.DonationOptions is not null) {
-                                        <h5>Созданные опции</h5>
-                                        <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(Model.DonationOptions, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
-                                            <option value="0" selected>Создать новую опцию</option>
-                                        </select>
-                                    }
+                                    <input onclick="freePost()" type="checkbox" class="btn-check btn-sm" asp-for="Post.IsFree" value="true" autocomplete="off">
+                                    <label class="btn btn-outline-danger" for="Post_IsFree">Сделать пост бесплатным</label>
                                 </div>
-                                <div id="newOption">
+                                <div id="notFree">
                                     <div>
-                                        <h5>Добавить новый вид монетизации</h5>
-                                        <label asp-for="NewDonationOption.OptionName"></label>
-                                        <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                                        @if (Model.DonationOptions is not null) {
+                                            <h5>Созданные опции</h5>
+                                            <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(Model.DonationOptions, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
+                                                <option value="0" selected>Создать новую опцию</option>
+                                            </select>
+                                        }
                                     </div>
-                                    <div>
-                                        <label asp-for="NewDonationOption.Description"></label>
-                                        <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
-                                    </div>
-                                    <div>
-                                        <label>Введите сумму за просмотр поста</label>
-                                        <input class="form-control" asp-for="NewDonationOption.MinPrice" />
-                                        <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
-                                        <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
+                                    <div id="newOption">
+                                        <div>
+                                            <h5>Добавить новый вид монетизации</h5>
+                                            <label asp-for="NewDonationOption.OptionName"></label>
+                                            <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                                        </div>
+                                        <div>
+                                            <label asp-for="NewDonationOption.Description"></label>
+                                            <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                                        </div>
+                                        <div>
+                                            <label>Введите сумму за просмотр поста</label>
+                                            <input class="form-control" asp-for="NewDonationOption.MinPrice" />
+                                            <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
+                                            <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -240,5 +246,13 @@
             newOption.style.display = 'none'
         }
         else newOption.style.display = 'block'
+    }
+    function freePost() {
+        var free = document.getElementById('Post_IsFree')
+        var notFree = document.getElementById('notFree')
+        if (free.value == "true") {
+            notFree.style.display = 'none'
+        }
+        else notFree.style.display = 'block'
     }
 </script>

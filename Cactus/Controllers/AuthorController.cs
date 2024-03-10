@@ -5,6 +5,7 @@ using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -88,9 +89,11 @@ namespace Cactus.Controllers
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
 
             if (model.SelectedDonationOption == 0) {
-                await donationOptionService.AddOptionAsync(model.NewDonationOption);
-                BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.MinPrice);
-                await postDonationOptionService.AddOptionToPostAsync(post.Data.Id,dbOption.Data.Id);
+                if (!model.Post.IsFree) {
+                    await donationOptionService.AddOptionAsync(model.NewDonationOption);
+                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.MinPrice);
+                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
+                }
             }
             else {
                 await postDonationOptionService.AddOptionToPostAsync(post.Data.Id,model.SelectedDonationOption);

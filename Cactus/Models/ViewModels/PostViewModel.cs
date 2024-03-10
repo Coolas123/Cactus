@@ -17,5 +17,7 @@ namespace Cactus.Models.ViewModels
         [Display(Name = "Теги поста")]
         [RegularExpression(@"#\\?[A-Za-zа-яА-Я]+", ErrorMessage = "Тег должен состоять из букв без спец символов в конце")]
         public string? Tags { get; set; }
+        [Display(Name = "Сделать пост бесплатным?")]
+        public bool IsFree { get; set; }
     }
 }
