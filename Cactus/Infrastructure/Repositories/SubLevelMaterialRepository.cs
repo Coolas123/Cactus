@@ -23,6 +23,9 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.SubLevelMaterials.FirstOrDefaultAsync(x=>x.Id==id);
         }
 
+        public async Task<IEnumerable<SubLevelMaterial>> GetMaterialsAsync(int authorId) {
+            return await dbContext.SubLevelMaterials.Include(x => x.DonationOption).Where(x => x.DonationOption.AuthorId == authorId).ToListAsync();
+        }
 
         public Task<IEnumerable<SubLevelMaterial>> SelectAsync() {
             throw new NotImplementedException();

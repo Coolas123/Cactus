@@ -70,13 +70,6 @@
                 </button>
             </div>
         }
-        @if (!Model.IsSubscribe && !Model.IsOwner) {
-            <div class="text-center m-1">
-                <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
-                    Подписаться
-                </a>
-            </div>
-        }
         else if (!Model.IsOwner) {
             <div class="text-center m-1">
                 <a class="btn btn-danger disabled">
@@ -219,6 +212,30 @@
         <div page-model="@Model.PostsPagingInfo" page-action="Index" type-page="postPage"
              page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
              page-class-selected="btn-primary" class="btn-group pull-right m-1">
+        </div>
+        <div>
+            @if (Model.DonationOptions != null) {
+                <h3>Уровни подписки</h3>
+                @if (!Model.IsSubscribe && !Model.IsOwner) {
+                    <div class="text-center m-1">
+                        <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                            Подписаться бесплатно
+                        </a>
+                    </div>
+                }
+                int count = 1;
+                foreach (var o in Model.DonationOptions) {
+                    if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
+                        <div>
+                            <h4>@o.OptionName</h4>
+                            <p>@o.MinPrice</p>
+                            @await Component.InvokeAsync("CoverPath", new { o.Id })
+                            <p>@count-й уровень</p>
+                        </div>
+                        count++;
+                    }
+                }
+            }
         </div>
     </div>
 </div>

@@ -1,9 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
-using Cactus.Infrastructure.Repositories;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Cactus.Services.Implementations
 {
@@ -27,6 +25,21 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<SubLevelMaterial>
             {
                 Data= material,
+                StatusCode= 200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<SubLevelMaterial>>> GetMaterialsAsync(int authorId) {
+            IEnumerable<SubLevelMaterial> materials = await subLevelMaterialRpository.GetMaterialsAsync(authorId);
+            if (materials == null) {
+                return new BaseResponse<IEnumerable<SubLevelMaterial>>
+                {
+                    Description = "Подписки не найдены"
+                };
+            }
+            return new BaseResponse<IEnumerable<SubLevelMaterial>>
+            {
+                Data= materials,
                 StatusCode= 200
             };
         }

@@ -7,5 +7,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<string>> UpdateCoverAsync(IFormFile file, int id);
         Task<BaseResponse<SubLevelMaterial>> GetCover(int id);
+        Task<BaseResponse<IEnumerable<SubLevelMaterial>>> GetMaterialsAsync(int authorId);
     }
 }

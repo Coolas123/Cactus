@@ -4,7 +4,6 @@ using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Cactus.Components
 {

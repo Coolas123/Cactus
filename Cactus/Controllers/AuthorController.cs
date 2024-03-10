@@ -1,11 +1,9 @@
-﻿using Cactus.Infrastructure.Repositories;
-using Cactus.Models.Database;
+﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -98,6 +96,8 @@ namespace Cactus.Controllers
             else {
                 await postDonationOptionService.AddOptionToPostAsync(post.Data.Id,model.SelectedDonationOption);
             }
+
+
 
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";

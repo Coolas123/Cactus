@@ -129,9 +129,9 @@
                             <textarea class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></textarea>
                         </div>
                         <div>
-                            <label>Введите сумму за просмотр поста</label>
+                            <label>Введите сумму подписки</label>
                             <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.MinPrice" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
+                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.SubLevel)" />
                             <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
                         </div>
                         <button class="btn btn-danger" type="submit">Сохранить</button>
