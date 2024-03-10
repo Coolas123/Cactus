@@ -16,7 +16,7 @@ namespace Cactus.Services.Implementations
             if (donator == null) {
                 return new BaseResponse<Donator>
                 {
-                    Description="Пост не доступен"
+                    Description="Пост недоступен"
                 };
             }
             return new BaseResponse<Donator>

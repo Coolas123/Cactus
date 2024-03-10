@@ -9,8 +9,11 @@ namespace Cactus.Services.Implementations
     public class DonationOptionService : IDonationOptionService
     {
         private readonly IDonationOptionRepository donationOptionRepository;
-        public DonationOptionService(IDonationOptionRepository donationOptionRepository) {
+        private readonly IPostDonationOptionService postDonationOptionService;
+        public DonationOptionService(IDonationOptionRepository donationOptionRepository,
+            IPostDonationOptionService postDonationOptionService) {
             this.donationOptionRepository = donationOptionRepository;
+            this.postDonationOptionService = postDonationOptionService;
         }
 
         public async Task<BaseResponse<bool>> AddOptionAsync(NewDonationOption model) {

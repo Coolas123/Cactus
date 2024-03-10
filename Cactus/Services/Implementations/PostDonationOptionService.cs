@@ -35,17 +35,17 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<PostDonationOption>> GetOption(int postId) {
+        public async Task<BaseResponse<DonationOption>> GetOption(int postId) {
             PostDonationOption option = await postDonationOptionRepository.GetOption(postId);
             if (option == null) {
-                return new BaseResponse<PostDonationOption>
+                return new BaseResponse<DonationOption>
                 {
                     Description="Пост бесплатный"
                 };
             }
-            return new BaseResponse<PostDonationOption>
+            return new BaseResponse<DonationOption>
             {
-                Data=option,
+                Data=option.DonationOption,
                 StatusCode=200
             };
         }

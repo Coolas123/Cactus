@@ -38,7 +38,7 @@ namespace Cactus.Pages
         public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
         public string CommentDescription {  get; set; }
         public NewComplainViewModel NewComplain { get; set; }
-        public PostDonationOption DonationOption { get; set; }
+        public DonationOption DonationOption { get; set; }
         public Donator CurrentDonator { get; set; }
         public string PostAccessDescription { get; set; }
         public bool IsOwner { get; set; }
@@ -66,7 +66,7 @@ namespace Cactus.Pages
                     PostTags = tags.Data;
                 }
 
-                BaseResponse<PostDonationOption> donationOption = await postDonationOptionService.GetOption(post.Data.Id);
+                BaseResponse<DonationOption> donationOption = await postDonationOptionService.GetOption(post.Data.Id);
                 if (donationOption.StatusCode == 200) {
                     DonationOption = donationOption.Data;
 

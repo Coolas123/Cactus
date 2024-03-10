@@ -2,7 +2,7 @@
 @model PagingAuthorViewModel
 
 <div>
-    @await Component.InvokeAsync("BannerPath", new {Model.CurrentUser.Id})
+    @await Component.InvokeAsync("BannerPath", new {Model.CurrentUser?.Id})
 </div>
 <div class="row">
     <div class="col">

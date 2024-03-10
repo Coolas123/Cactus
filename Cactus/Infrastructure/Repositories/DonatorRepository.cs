@@ -25,6 +25,7 @@ namespace Cactus.Infrastructure.Repositories
         public async Task<Donator> GetDonator(int targetId, int typeId, int userId) {
             return await dbContext
                 .Donators
+                .Include(x=>x.DonationOption)
                 .FirstOrDefaultAsync(x=>
                     x.DonationTargetId== targetId&&
                     x.DonationTargetTypeId==typeId&&

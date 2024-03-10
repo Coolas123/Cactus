@@ -13,6 +13,7 @@ namespace Cactus.Models.Database
         public int DonationTargetId { get; set; }
         [Column("donation_option_id")]
         public int DonationOptionId { get; set; }
+        public DonationOption DonationOption { get; set; }
         [Column("donation_target_type_id")]
         public int DonationTargetTypeId { get; set; }
         [Column("total_amount")]

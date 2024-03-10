@@ -9,5 +9,6 @@ namespace Cactus.Models.Database
         public int PostId { get; set; }
         [Column("donation_option_id")]
         public int DonationOptionId { get; set; }
+        public DonationOption DonationOption { get; set; }
     }
 }
