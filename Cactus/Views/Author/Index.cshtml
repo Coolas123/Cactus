@@ -142,7 +142,7 @@
                                         </div>
                                         <div>
                                             <label>Введите сумму за просмотр поста</label>
-                                            <input class="form-control" asp-for="NewDonationOption.MinPrice" />
+                                            <input class="form-control" asp-for="NewDonationOption.Price" />
                                             <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
                                             <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
                                         </div>
@@ -228,7 +228,7 @@
                     if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
                         <div>
                             <h4>@o.OptionName</h4>
-                            <p>@o.MinPrice</p>
+                            <p>@o.Price</p>
                             @await Component.InvokeAsync("CoverPath", new { o.Id })
                             <p>@count-й уровень</p>
                         </div>

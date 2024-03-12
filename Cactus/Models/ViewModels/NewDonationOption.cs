@@ -9,11 +9,9 @@ namespace Cactus.Models.ViewModels
         public string Description { get; set; }
         [Display(Name = "Название опции")]
         public string OptionName { get; set; }
-        [Display(Name = "Миниальная цена")]
-        public decimal MinPrice { get; set; }
+        [Display(Name = "Цена")]
+        public decimal Price { get; set; }
         [Display(Name = "Максимальная цена")]
-        public decimal MaxPrice { get; set; }
-        [Display(Name = "Тип монетизации")]
         public int MonetizationTypeId { get; set; }
     }
 }

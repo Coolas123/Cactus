@@ -13,10 +13,8 @@ namespace Cactus.Models.Database
         public string Description { get; set; }
         [Column("option_name")]
         public string OptionName { get; set; }
-        [Column("min_price")]
-        public decimal MinPrice { get; set; }
-        [Column("max_price")]
-        public decimal MaxPrice { get; set; }
+        [Column("price")]
+        public decimal Price { get; set; }
         [Column("monetization_type_id")]
         public int MonetizationTypeId { get; set; }
     }

@@ -89,7 +89,7 @@ namespace Cactus.Controllers
             if (model.SelectedDonationOption == 0) {
                 if (!model.Post.IsFree) {
                     await donationOptionService.AddOptionAsync(model.NewDonationOption);
-                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.MinPrice);
+                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
                     await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
                 }
             }

@@ -16,7 +16,9 @@
                 @if (User.IsInRole("User")) {
                     <button class="btn btn-outline-secondary m-1" id="v-pills-UninterestingAuthors-tab" data-bs-toggle="pill" data-bs-target="#v-pills-UninterestingAuthors" type="button" role="tab" aria-controls="v-pills-UninterestingAuthors" aria-selected="true">Список неинтересного</button>
                 }
-                <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
+                @if (User.IsInRole("Author")){
+                    <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
+                }
             </div>
         </div>
 
@@ -130,7 +132,7 @@
                         </div>
                         <div>
                             <label>Введите сумму подписки</label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.MinPrice" />
+                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Price" />
                             <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.SubLevel)" />
                             <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
                         </div>

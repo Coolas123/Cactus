@@ -25,7 +25,7 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<DonationOption> GetByPriceAsync(decimal price) {
-            return await dbContext.DonationOptions.FirstOrDefaultAsync(x=>x.MinPrice== price);
+            return await dbContext.DonationOptions.FirstOrDefaultAsync(x=>x.Price== price);
         }
 
         public async Task<IEnumerable<DonationOption>> GetOptionsAsync(int authorId) {

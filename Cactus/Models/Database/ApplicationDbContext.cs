@@ -112,7 +112,8 @@ namespace Cactus.Models.Database
             builder.Entity<DonationTargetType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "Post" },
-                    new { Id = 2, Name = "User" }
+                    new { Id = 2, Name = "Author" },
+                    new { Id = 3, Name = "Goal" }
                 ]);
             });
             builder.Entity<PostDonationOption>(x => {

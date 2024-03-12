@@ -22,8 +22,7 @@ namespace Cactus.Services.Implementations
                 AuthorId = model.AuthorId,
                 Description = model.Description,
                 OptionName = model.OptionName,
-                MinPrice = model.MinPrice,
-                MaxPrice = model.MinPrice>model.MaxPrice? model.MinPrice: model.MaxPrice,
+                Price = model.Price,
                 MonetizationTypeId = model.MonetizationTypeId
             };
             try {

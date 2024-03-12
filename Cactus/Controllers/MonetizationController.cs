@@ -3,11 +3,13 @@ using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
 namespace Cactus.Controllers
 {
+    [Authorize(Roles = "Author")]
     [AutoValidateAntiforgeryToken]
     public class MonetizationController:Controller
     {
@@ -23,7 +25,7 @@ namespace Cactus.Controllers
         public async Task<IActionResult> AddSubLevel(SettingViewModel model) {
             await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
             if (model.NewSubLevelDonationOption.CoverFile != null) {
-                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.NewSubLevelDonationOption.NewDonationOption.MinPrice);
+                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.NewSubLevelDonationOption.NewDonationOption.Price);
                 if (donationOption.StatusCode == 200) {
                     await subLevelMaterialServices.UpdateCoverAsync(model.NewSubLevelDonationOption.CoverFile, donationOption.Data.Id);
                 }
