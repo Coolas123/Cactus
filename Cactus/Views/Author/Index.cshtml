@@ -24,6 +24,31 @@
              page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
              page-class-selected="btn-primary" class="btn-group pull-right m-1">
         </div>
+        <div class="row">
+            <div class="col">
+                @if (Model.DonationOptions != null) {
+                    <h3>Цели</h3>
+                    <hr/>
+                    foreach (var o in Model.DonationOptions) {
+                        if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
+                            <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                                <h4>@o.OptionName</h4>
+                                <p>@o.Description</p>
+                                <hr />
+                                @if (@Model.CollectedGoal.ContainsKey(o.Id)) {
+                                    <p>@Model.CollectedGoal[o.Id]/@o.Price собрано</p>
+                                }
+                                else {
+                                    <p>0/@o.Price собрано</p>
+                                }
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
     </div>
     <div class="col">
         @if (ViewData["ComplainError"] != null) {
@@ -213,29 +238,35 @@
              page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
              page-class-selected="btn-primary" class="btn-group pull-right m-1">
         </div>
-        <div>
-            @if (Model.DonationOptions != null) {
-                <h3>Уровни подписки</h3>
-                @if (!Model.IsSubscribe && !Model.IsOwner) {
-                    <div class="text-center m-1">
-                        <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
-                            Подписаться бесплатно
-                        </a>
-                    </div>
-                }
-                int count = 1;
-                foreach (var o in Model.DonationOptions) {
-                    if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
-                        <div>
-                            <h4>@o.OptionName</h4>
-                            <p>@o.Price</p>
-                            @await Component.InvokeAsync("CoverPath", new { o.Id })
-                            <p>@count-й уровень</p>
+        <div class="row">
+            <div class="col">
+                @if (Model.DonationOptions != null) {
+                    <h3>Уровни подписки</h3>
+                    @if (!Model.IsSubscribe && !Model.IsOwner) {
+                        <div class="text-center m-1">
+                            <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                                Подписаться бесплатно
+                            </a>
                         </div>
-                        count++;
+                    }
+                    int count = 1;
+                    foreach (var o in Model.DonationOptions) {
+                        if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
+                            <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                                <h4>@o.OptionName</h4>
+                                @await Component.InvokeAsync("CoverPath", new { o.Id })
+                                <p>@o.Description</p>
+                                <p>@count-й уровень</p>
+                                <hr/>
+                                <p>Цена @o.Price</p>
+                            </div>
+                            count++;
+                        }
                     }
                 }
-            }
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
         </div>
     </div>
 </div>

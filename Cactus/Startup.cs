@@ -70,10 +70,12 @@ namespace Cactus
             services.AddScoped<IDonationOptionService, DonationOptionService>();
             services.AddScoped<IDonatorService, DonatorService>();
             services.AddScoped<IDonatorRepository, DonatorRepository>();
-            services.AddScoped<IPostDonationOptionService, PostDonationOptionService>();
-            services.AddScoped<IPostDonationOptionRepository, PostDonationOptionRepository>();
             services.AddScoped<ISubLevelMaterialService, SubLevelMaterialService>();
             services.AddScoped<ISubLevelMaterialRepository, SubLevelMaterialRepository>();
+            services.AddScoped<IPaidAuthorSubscribeService, PaidAuthorSubscribeService>();
+            services.AddScoped<IPaidAuthorSubscribeRepository, PaidAuthorSubscribeRepository>();
+            services.AddScoped<IPostDonationOptionService, PostDonationOptionService>();
+            services.AddScoped<IPostDonationOptionRepository, PostDonationOptionRepository>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

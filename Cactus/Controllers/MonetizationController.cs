@@ -1,11 +1,9 @@
 ﻿using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 
 namespace Cactus.Controllers
 {
@@ -30,6 +28,12 @@ namespace Cactus.Controllers
                     await subLevelMaterialServices.UpdateCoverAsync(model.NewSubLevelDonationOption.CoverFile, donationOption.Data.Id);
                 }
             }
+            return Redirect("/");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGoal(SettingViewModel model) {
+            await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
             return Redirect("/");
         }
     }

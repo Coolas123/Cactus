@@ -31,7 +31,7 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<PostDonationOption> GetOption(int postId) {
-            return await dbContext.PostDonationOptions.Include(x=>x.DonationOption).FirstOrDefaultAsync(x=>x.PostId==postId);
+            return await dbContext.PostDonationOptions.Include(x => x.DonationOption).FirstOrDefaultAsync(x => x.PostId == postId);
         }
 
         public Task<IEnumerable<PostDonationOption>> SelectAsync() {

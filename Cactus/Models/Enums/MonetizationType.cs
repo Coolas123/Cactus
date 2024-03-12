@@ -8,6 +8,8 @@ namespace Cactus.Models.Enums
         [Display(Name = "Разовая покупка")]
         OneTimePurchase =1,
         [Display(Name = "Уровень подписки")]
-        SubLevel =2
+        SubLevel =2,
+        [Display(Name = "Цель")]
+        Goal =3
     }
 }

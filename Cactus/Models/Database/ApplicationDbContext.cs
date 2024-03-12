@@ -34,6 +34,7 @@ namespace Cactus.Models.Database
         public DbSet<Donator> Donators { get; set; }
         public DbSet<PostDonationOption> PostDonationOptions { get; set; }
         public DbSet<SubLevelMaterial> SubLevelMaterials { get; set; }
+        public DbSet<PaidAuthorSubscribe> PaidAuthorSubscribes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -99,7 +100,8 @@ namespace Cactus.Models.Database
             builder.Entity<MonetizationType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "OneTimePurchase" },
-                    new { Id = 2, Name = "SubLevel" }
+                    new { Id = 2, Name = "SubLevel" },
+                    new { Id = 3, Name = "Goal" }
                 ]);
             });
             builder.Entity<ComplainTargetType>(x => {
@@ -112,8 +114,7 @@ namespace Cactus.Models.Database
             builder.Entity<DonationTargetType>(x => {
                 x.HasData([
                     new { Id = 1, Name = "Post" },
-                    new { Id = 2, Name = "Author" },
-                    new { Id = 3, Name = "Goal" }
+                    new { Id = 2, Name = "Author" }
                 ]);
             });
             builder.Entity<PostDonationOption>(x => {

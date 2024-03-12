@@ -2,7 +2,6 @@
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Services.Interfaces;
-using Microsoft.Extensions.Options;
 
 namespace Cactus.Services.Implementations
 {
@@ -16,8 +15,8 @@ namespace Cactus.Services.Implementations
         public async Task<BaseResponse<bool>> AddOptionToPostAsync(int postId, int optionId) {
             var PostDonationOption = new PostDonationOption
             {
-                PostId=postId,
-                DonationOptionId= optionId
+                PostId = postId,
+                DonationOptionId = optionId
             };
             try {
                 await postDonationOptionRepository.AddOptionToPostAsync(PostDonationOption);
@@ -31,7 +30,7 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<bool>
             {
                 Data = true,
-                StatusCode=200
+                StatusCode = 200
             };
         }
 
@@ -40,13 +39,13 @@ namespace Cactus.Services.Implementations
             if (option == null) {
                 return new BaseResponse<DonationOption>
                 {
-                    Description="Пост бесплатный"
+                    Description = "Пост бесплатный"
                 };
             }
             return new BaseResponse<DonationOption>
             {
-                Data=option.DonationOption,
-                StatusCode=200
+                Data = option.DonationOption,
+                StatusCode = 200
             };
         }
     }

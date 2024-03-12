@@ -25,5 +25,20 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<Dictionary<int, decimal>>> GetCollectedSumOfGoals(List<int> optionId) {
+            Dictionary<int,decimal> donators = await donatorRepository.GetCollectedSumOfGoals(optionId);
+            if (donators == null) {
+                return new BaseResponse<Dictionary<int, decimal>>
+                {
+                    Description = ""
+                };
+            }
+            return new BaseResponse<Dictionary<int, decimal>>
+            {
+                Data = donators,
+                StatusCode = 200
+            };
+        }
     }
 }

@@ -21,10 +21,11 @@ namespace Cactus.Controllers
         private readonly IPostTagService postTagService;
         private readonly IDonationOptionService donationOptionService;
         private readonly IPostDonationOptionService postDonationOptionService;
+        private readonly IDonatorService donatorService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService,
            IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService, IDonationOptionService donationOptionService,
-           IPostDonationOptionService postDonationOptionService) {
+           IPostDonationOptionService postDonationOptionService, IDonatorService donatorService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -34,6 +35,7 @@ namespace Cactus.Controllers
             this.postTagService = postTagService;
             this.donationOptionService = donationOptionService;
             this.postDonationOptionService = postDonationOptionService;
+            this.donatorService = donatorService;
         }
 
         [Route("{UrlPage}")]
@@ -67,6 +69,11 @@ namespace Cactus.Controllers
                 BaseResponse<IEnumerable<DonationOption>> options = await donationOptionService.GetOptionsAsync(author.Data.Id);
                 if (options.StatusCode == 200) {
                     response.DonationOptions = options.Data;
+                }
+                List<int> goals = options.Data.Where(x => x.MonetizationTypeId == (int)Models.Enums.MonetizationType.Goal).Select(x=>x.Id).ToList();
+                BaseResponse<Dictionary<int, decimal>> donators = await donatorService.GetCollectedSumOfGoals(goals);
+                if (donators.StatusCode == 200) {
+                    response.CollectedGoal=donators.Data;
                 }
                 BaseResponse<IEnumerable<Category>> categories = await categoryService.GetAll();
                 response.Categories = categories.Data;

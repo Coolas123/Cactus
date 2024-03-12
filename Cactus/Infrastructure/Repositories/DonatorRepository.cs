@@ -22,6 +22,14 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<Dictionary<int, decimal>> GetCollectedSumOfGoals(List<int> optionId) {
+            return await dbContext.Donators.Where(x =>
+                    optionId.Contains(x.DonationOptionId))
+                .GroupBy(x => new { x.DonationOptionId })
+                .Select(x => new KeyValuePair<int, decimal>(x.Key.DonationOptionId, x.Sum(x=>x.TotalAmount)))
+                .ToDictionaryAsync(p => p.Key, p => p.Value);
+        }
+
         public async Task<Donator> GetDonator(int targetId, int typeId, int userId) {
             return await dbContext
                 .Donators

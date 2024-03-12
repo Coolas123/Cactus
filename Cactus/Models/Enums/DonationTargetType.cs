@@ -3,7 +3,6 @@
     public enum DonationTargetType
     {
         Post=1,
-        Author=2,
-        Goal = 3
+        Author=2
     }
 }
