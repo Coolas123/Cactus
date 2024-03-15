@@ -157,6 +157,25 @@
                         </div>
                         <button class="btn btn-danger" type="submit">Сохранить</button>
                     </form>
+
+                    <form asp-action="AddRemittance" asp-controller="Monetization" method="post">
+                        <div>
+                            <h5>Добавить перевод</h5>
+                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName"></label>
+                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName" />
+                        </div>
+                        <div>
+                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></label>
+                            <textarea class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></textarea>
+                        </div>
+                        <div>
+                            <label>Введите минимальную сумму перевода</label>
+                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Price" />
+                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Remittance)" />
+                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                        </div>
+                        <button class="btn btn-danger" type="submit">Сохранить</button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -20,5 +20,6 @@ namespace Cactus.Models.ViewModels
         public NewDonationOption NewDonationOption { get; set; }
         public int SelectedDonationOption { get; set; }
         public Dictionary<int,decimal> CollectedGoal {  get; set; }
+        public Dictionary<int,decimal> NewRemittance {  get; set; }
     }
 }

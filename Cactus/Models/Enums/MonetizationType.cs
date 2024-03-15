@@ -10,6 +10,8 @@ namespace Cactus.Models.Enums
         [Display(Name = "Уровень подписки")]
         SubLevel =2,
         [Display(Name = "Цель")]
-        Goal =3
+        Goal =3,
+        [Display(Name = "Перевод")]
+        Remittance = 4,
     }
 }

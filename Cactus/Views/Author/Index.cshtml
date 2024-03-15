@@ -102,12 +102,22 @@
                 </a>
             </div>
         }
+        @{
+            var opt = Model.DonationOptions.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
+            if (opt.Any()) {
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
+                        Отправить донат
+                    </button>
+                </div>
+            }
+        }
         <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Стать автором</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Создать пост</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -182,6 +192,30 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="modal fade" id="remittanceModal" tabindex="-1" aria-labelledby="remittanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="remittanceModalLabel">Отправить донат</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-controller="Author" asp-action="AddPost" method="post" enctype="multipart/form-data">
+                                <div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Опубликовать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="modal fade" id="complainModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

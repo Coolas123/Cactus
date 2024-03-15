@@ -28,13 +28,19 @@ namespace Cactus.Controllers
                     await subLevelMaterialServices.UpdateCoverAsync(model.NewSubLevelDonationOption.CoverFile, donationOption.Data.Id);
                 }
             }
-            return Redirect("/");
+            return RedirectToAction("Index","Setting");
         }
 
         [HttpPost]
         public async Task<IActionResult> AddGoal(SettingViewModel model) {
             await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
-            return Redirect("/");
+            return RedirectToAction("Index", "Setting");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRemittance(SettingViewModel model) {
+            await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
+            return RedirectToAction("Index", "Setting");
         }
     }
 }

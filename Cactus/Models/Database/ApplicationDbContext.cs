@@ -35,6 +35,13 @@ namespace Cactus.Models.Database
         public DbSet<PostDonationOption> PostDonationOptions { get; set; }
         public DbSet<SubLevelMaterial> SubLevelMaterials { get; set; }
         public DbSet<PaidAuthorSubscribe> PaidAuthorSubscribes { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Currencie> Currencies { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PayMethod> PayMethods { get; set; }
+        public DbSet<TransactionType> TransactionTypes { get; set; }
+        public DbSet<TransactionStatus> TransactionStatues { get; set; }
+        public DbSet<PayMethodSetting> PayMethodSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -60,7 +67,8 @@ namespace Cactus.Models.Database
             {
                 x.HasData(
                 [
-                    new {Id=1,Name="Russia" }
+                    new {Id=1,Name="Russia" },
+                    new {Id=2,Name="USA" }
                 ]);
             });
             builder.Entity<MaterialType>(x => {
@@ -101,7 +109,8 @@ namespace Cactus.Models.Database
                 x.HasData([
                     new { Id = 1, Name = "OneTimePurchase" },
                     new { Id = 2, Name = "SubLevel" },
-                    new { Id = 3, Name = "Goal" }
+                    new { Id = 3, Name = "Goal" },
+                    new { Id = 4, Name = "Remittance" }
                 ]);
             });
             builder.Entity<ComplainTargetType>(x => {
@@ -119,6 +128,40 @@ namespace Cactus.Models.Database
             });
             builder.Entity<PostDonationOption>(x => {
                 x.HasKey(p => new { p.PostId, p.DonationOptionId });
+            });
+            builder.Entity<Currencie>(x => {
+                x.HasData([
+                    new { Id = 1, CountryId = (int)Models.Enums.Country.Russia,Symbol= "₽" },
+                    new { Id = 2, CountryId = (int)Models.Enums.Country.USA, Symbol = "$" }
+                ]);
+            });
+            builder.Entity<PayMethodSetting>(x => {
+                x.HasData([
+                    new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)100000, MonthlyWithdrawLimit = (decimal)1000000 },
+                    new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000 }
+                ]);
+            });
+            builder.Entity<PayMethod>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Balance", PayMethodSettingId=1 },
+                    new { Id = 2, Name = "Visa", PayMethodSettingId=2 },
+                    new { Id = 3, Name = "MasterCard", PayMethodSettingId=2 },
+                    new { Id = 4, Name = "Mir", PayMethodSettingId=2 }
+                ]);
+            });
+            builder.Entity<TransactionType>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Replenish" },
+                    new { Id = 2, Name = "Withdraw" },
+                    new { Id = 3, Name = "IntrasystemOperations" }
+                ]);
+            });
+            builder.Entity<TransactionStatus>(x => {
+                x.HasData([
+                    new { Id = 1, Name = "Sended" },
+                    new { Id = 2, Name = "InProcess" },
+                    new { Id = 3, Name = "Received" }
+                ]);
             });
         }
     }
