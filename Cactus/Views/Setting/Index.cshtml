@@ -18,6 +18,7 @@
                 }
                 @if (User.IsInRole("Author")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
+                    <button class="btn btn-outline-secondary m-1" id="v-pills-Wallet-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Wallet" type="button" role="tab" aria-controls="v-pills-Wallet" aria-selected="true">Настройка кошелька</button>
                 }
             </div>
         </div>
@@ -177,6 +178,29 @@
                         <button class="btn btn-danger" type="submit">Сохранить</button>
                     </form>
                 </div>
+                @if (User.IsInRole("Author"))
+                {
+                    <div class="tab-pane fade" id="v-pills-Wallet" role="tabpanel" aria-labelledby="v-pills-Wallet-tab">
+                        <div>
+                            <form method="post" asp-controller="wallet" asp-action="replenishWallet">
+                                <div>
+                                    <label asp-for="NewTransaction.PayMethodId"></label>
+                                    <select class="form-select" asp-for="NewTransaction.PayMethodId" asp-items="@(new SelectList(Model?.PayMethods, nameof(Cactus.Models.Database.PayMethod.Id), nameof(Cactus.Models.Database.PayMethod.Name)))"></select>
+                                    <p id="payMethodLabel">Комиссия 1 %</p>
+                                </div>
+                                <label asp-for="NewTransaction.Sended"></label>
+                                <div class="d-flex ">
+                                    <input class="form-control" oninput="getReceived()" asp-for="NewTransaction.Sended" />
+                                    <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
+                                </div>
+                                <div>
+                                    <label asp-for="NewTransaction.Received"></label>
+                                    <input class="form-control" asp-for="NewTransaction.Received" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
         <div class="col">
@@ -185,3 +209,9 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function getReceived() {
+        var selectElement = document.getElementById("NewTransaction_Sended");
+        document.getElementById("NewTransaction_Received").value = selectElement.value-selectElement.value/100;
+    }
+</script>

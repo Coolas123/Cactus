@@ -11,5 +11,6 @@ namespace Cactus.Models.Database
         public string Name { get; set; }
         [Column("pay_method_setting_id")]
         public int PayMethodSettingId { get; set; }
+        public PayMethodSetting PayMethodSetting { get; set; }
     }
 }

@@ -22,16 +22,20 @@ namespace Cactus.Controllers
         private readonly IUserService userService;
         private readonly IAuthorService authorService;
         private readonly IUninterestingAuthorService uninterestingAuthorService;
+        private readonly IPayMethodService payMethodService;
+        private readonly IWalletService walletService;
 
         public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
-            IUserRepository userRepository, IAuthorService authorService,
-            IUninterestingAuthorService uninterestingAuthorService) {
+            IUserRepository userRepository, IAuthorService authorService, IWalletService walletService,
+            IUninterestingAuthorService uninterestingAuthorService, IPayMethodService payMethodService) {
 
             this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.authorService = authorService;
             this.uninterestingAuthorService = uninterestingAuthorService;
+            this.payMethodService = payMethodService;
+            this.walletService = walletService;
         }
         public async Task<IActionResult> Index(int UninterestingPage=1) {
             SettingViewModel profile= new SettingViewModel();
@@ -62,7 +66,15 @@ namespace Cactus.Controllers
                 BaseResponse<Author> author = await authorService.GetAsync(userId);
                 if(author.StatusCode==200)
                     profile.Author = author.Data;
+
+                BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetReplenishMethods();
+                if (methods.StatusCode == 200) {
+                    profile.PayMethods = methods.Data;
+                }
             }
+            BaseResponse<Wallet> wallet = await walletService.GetWallet(userId);
+            profile.Wallet = wallet.Data;
+
             return View(profile);
         }
 

@@ -1,6 +1,5 @@
 ﻿using Cactus.Infrastructure;
 using Cactus.Models.Database;
-using SportsStore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
@@ -61,5 +60,10 @@ namespace Cactus.Models.ViewModels
 
         public NewSubLevelDonationOptionViewModel NewSubLevelDonationOption { get;set; }
 
+        public IEnumerable<PayMethod> PayMethods { get; set; }
+
+        public TransactionViewModel NewTransaction { get; set; }
+
+        public Wallet Wallet { get; set; }
     }
 }

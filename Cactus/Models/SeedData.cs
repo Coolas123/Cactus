@@ -13,6 +13,9 @@ namespace Cactus.Models
             IUserService userService = app.ApplicationServices
                 .CreateScope().ServiceProvider.GetRequiredService<IUserService>();
 
+            IWalletService walletService = app.ApplicationServices
+                .CreateScope().ServiceProvider.GetRequiredService<IWalletService>();
+
             if (context.Database.GetPendingMigrations().Any()) {
                 context.Database.Migrate();
 
@@ -102,11 +105,78 @@ namespace Cactus.Models
                     }
                 };
                 foreach (var user in users) {
-                    var result = await userService.Register(user);
-                    if (result.StatusCode==StatusCodes.Status200OK) {
-                    }
+                    await userService.Register(user);
                 }
-                context.SaveChanges();
+                var wallets = new List<WalletViewModel>
+                {
+                    new WalletViewModel
+                    {
+                        UserId=1,
+                        CurrencyId=1,
+                        Balance=10000,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=2,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=3,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=4,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=5,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=6,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=7,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=8,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                    new WalletViewModel
+                    {
+                        UserId=9,
+                        CurrencyId=1,
+                        Balance=0,
+                        IsActive=true
+                    },
+                };
+                foreach (var wallet in wallets) {
+                    await walletService.AddWallet(wallet);
+                }
+                await context.SaveChangesAsync();
             }
         }
     }

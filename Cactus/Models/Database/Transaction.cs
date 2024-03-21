@@ -11,8 +11,6 @@ namespace Cactus.Models.Database
         public int UserId { get; set; }
         [Column("method_id")]
         public int MethodId { get; set; }
-        [Column("transaction_type_id")]
-        public int TransactionTypeId { get; set; }
         [Column("sended")]
         public decimal Sended { get; set; }
         [Column("received")]

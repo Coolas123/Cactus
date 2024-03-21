@@ -3,7 +3,7 @@
 namespace Cactus.Models.Database
 {
     [Table("currencies")]
-    public class Currencie
+    public class Currency
     {
         [Column("id")]
         public int Id { get; set; }

@@ -103,8 +103,8 @@
             </div>
         }
         @{
-            var opt = Model.DonationOptions.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
-            if (opt.Any()) {
+            var opt = Model.DonationOptions?.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
+            if (opt!=null&&opt.Any()) {
                 <div class="text-center">
                     <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
                         Отправить донат

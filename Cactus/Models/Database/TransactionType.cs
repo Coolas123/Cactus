@@ -2,7 +2,7 @@
 
 namespace Cactus.Models.Database
 {
-    [Table("transaction_type_id")]
+    [Table("transaction_type")]
     public class TransactionType
     {
         [Column("id")]

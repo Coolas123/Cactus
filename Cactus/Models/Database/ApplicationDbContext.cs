@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Cactus.Models.Enums;
+using Microsoft.EntityFrameworkCore;
+using Nest;
 
 namespace Cactus.Models.Database
 {
@@ -36,7 +38,7 @@ namespace Cactus.Models.Database
         public DbSet<SubLevelMaterial> SubLevelMaterials { get; set; }
         public DbSet<PaidAuthorSubscribe> PaidAuthorSubscribes { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
-        public DbSet<Currencie> Currencies { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<PayMethod> PayMethods { get; set; }
         public DbSet<TransactionType> TransactionTypes { get; set; }
@@ -129,7 +131,7 @@ namespace Cactus.Models.Database
             builder.Entity<PostDonationOption>(x => {
                 x.HasKey(p => new { p.PostId, p.DonationOptionId });
             });
-            builder.Entity<Currencie>(x => {
+            builder.Entity<Currency>(x => {
                 x.HasData([
                     new { Id = 1, CountryId = (int)Models.Enums.Country.Russia,Symbol= "₽" },
                     new { Id = 2, CountryId = (int)Models.Enums.Country.USA, Symbol = "$" }
@@ -137,8 +139,8 @@ namespace Cactus.Models.Database
             });
             builder.Entity<PayMethodSetting>(x => {
                 x.HasData([
-                    new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)100000, MonthlyWithdrawLimit = (decimal)1000000 },
-                    new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000 }
+                    new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)0, MonthlyWithdrawLimit = (decimal)0, TransactionTypeId=(int)Models.Enums.TransactionType.IntrasystemOperations },
+                    new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish }
                 ]);
             });
             builder.Entity<PayMethod>(x => {
