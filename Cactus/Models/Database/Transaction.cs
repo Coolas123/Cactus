@@ -9,8 +9,8 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_id")]
         public int UserId { get; set; }
-        [Column("method_id")]
-        public int MethodId { get; set; }
+        [Column("pay_method_id")]
+        public int PayMethodId { get; set; }
         [Column("sended")]
         public decimal Sended { get; set; }
         [Column("received")]
@@ -19,7 +19,5 @@ namespace Cactus.Models.Database
         public DateTime Created { get; set; }
         [Column("status_id")]
         public int StatusId { get; set; }
-        [Column("setting_id")]
-        public int SettingId { get; set; }
     }
 }

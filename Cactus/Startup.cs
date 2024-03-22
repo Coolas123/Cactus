@@ -82,6 +82,8 @@ namespace Cactus
             services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddScoped<IPayMethodService, PayMethodService>();
             services.AddScoped<IPayMethodRepository, PayMethodRepository>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

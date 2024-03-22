@@ -51,5 +51,23 @@ namespace Cactus.Services.Implementations
                 StatusCode=200
             };
         }
+
+        public async Task<BaseResponse<Wallet>> ReplenishWallet(int userId, decimal sum) {
+            BaseResponse<Wallet> wallet = await GetWallet(userId);
+            if (wallet.StatusCode == 200) {
+                wallet.Data.Balance += sum;
+                await walletRepository.ReplenishAsync(wallet.Data);
+                return new BaseResponse<Wallet>
+                {
+                    Description="Кошелек пополнен",
+                    Data= wallet.Data,
+                    StatusCode=200
+                };
+            }
+            return new BaseResponse<Wallet>
+            {
+                Description = "Не удалось пополнить кошелек"
+            };
+        }
     }
 }

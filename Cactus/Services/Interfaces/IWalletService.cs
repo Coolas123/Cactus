@@ -8,5 +8,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<Wallet>> GetWallet(int userId);
         Task<BaseResponse<bool>> AddWallet(WalletViewModel model);
+        Task<BaseResponse<Wallet>> ReplenishWallet(int userId, decimal sum);
     }
 }
