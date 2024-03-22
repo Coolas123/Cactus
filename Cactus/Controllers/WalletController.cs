@@ -24,6 +24,7 @@ namespace Cactus.Controllers
 
         public async Task<IActionResult> ReplenishWallet(SettingViewModel model) {
             model.NewTransaction.Created = DateTime.Now;
+            model.NewTransaction.Received = model.NewTransaction.Sended-model.NewTransaction.Sended/100;
             model.NewTransaction.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             model.NewTransaction.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
             await transactionService.CreateTransaction(model.NewTransaction);
