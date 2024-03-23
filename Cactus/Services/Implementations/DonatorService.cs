@@ -40,5 +40,20 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<IEnumerable<Donator>>> GetDonators(int userId) {
+            IEnumerable<Donator> donators = await donatorRepository.GetDonators(userId);
+            if (!donators.Any()) {
+                return new BaseResponse<IEnumerable<Donator>>
+                {
+                    Description="Пожертвования отсутствуют"
+                };
+            }
+            return new BaseResponse<IEnumerable<Donator>>
+            {
+                Data= donators,
+                StatusCode = 200
+            };
+        }
     }
 }

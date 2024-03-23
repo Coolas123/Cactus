@@ -39,10 +39,15 @@ namespace Cactus.Controllers
         }
 
         [Route("{UrlPage}")]
+        [Route("/id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string UrlPage, int authorPage = 1, int postPage = 1) {
+        public async Task<IActionResult> Index(string UrlPage, int id=0 ,int authorPage = 1, int postPage = 1) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> author = await authorService.GetUserByUrlPageAsync(UrlPage);
+            if (id == 0) {
+                author = await authorService.GetUserByUrlPageAsync(UrlPage);
+            }
+            else author = await authorService.GetUserAsync(id);
             if (author.Data?.Id == Convert.ToInt32(User.FindFirstValue("Id"))) {
                 response.IsOwner = true;
             }

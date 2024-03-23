@@ -1,4 +1,5 @@
-﻿using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Components;
+using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -58,6 +59,21 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<Author>
             {
                 Data = inidividual,
+                StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<User>> GetUserAsync(int id) {
+            Author individual = await authorRepository.GetAsync(id);
+            if (individual == null) {
+                return new BaseResponse<User>
+                {
+                    Description = "профиль не найден"
+                };
+            }
+            return new BaseResponse<User>
+            {
+                Data = individual.User,
                 StatusCode = 200
             };
         }

@@ -1,5 +1,6 @@
-﻿using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
+﻿using Cactus.Models.Database;
+using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,18 @@ namespace Cactus.Controllers
     {
         private readonly ITransactionService transactionService;
         private readonly IWalletService walletService;
-        public WalletController(ITransactionService transactionService, IWalletService walletService) {
+        private readonly IDonatorService donatorService;
+        private readonly IAuthorService authorService;
+        public WalletController(ITransactionService transactionService, IWalletService walletService,
+            IDonatorService donatorService, IAuthorService authorService) {
             this.transactionService = transactionService;
             this.walletService = walletService;
+            this.donatorService = donatorService;
+            this.authorService = authorService;
         }
         public async Task<IActionResult> Index() {
-
-            return View();
+            BaseResponse<IEnumerable<Donator>> donators = await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")));
+            return View(donators);
         }
 
         public async Task<IActionResult> ReplenishWallet(SettingViewModel model) {
@@ -27,6 +33,7 @@ namespace Cactus.Controllers
             model.NewTransaction.Received = model.NewTransaction.Sended-model.NewTransaction.Sended/100;
             model.NewTransaction.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             model.NewTransaction.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
             await transactionService.CreateTransaction(model.NewTransaction);
             await walletService.ReplenishWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.NewTransaction.Received);
             return RedirectToAction("Index","Setting");

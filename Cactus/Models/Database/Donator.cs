@@ -9,6 +9,7 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_id")]
         public int UserId { get; set; }
+        public User User { get; set; }
         [Column("donation_target_id")]
         public int DonationTargetId { get; set; }
         [Column("donation_option_id")]
@@ -20,5 +21,8 @@ namespace Cactus.Models.Database
         public decimal TotalAmount { get; set; }
         [Column("created")]
         public DateTime Created {  get; set; }
+        [Column("transaction_id")]
+        public int TransactionId { get; set; }
+        public Transaction Transaction { get; set; }
     }
 }
