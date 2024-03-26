@@ -1,5 +1,6 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cactus.Infrastructure.Repositories
 {
@@ -19,8 +20,8 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<PayMethodSetting> GetAsync(int id) {
-            throw new NotImplementedException();
+        public async Task<PayMethodSetting> GetAsync(int id) {
+            return await dbContext.PayMethodSettings.FirstOrDefaultAsync(x=>x.Id==id);
         }
 
         public Task<IEnumerable<PayMethodSetting>> SelectAsync() {

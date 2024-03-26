@@ -36,6 +36,21 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<PayMethod>> GetPayMethod(int id) {
+            PayMethod method = await payMethodRepository.GetAsync(id);
+            if (method == null) {
+                return new BaseResponse<PayMethod>
+                {
+                    Description = "Метод не найден"
+                };
+            }
+            return new BaseResponse<PayMethod>
+            {
+                Data = method,
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<IEnumerable<PayMethod>>> GetReplenishMethods() {
             IEnumerable<PayMethod> methods = await payMethodRepository.GetReplenishMethods();
             if (!methods.Any()) {

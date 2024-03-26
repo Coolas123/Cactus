@@ -9,25 +9,31 @@ using System.Security.Claims;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "Author")]
-    [AutoValidateAntiforgeryToken]
     public class WalletController: Controller
     {
         private readonly ITransactionService transactionService;
         private readonly IWalletService walletService;
         private readonly IDonatorService donatorService;
         private readonly IAuthorService authorService;
+        private readonly IPayMethodSettingService payMethodSettingService;
+        private readonly IPayMethodService payMethodService;
         public WalletController(ITransactionService transactionService, IWalletService walletService,
-            IDonatorService donatorService, IAuthorService authorService) {
+            IDonatorService donatorService, IAuthorService authorService,
+            IPayMethodSettingService payMethodSettingService, IPayMethodService payMethodService) {
             this.transactionService = transactionService;
             this.walletService = walletService;
             this.donatorService = donatorService;
             this.authorService = authorService;
+            this.payMethodSettingService = payMethodSettingService;
+            this.payMethodService = payMethodService;
         }
         public async Task<IActionResult> Index() {
             BaseResponse<IEnumerable<Donator>> donators = await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")));
             return View(donators);
         }
 
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ReplenishWallet(SettingViewModel model) {
             model.NewTransaction.Created = DateTime.Now;
             model.NewTransaction.Received = model.NewTransaction.Sended-model.NewTransaction.Sended/100;
@@ -37,6 +43,12 @@ namespace Cactus.Controllers
             await transactionService.CreateTransaction(model.NewTransaction);
             await walletService.ReplenishWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.NewTransaction.Received);
             return RedirectToAction("Index","Setting");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SelectPaySetting(int payMethodId) {
+            BaseResponse<PayMethod> method = await payMethodService.GetPayMethod(payMethodId);
+            return new JsonResult(method.Data.PayMethodSetting.Comission);
         }
     }
 }

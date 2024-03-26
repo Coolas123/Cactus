@@ -21,8 +21,8 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<PayMethod> GetAsync(int id) {
-            throw new NotImplementedException();
+        public async Task<PayMethod> GetAsync(int id) {
+            return await dbContext.PayMethods.Include(x=>x.PayMethodSetting).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<PayMethod>> GetReplenishMethods() {

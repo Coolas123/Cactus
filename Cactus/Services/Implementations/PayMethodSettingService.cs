@@ -35,5 +35,20 @@ namespace Cactus.Services.Implementations
                 StatusCode=200
             };
         }
+
+        public async Task<BaseResponse<PayMethodSetting>> GetSettingAsync(int id) {
+            PayMethodSetting setting = await payMethodSettingRepository.GetAsync(id);
+            if (setting == null) {
+                return new BaseResponse<PayMethodSetting>
+                {
+                    Description = "Настрйока не найдена"
+                };
+            }
+            return new BaseResponse<PayMethodSetting>
+            {
+                Data=setting,
+                StatusCode=200
+            };
+        }
     }
 }

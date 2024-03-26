@@ -186,7 +186,7 @@
                                 <div>
                                     <label asp-for="NewTransaction.PayMethodId"></label>
                                     <select class="form-select" asp-for="NewTransaction.PayMethodId" asp-items="@(new SelectList(Model?.PayMethods, nameof(Cactus.Models.Database.PayMethod.Id), nameof(Cactus.Models.Database.PayMethod.Name)))"></select>
-                                    <p id="payMethodLabel">Комиссия 1 %</p>
+                                    <p class="m-1" id="payMethodLabel"></p>
                                 </div>
                                 <label asp-for="NewTransaction.Sended"></label>
                                 <div class="d-flex ">
@@ -216,7 +216,30 @@
 <script>
     function getReceived() {
         var selectElement = document.getElementById("NewTransaction_Sended");
-        document.getElementById("NewTransaction_Received").value = selectElement.value-selectElement.value/100;
-        var r = document.getElementById("NewTransaction_Received").value;
+        document.getElementById("NewTransaction_Received").value = selectElement.value - selectElement.value / 100 * ajaxPayMethodId();
+    }
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#NewTransaction_PayMethodId").change(function () {
+            var response = ajaxPayMethodId()
+            document.getElementById("payMethodLabel").textContent = "Комиссия " + response + " %";
+        });
+    });
+
+    function ajaxPayMethodId() {
+        var res
+        $.ajax({
+            url: "@Url.ActionLink("SelectPaySetting", "Wallet")",
+            type: 'POST',
+            dataType: "json",
+            async: false,
+            data: { payMethodId: $("#NewTransaction_PayMethodId").val()},
+            success: function (response) {
+                res = response
+            }
+        });
+        return res
     }
 </script>

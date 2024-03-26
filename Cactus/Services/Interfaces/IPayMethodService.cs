@@ -7,6 +7,7 @@ namespace Cactus.Services.Interfaces
     public interface IPayMethodService
     {
         Task<BaseResponse<bool>> AddPayMethod(PayMethodViewModel model);
+        Task<BaseResponse<PayMethod>> GetPayMethod(int id);
         Task<BaseResponse<IEnumerable<PayMethod>>> GetReplenishMethods();
     }
 }
