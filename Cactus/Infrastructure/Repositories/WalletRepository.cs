@@ -29,13 +29,17 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.Wallets.Include(x=>x.Currency).FirstOrDefaultAsync(x=>x.UserId==userId);
         }
 
-        public async Task<bool> ReplenishAsync(Wallet wallet) {
+        public async Task<bool> UpdateAsync(Wallet wallet) {
             dbContext.Wallets.Update(wallet);
             await dbContext.SaveChangesAsync();
             return true;
         }
 
         public Task<IEnumerable<Wallet>> SelectAsync() {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> WithdrawAsync(Wallet wallet) {
             throw new NotImplementedException();
         }
     }

@@ -35,13 +35,13 @@ namespace Cactus.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ReplenishWallet(SettingViewModel model) {
-            model.NewTransaction.Created = DateTime.Now;
-            model.NewTransaction.Received = model.NewTransaction.Sended-model.NewTransaction.Sended/100;
-            model.NewTransaction.StatusId = (int)Models.Enums.TransactionStatus.Sended;
-            model.NewTransaction.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+            model.Replenish.Created = DateTime.Now;
+            model.Replenish.Received = model.Replenish.Sended-model.Replenish.Sended/100*model.Replenish.Comission;
+            model.Replenish.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+            model.Replenish.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
-            await transactionService.CreateTransaction(model.NewTransaction);
-            await walletService.ReplenishWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.NewTransaction.Received);
+            await transactionService.CreateTransaction(model.Replenish);
+            await walletService.ReplenishWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Replenish.Received);
             return RedirectToAction("Index","Setting");
         }
 
@@ -56,6 +56,19 @@ namespace Cactus.Controllers
                 await transactionService
                 .GetWidrawAndReplenishAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             return View(transactions);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> WithdrawWallet(SettingViewModel model) {
+            model.Withdraw.Created = DateTime.Now;
+            model.Withdraw.Received = model.Withdraw.Sended - model.Withdraw.Sended / 100 * model.Withdraw.Comission;
+            model.Withdraw.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+            model.Withdraw.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
+            await transactionService.CreateTransaction(model.Withdraw);
+            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Withdraw.Sended);
+            return RedirectToAction("Index", "Setting");
         }
     }
 }

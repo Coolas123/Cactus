@@ -56,7 +56,7 @@ namespace Cactus.Services.Implementations
             BaseResponse<Wallet> wallet = await GetWallet(userId);
             if (wallet.StatusCode == 200) {
                 wallet.Data.Balance += sum;
-                await walletRepository.ReplenishAsync(wallet.Data);
+                await walletRepository.UpdateAsync(wallet.Data);
                 return new BaseResponse<Wallet>
                 {
                     Description="Кошелек пополнен",
@@ -67,6 +67,24 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<Wallet>
             {
                 Description = "Не удалось пополнить кошелек"
+            };
+        }
+
+        public async Task<BaseResponse<Wallet>> WithdrawWallet(int userId, decimal sum) {
+            BaseResponse<Wallet> wallet = await GetWallet(userId);
+            if (wallet.StatusCode == 200) {
+                wallet.Data.Balance -= sum;
+                await walletRepository.UpdateAsync(wallet.Data);
+                return new BaseResponse<Wallet>
+                {
+                    Description = "Средства выведены",
+                    Data = wallet.Data,
+                    StatusCode = 200
+                };
+            }
+            return new BaseResponse<Wallet>
+            {
+                Description = "Не удалось вывести"
             };
         }
     }

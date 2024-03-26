@@ -8,6 +8,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<bool>> AddPayMethod(PayMethodViewModel model);
         Task<BaseResponse<PayMethod>> GetPayMethod(int id);
-        Task<BaseResponse<IEnumerable<PayMethod>>> GetReplenishMethods();
+        Task<BaseResponse<IEnumerable<PayMethod>>> GetMethods();
     }
 }

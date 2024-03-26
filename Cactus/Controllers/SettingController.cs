@@ -67,7 +67,7 @@ namespace Cactus.Controllers
                 if(author.StatusCode==200)
                     profile.Author = author.Data;
 
-                BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetReplenishMethods();
+                BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetMethods();
                 if (methods.StatusCode == 200) {
                     profile.PayMethods = methods.Data;
                 }

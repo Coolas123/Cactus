@@ -7,6 +7,7 @@ namespace Cactus.Models.ViewModels
         public int UserId { get; set; }
         [Display(Name ="Выберите метод пополнения")]
         public int PayMethodId { get; set; }
+        public decimal Comission { get; set; }
         [Display(Name = "Выберите сумму пополнения")]
         public decimal Sended {  get; set; }
         [Display(Name = "Сумма после комиссии")]

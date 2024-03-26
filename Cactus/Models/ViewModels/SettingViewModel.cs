@@ -62,7 +62,8 @@ namespace Cactus.Models.ViewModels
 
         public IEnumerable<PayMethod> PayMethods { get; set; }
 
-        public TransactionViewModel NewTransaction { get; set; }
+        public TransactionViewModel Replenish { get; set; }
+        public TransactionViewModel Withdraw { get; set; }
 
         public Wallet Wallet { get; set; }
     }

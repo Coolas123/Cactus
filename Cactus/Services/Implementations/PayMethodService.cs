@@ -51,8 +51,8 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<IEnumerable<PayMethod>>> GetReplenishMethods() {
-            IEnumerable<PayMethod> methods = await payMethodRepository.GetReplenishMethods();
+        public async Task<BaseResponse<IEnumerable<PayMethod>>> GetMethods() {
+            IEnumerable<PayMethod> methods = await payMethodRepository.GetMethods();
             if (!methods.Any()) {
                 return new BaseResponse<IEnumerable<PayMethod>>
                 {
