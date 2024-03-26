@@ -1,9 +1,13 @@
-﻿namespace Cactus.Models.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Cactus.Models.Enums
 {
     public enum TransactionType
     {
+        [Display(Name ="Пополнение")]
         Replenish=1,
-        Withdraw=2,
+        [Display(Name = "Вывод")]
+        Withdraw =2,
         IntrasystemOperations=3
     }
 }

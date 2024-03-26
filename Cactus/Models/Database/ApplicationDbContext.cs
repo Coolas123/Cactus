@@ -140,7 +140,8 @@ namespace Cactus.Models.Database
             builder.Entity<PayMethodSetting>(x => {
                 x.HasData([
                     new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)0, MonthlyWithdrawLimit = (decimal)0, TransactionTypeId=(int)Models.Enums.TransactionType.IntrasystemOperations },
-                    new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish }
+                    new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish },
+                    new { Id = 3, Comission = (decimal)1.5, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Withdraw }
                 ]);
             });
             builder.Entity<PayMethod>(x => {

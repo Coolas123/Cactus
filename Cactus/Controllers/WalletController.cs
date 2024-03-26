@@ -50,5 +50,12 @@ namespace Cactus.Controllers
             BaseResponse<PayMethod> method = await payMethodService.GetPayMethod(payMethodId);
             return new JsonResult(method.Data.PayMethodSetting.Comission);
         }
+
+        public async Task<IActionResult> History() {
+            BaseResponse<IEnumerable<Transaction>> transactions = 
+                await transactionService
+                .GetWidrawAndReplenishAsync(Convert.ToInt32(User.FindFirstValue("Id")));
+            return View(transactions);
+        }
     }
 }

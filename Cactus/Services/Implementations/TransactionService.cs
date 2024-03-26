@@ -3,8 +3,6 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Nest;
 
 namespace Cactus.Services.Implementations
 {
@@ -37,6 +35,21 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<bool>
             {
                 Data=true,
+                StatusCode=200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Transaction>>> GetWidrawAndReplenishAsync(int userId) {
+            IEnumerable<Transaction> transactions = await transactionRepository.GetWidrawAndReplenishAsync(userId);
+            if (!transactions.Any()) {
+                return new BaseResponse<IEnumerable<Transaction>>
+                {
+                    Description="Выводы и пополненяи не найдены"
+                };
+            }
+            return new BaseResponse<IEnumerable<Transaction>>
+            {
+                Data = transactions,
                 StatusCode=200
             };
         }

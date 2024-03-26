@@ -1,0 +1,40 @@
+﻿@model BaseResponse<IEnumerable<Cactus.Models.Database.Transaction>>
+<h1>History</h1>
+
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <br>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Сумма без комиссии</th>
+                    <th scope="col">Сумма с комиссией</th>
+                </tr>
+            </thead>
+            @if (Model.StatusCode == 200) {
+                @foreach (var c in Model.Data) {
+                    <tbody>
+                        <tr>
+                            <td>@c.Created</td>
+                            @if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Withdraw) {
+                                <td>@(Cactus.Models.Enums.TransactionType.Withdraw.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            @if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Replenish) {
+                                <td>@(Cactus.Models.Enums.TransactionType.Replenish.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            <td>@c.Sended</td>
+                            <td>@c.Received</td>
+                        </tr>
+                    </tbody>
+                }
+            }
+        </table>
+        @if (Model.StatusCode != 200) {
+            <h4>@Model.Description</h4>
+        }
+    </div>
+    <div class="col"></div>
+</div>

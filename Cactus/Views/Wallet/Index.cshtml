@@ -32,8 +32,8 @@
                             else if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
                                 <td>@(Cactus.Models.Enums.MonetizationType.SubLevel.GetAttribute<DisplayAttribute>().Name)</td>
                             }
-                            <td>c.Transaction.Sended</td>
-                            <td>c.Transaction.Received</td>
+                            <td>@c.Transaction.Sended</td>
+                            <td>@c.Transaction.Received</td>
                             @if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Patron) {
                                 <td>@Html.ActionLink("Patron", "Index", new { id =c.UserId})</td>
                             }

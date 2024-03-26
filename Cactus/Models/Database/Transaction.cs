@@ -11,6 +11,7 @@ namespace Cactus.Models.Database
         public int UserId { get; set; }
         [Column("pay_method_id")]
         public int PayMethodId { get; set; }
+        public PayMethod PayMethod { get; set; }
         [Column("sended")]
         public decimal Sended { get; set; }
         [Column("received")]
