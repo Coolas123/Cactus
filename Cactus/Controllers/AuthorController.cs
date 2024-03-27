@@ -99,7 +99,7 @@ namespace Cactus.Controllers
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
 
             if (model.SelectedDonationOption == 0) {
-                if (!model.Post.IsFree) {
+                if (model.Post.IsFree) {
                     await donationOptionService.AddOptionAsync(model.NewDonationOption);
                     BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
                     await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);

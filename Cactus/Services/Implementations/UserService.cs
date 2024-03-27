@@ -13,11 +13,14 @@ namespace Cactus.Services.Implementations
     {
 		private readonly IUserRepository userRepository;
 		private readonly IMemoryCache cache;
+		private readonly IWalletService walletService;
 
-		public UserService (IUserRepository userRepository, IMemoryCache cache)
+		public UserService (IUserRepository userRepository, IMemoryCache cache,
+            IWalletService walletService)
 		{
 			this.userRepository = userRepository;
             this.cache = cache;
+            this.walletService = walletService;
 		}
 
         public async Task<BaseResponse<ClaimsIdentity>> Register(RegisterViewModel model)
@@ -52,6 +55,15 @@ namespace Cactus.Services.Implementations
             await userRepository.CreateAsync(user);
             User dbUser =await userRepository.GetByEmailAsync(model.Email);
             var result = Authenticate(user, dbUser.Id);
+
+            var newWallet = new WalletViewModel{
+                UserId= dbUser.Id,
+                CurrencyId=1,
+                Balance = 0,
+                IsActive = true
+            };
+            await walletService.AddWallet(newWallet);
+
             return new BaseResponse<ClaimsIdentity>
             {
                 Data = result,

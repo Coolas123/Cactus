@@ -1,5 +1,4 @@
-﻿using Cactus.Components;
-using Cactus.Infrastructure.Interfaces;
+﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -13,12 +12,14 @@ namespace Cactus.Services.Implementations
         private readonly IUserService userService;
         private readonly IAuthorRepository authorRepository;
         private readonly IPatronService patronService;
+        private readonly IWalletService walletService;
 
         public AuthorService(IUserService userService, IAuthorRepository authorRepository,
-            IPatronService patronService) {
+            IPatronService patronService, IWalletService walletService) {
             this.userService = userService;
             this.authorRepository = authorRepository;
             this.patronService = patronService;
+            this.walletService = walletService;
         }
 
         public async Task<BaseResponse<Author>> DaeleteAuthor(int id) {

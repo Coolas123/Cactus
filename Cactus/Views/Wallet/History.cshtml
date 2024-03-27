@@ -12,6 +12,7 @@
                     <th scope="col">Тип</th>
                     <th scope="col">Сумма без комиссии</th>
                     <th scope="col">Сумма с комиссией</th>
+                    <th scope="col">Способ</th>
                 </tr>
             </thead>
             @if (Model.StatusCode == 200) {
@@ -27,6 +28,7 @@
                             }
                             <td>@c.Sended</td>
                             <td>@c.Received</td>
+                            <td>@c.PayMethod.Name</td>
                         </tr>
                     </tbody>
                 }
