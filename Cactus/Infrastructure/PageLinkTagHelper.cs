@@ -31,13 +31,13 @@ namespace SportsStore.Infrastructure
         public override void Process(TagHelperContext context, TagHelperOutput output) {
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
-            if (PageModel.TotalItems == 0) {
+            if (PageModel?.TotalItems == 0) {
                 TagBuilder tagH = new TagBuilder("h3");
                 tagH.InnerHtml.Append(PageModel.Description);
                 result.InnerHtml.AppendHtml(tagH);
             }
             else
-            for (int i = 1;i<=PageModel.TotalPages;i++) {
+            for (int i = 1;i<=PageModel?.TotalPages;i++) {
                 TagBuilder tag = new TagBuilder("a");
                 PageUrlValues[TypePage] = i;
                 tag.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);

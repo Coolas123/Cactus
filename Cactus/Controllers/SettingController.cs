@@ -107,7 +107,7 @@ namespace Cactus.Controllers
                             new ClaimsPrincipal(result.Data));
                 return RedirectToAction("Login", "Account");
             }
-            return View("Index",model);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

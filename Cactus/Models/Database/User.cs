@@ -10,8 +10,8 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_name")]
         public string UserName { get; set; }
-        [DataType(DataType.Date)]
-        [Column("date_of_birth")]
+        //[DataType(DataType.Date)]
+        [Column(name:"date_of_birth", TypeName = "Date")]
         public DateTime DateOfBirth { get; set; }
         [Column("email")]
         public string Email { get; set; }

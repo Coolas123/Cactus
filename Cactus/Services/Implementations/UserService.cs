@@ -134,8 +134,8 @@ namespace Cactus.Services.Implementations
                 else user.UserName = model.UserName;
             }
             if (model.DateOfBirth != DateTime.MinValue &&
-                DateOnly.FromDateTime(model.DateOfBirth) == DateOnly.FromDateTime(user.DateOfBirth))
-                user.DateOfBirth = model.DateOfBirth.ToUniversalTime();
+                DateOnly.FromDateTime(model.DateOfBirth) != DateOnly.FromDateTime(user.DateOfBirth))
+                user.DateOfBirth = model.DateOfBirth.Date;
 
             if (model.Password != null)
                 user.HashPassword = HashPassword.Generate(model.Password);
