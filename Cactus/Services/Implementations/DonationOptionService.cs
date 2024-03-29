@@ -28,7 +28,7 @@ namespace Cactus.Services.Implementations
             try {
                 await donationOptionRepository.CreateAsync(Option);
             }
-            catch (Exception ex) {
+            catch{
                 return new BaseResponse<bool>
                 {
                     Description="Не удалось создать опцию"

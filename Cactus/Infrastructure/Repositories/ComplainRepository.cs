@@ -11,7 +11,7 @@ namespace Cactus.Infrastructure.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> AddComplain(Complain entity) {
+        public async Task<bool> AddComplainAsync(Complain entity) {
             await dbContext.Complains.AddAsync(entity);
             await dbContext.SaveChangesAsync();
             return true;
@@ -29,7 +29,7 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Complain>> GetNotReviewedComplains(DateTime date) {
+        public async Task<IEnumerable<Complain>> GetNotReviewedComplainsAsync(DateTime date) {
             return await dbContext.Complains
                 .Where(
                     x => x.Created >= date.ToUniversalTime()&&

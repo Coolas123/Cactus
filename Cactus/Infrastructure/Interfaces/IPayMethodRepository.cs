@@ -4,6 +4,6 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IPayMethodRepository:IBaseRepository<PayMethod>
     {
-        Task<IEnumerable<PayMethod>> GetMethods();
+        Task<IEnumerable<PayMethod>> GetMethodsAsync();
     }
 }

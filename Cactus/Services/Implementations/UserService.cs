@@ -150,7 +150,7 @@ namespace Cactus.Services.Implementations
                     response.Data = Authenticate(user, id);
                 }
             }
-            await userRepository.Update(user);
+            await userRepository.UpdateAsync(user);
             if (response.Descriptions.Count() == 0)
                 response.StatusCode = StatusCodes.Status200OK;
             return response;
@@ -165,7 +165,7 @@ namespace Cactus.Services.Implementations
                 };
             }
             user.UserRoleId = (int)Models.Enums.UserRole.Author;
-            await userRepository.Update(user);
+            await userRepository.UpdateAsync(user);
             return new BaseResponse<ClaimsIdentity>
             {
                 Description = "Роль обновлена на Author",

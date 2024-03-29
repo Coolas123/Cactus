@@ -2,7 +2,7 @@
 
 namespace Cactus.Infrastructure.Interfaces
 {
-    public interface ITransactionRepository:IBaseRepository<Models.Database.Transaction>
+    public interface ITransactionRepository:IBaseRepository<Transaction>
     {
         Task<IEnumerable<Transaction>> GetWidrawAndReplenishAsync(int userId);
     }

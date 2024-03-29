@@ -6,7 +6,7 @@ namespace Cactus.Infrastructure.Interfaces
     {
         Task<User> GetByEmailAsync(string email);
         Task<User> GetByUserNameAsync(string userName);
-        Task<User> GetByDateOfBirth(DateTime dateOfBirth);
-        Task<bool> Update(User user);
+        Task<User> GetByDateOfBirthAsync(DateTime dateOfBirth);
+        Task<bool> UpdateAsync(User user);
     }
 }

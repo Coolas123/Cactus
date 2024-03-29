@@ -14,7 +14,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<Wallet>> GetWallet(int userId) {
-            Wallet wallet = await walletRepository.GetWallet(userId);
+            Wallet wallet = await walletRepository.GetWalletAsync(userId);
             if (wallet==null) {
                 return new BaseResponse<Wallet>
                 {

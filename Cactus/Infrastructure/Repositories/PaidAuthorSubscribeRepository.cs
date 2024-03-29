@@ -26,7 +26,7 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SubscribeToAuthor(PaidAuthorSubscribe entity) {
+        public async Task<bool> SubscribeToAuthorAsync(PaidAuthorSubscribe entity) {
             await dbContext.AddAsync(entity);
             await dbContext.SaveChangesAsync();
             return true;

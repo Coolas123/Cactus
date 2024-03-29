@@ -4,6 +4,6 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IPostCommentRepository : IBaseRepository<PostComment>
     {
-        Task<IEnumerable<PostComment>> GetComments(int postId);
+        Task<IEnumerable<PostComment>> GetCommentsAsync(int postId);
     }
 }

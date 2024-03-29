@@ -20,9 +20,9 @@ namespace Cactus.Services.Implementations
                 EndDate=model.EndDate,
             };
             try {
-                await paidAuthorSubscribeRepository.SubscribeToAuthor(sub);
+                await paidAuthorSubscribeRepository.SubscribeToAuthorAsync(sub);
             }
-            catch (Exception e) {
+            catch{
                 return new BaseResponse<bool>
                 {
                     Description="Не удалось офрмить подписку"

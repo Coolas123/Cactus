@@ -20,7 +20,7 @@ namespace Cactus.Services.Implementations
             try {
                 await tagRepository.CreateAsync(newTags);
             }
-            catch (Exception e) {
+            catch{
                 return new BaseResponse<bool>
                 {
                     Description = "Не удалось сохранить теги"
