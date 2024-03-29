@@ -22,7 +22,7 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Dictionary<int, decimal>> GetCollectedSumOfGoalsAsync(List<int> optionId) {
+        public async Task<Dictionary<int, decimal>> GetCollectedSumOfGoals(List<int> optionId) {
             return await dbContext.Donators.Where(x =>
                     optionId.Contains(x.DonationOptionId))
                 .GroupBy(x => new { x.DonationOptionId })
@@ -30,7 +30,7 @@ namespace Cactus.Infrastructure.Repositories
                 .ToDictionaryAsync(p => p.Key, p => p.Value);
         }
 
-        public async Task<Donator> GetDonatorAsync(int targetId, int typeId, int userId) {
+        public async Task<Donator> GetDonator(int targetId, int typeId, int userId) {
             return await dbContext
                 .Donators
                 .Include(x=>x.DonationOption)
@@ -41,7 +41,7 @@ namespace Cactus.Infrastructure.Repositories
                     );
         }
 
-        public async Task<IEnumerable<Donator>> GetDonatorsAsync(int userId) {
+        public async Task<IEnumerable<Donator>> GetDonators(int userId) {
             return await dbContext.Donators
                 .Include(x=>x.DonationOption)
                 .Include(x=>x.Transaction)

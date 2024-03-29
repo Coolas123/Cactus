@@ -52,7 +52,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<IEnumerable<PayMethod>>> GetMethods() {
-            IEnumerable<PayMethod> methods = await payMethodRepository.GetMethodsAsync();
+            IEnumerable<PayMethod> methods = await payMethodRepository.GetMethods();
             if (!methods.Any()) {
                 return new BaseResponse<IEnumerable<PayMethod>>
                 {

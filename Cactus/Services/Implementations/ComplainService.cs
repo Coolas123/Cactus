@@ -15,7 +15,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<IEnumerable<Complain>>> GetNotReviewedComplains(DateTime date) {
-            var complains = await complainRepository.GetNotReviewedComplainsAsync(date.ToUniversalTime());
+            var complains = await complainRepository.GetNotReviewedComplains(date.ToUniversalTime());
             if (complains != null) {
                 return new BaseResponse<IEnumerable<Complain>>
                 {
@@ -41,9 +41,9 @@ namespace Cactus.Services.Implementations
                 ComplainTypeId = model.ComplainTypeId
             };
             try {
-                await complainRepository.AddComplainAsync(complain);
+                await complainRepository.AddComplain(complain);
             }
-            catch{
+            catch (Exception ex) {
                 return new BaseResponse<bool>
                 {
                     Description = "Не удалось создать жалобу"

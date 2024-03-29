@@ -1,6 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Cactus.Infrastructure.Repositories
 {
@@ -29,7 +30,7 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<PostDonationOption> GetOptionAsync(int postId) {
+        public async Task<PostDonationOption> GetOption(int postId) {
             return await dbContext.PostDonationOptions.Include(x => x.DonationOption).FirstOrDefaultAsync(x => x.PostId == postId);
         }
 

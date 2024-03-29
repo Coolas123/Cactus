@@ -31,9 +31,9 @@ namespace Cactus.Services.Implementations
                 newTags.Add(new PostTag { TagId = dbTags[i].Id, PostId= postId });
             }
             try {
-                bool res = await postTagRepository.AddTagsToPostAsync(newTags);
+                bool res = await postTagRepository.AddTagsToPost(newTags);
             }
-            catch{
+            catch (Exception e) {
                 return new BaseResponse<bool>
                 {
                     Description = "Не удалось добавить теги"

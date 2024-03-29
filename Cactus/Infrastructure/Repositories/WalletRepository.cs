@@ -25,7 +25,7 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.Wallets.FirstOrDefaultAsync(x=>x.UserId==id);
         }
 
-        public async Task<Wallet> GetWalletAsync(int userId) {
+        public async Task<Wallet> GetWallet(int userId) {
             return await dbContext.Wallets.Include(x=>x.Currency).FirstOrDefaultAsync(x=>x.UserId==userId);
         }
 

@@ -47,13 +47,13 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.Users.FirstOrDefaultAsync(x=>x.UserName==userName);
         }
 
-        public async Task<bool> UpdateAsync(User user) {
+        public async Task<bool> Update(User user) {
             dbContext.Users.Update(user);
             await dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<User> GetByDateOfBirthAsync(DateTime dateOfBirth) {
+        public async Task<User> GetByDateOfBirth(DateTime dateOfBirth) {
             return await dbContext.Users.FirstOrDefaultAsync(x=>x.DateOfBirth==dateOfBirth);
         }
     }

@@ -4,6 +4,6 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IPaidAuthorSubscribeRepository:IBaseRepository<PaidAuthorSubscribe>
     {
-        Task<bool> SubscribeToAuthorAsync(PaidAuthorSubscribe entity);
+        Task<bool> SubscribeToAuthor(PaidAuthorSubscribe entity);
     }
 }
