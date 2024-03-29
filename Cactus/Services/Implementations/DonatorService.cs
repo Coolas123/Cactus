@@ -12,7 +12,7 @@ namespace Cactus.Services.Implementations
             this.donatorRepository = donatorRepository;
         }
         public async Task<BaseResponse<Donator>> GetDonator(int targetId, int typeId, int userId) {
-            Donator donator = await donatorRepository.GetDonator(targetId, typeId, userId);
+            Donator donator = await donatorRepository.GetDonatorAsync(targetId, typeId, userId);
             if (donator == null) {
                 return new BaseResponse<Donator>
                 {
@@ -27,7 +27,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<Dictionary<int, decimal>>> GetCollectedSumOfGoals(List<int> optionId) {
-            Dictionary<int,decimal> donators = await donatorRepository.GetCollectedSumOfGoals(optionId);
+            Dictionary<int,decimal> donators = await donatorRepository.GetCollectedSumOfGoalsAsync(optionId);
             if (donators == null) {
                 return new BaseResponse<Dictionary<int, decimal>>
                 {
@@ -42,7 +42,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<IEnumerable<Donator>>> GetDonators(int userId) {
-            IEnumerable<Donator> donators = await donatorRepository.GetDonators(userId);
+            IEnumerable<Donator> donators = await donatorRepository.GetDonatorsAsync(userId);
             if (!donators.Any()) {
                 return new BaseResponse<IEnumerable<Donator>>
                 {

@@ -36,7 +36,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<IEnumerable<PostComment>>> GetComments(int postId) {
-            IEnumerable<PostComment> comments = await postCommentRepository.GetComments(postId);
+            IEnumerable<PostComment> comments = await postCommentRepository.GetCommentsAsync(postId);
             if (comments.Count() == 0) {
                 return new BaseResponse<IEnumerable<PostComment>>{
                     Description="Комментариев еще нет"

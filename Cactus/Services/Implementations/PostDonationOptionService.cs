@@ -21,7 +21,7 @@ namespace Cactus.Services.Implementations
             try {
                 await postDonationOptionRepository.AddOptionToPostAsync(PostDonationOption);
             }
-            catch (Exception ex) {
+            catch{
                 return new BaseResponse<bool>
                 {
                     Description = "Не удалось добавить опцию"
@@ -35,7 +35,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<DonationOption>> GetOption(int postId) {
-            PostDonationOption option = await postDonationOptionRepository.GetOption(postId);
+            PostDonationOption option = await postDonationOptionRepository.GetOptionAsync(postId);
             if (option == null) {
                 return new BaseResponse<DonationOption>
                 {

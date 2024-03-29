@@ -100,6 +100,9 @@ namespace Cactus
             app.UseEndpoints(endpoints => {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapFallback(async context => {
+                    await context.Response.WriteAsync("Страница не найдена");
+                });
             });
             new SeedData().fill(app);
         }

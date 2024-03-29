@@ -4,7 +4,7 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IWalletRepository:IBaseRepository<Wallet>
     {
-        Task<Wallet> GetWallet(int userId);
+        Task<Wallet> GetWalletAsync(int userId);
         Task<bool> UpdateAsync(Wallet wallet);
     }
 }

@@ -11,7 +11,7 @@ namespace Cactus.Infrastructure.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> AddTagsToPost(IEnumerable<PostTag> tags) {
+        public async Task<bool> AddTagsToPostAsync(IEnumerable<PostTag> tags) {
             await dbContext.AddRangeAsync(tags);
             await dbContext.SaveChangesAsync();
             return true;

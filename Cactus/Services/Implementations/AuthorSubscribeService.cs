@@ -86,7 +86,7 @@ namespace Cactus.Services.Implementations
         }
 
         public async Task<BaseResponse<AuthorSubscribe>> GetSubscribe(int userId, int authorId) {
-            AuthorSubscribe subscribe = await subscribeRepository.GetSubscribe(userId, authorId);
+            AuthorSubscribe subscribe = await subscribeRepository.GetSubscribeAsync(userId, authorId);
             if (subscribe == null) {
                 return new BaseResponse<AuthorSubscribe>
                 {

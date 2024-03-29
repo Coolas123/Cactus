@@ -25,7 +25,7 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.PayMethods.Include(x=>x.PayMethodSetting).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<PayMethod>> GetMethods() {
+        public async Task<IEnumerable<PayMethod>> GetMethodsAsync() {
             return await dbContext.PayMethods.Include(x=>x.PayMethodSetting).ToListAsync();
         }
 
