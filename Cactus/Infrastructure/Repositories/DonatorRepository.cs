@@ -50,6 +50,18 @@ namespace Cactus.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Donator>> GetDonatorsAsync(int userId, DateTime dateFrom, DateTime dateTo) {
+            return await dbContext.Donators
+                .Include(x => x.DonationOption)
+                .Include(x => x.Transaction)
+                .Include(x => x.User)
+                .Where(x => 
+                        x.DonationOption.AuthorId == userId
+                        &&x.Transaction.Created.Date>= dateFrom.Date
+                        && x.Transaction.Created.Date <= dateTo.Date)
+                .ToListAsync();
+        }
+
         public Task<IEnumerable<Donator>> SelectAsync() {
             throw new NotImplementedException();
         }

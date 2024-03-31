@@ -2,7 +2,22 @@
 <h1>WALLET</h1>
 
 <div class="row">
-    <div class="col"></div>
+    <div class="col">
+        <br />
+        <div class="d-flex justify-content-end">
+            <form style="width:15%" asp-controller="wallet" asp-action="IndexFilter" method="post">
+                <h4>Выберите период</h4>
+                <div>
+                    <label>с даты</label>
+                    <input class="form-control" type="date" name="dateFrom" />
+                    <label>по дату</label>
+                    <input class="form-control" type="date" name="dateTo" />
+                </div>
+                <button class="btn btn-secondary">Применить</button>
+            </form>
+        </div>
+    </div>
+
     <div class="col">
         <br>
         <table class="table table-bordered table-hover">
@@ -19,7 +34,7 @@
                     @foreach (var c in Model.Data) {
                     <tbody>
                         <tr>
-                            <td>@c.Created</td>
+                            <td>@c.Transaction.Created</td>
                             @if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
                                 <td>@(Cactus.Models.Enums.MonetizationType.Goal.GetAttribute<DisplayAttribute>().Name)</td>
                             }

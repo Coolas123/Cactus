@@ -8,23 +8,18 @@ using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
-    [Authorize(Roles = "Author")]
+    [Authorize(Roles = "Patron, Author")]
     public class WalletController: Controller
     {
         private readonly ITransactionService transactionService;
         private readonly IWalletService walletService;
         private readonly IDonatorService donatorService;
-        private readonly IAuthorService authorService;
-        private readonly IPayMethodSettingService payMethodSettingService;
         private readonly IPayMethodService payMethodService;
         public WalletController(ITransactionService transactionService, IWalletService walletService,
-            IDonatorService donatorService, IAuthorService authorService,
-            IPayMethodSettingService payMethodSettingService, IPayMethodService payMethodService) {
+            IDonatorService donatorService, IPayMethodService payMethodService) {
             this.transactionService = transactionService;
             this.walletService = walletService;
             this.donatorService = donatorService;
-            this.authorService = authorService;
-            this.payMethodSettingService = payMethodSettingService;
             this.payMethodService = payMethodService;
         }
         public async Task<IActionResult> Index() {
@@ -69,6 +64,23 @@ namespace Cactus.Controllers
             await transactionService.CreateTransaction(model.Withdraw);
             await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Withdraw.Sended);
             return RedirectToAction("Index", "Setting");
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> HistoryFilter(DateTime dateFrom, DateTime dateTo) {
+            BaseResponse<IEnumerable<Transaction>> transactions =
+                await transactionService
+                .GetWidrawAndReplenishAsync(Convert.ToInt32(User.FindFirstValue("Id")), dateFrom.ToUniversalTime(), dateTo.ToUniversalTime());
+            return View("History",transactions);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> IndexFilter(DateTime dateFrom, DateTime dateTo) {
+            BaseResponse<IEnumerable<Donator>> donators = 
+                await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")), dateFrom, dateTo);
+            return View("Index", donators);
         }
     }
 }

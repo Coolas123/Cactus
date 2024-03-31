@@ -19,8 +19,6 @@ namespace Cactus.Models.Database
         public int DonationTargetTypeId { get; set; }
         [Column("total_amount")]
         public decimal TotalAmount { get; set; }
-        [Column("created")]
-        public DateTime Created {  get; set; }
         [Column("transaction_id")]
         public int TransactionId { get; set; }
         public Transaction Transaction { get; set; }

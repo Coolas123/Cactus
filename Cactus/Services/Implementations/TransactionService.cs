@@ -3,6 +3,7 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cactus.Services.Implementations
 {
@@ -51,6 +52,21 @@ namespace Cactus.Services.Implementations
             {
                 Data = transactions,
                 StatusCode=200
+            };
+        }
+
+        public async Task<BaseResponse<IEnumerable<Transaction>>> GetWidrawAndReplenishAsync(int userId, DateTime dateFrom, DateTime dateTo) {
+            IEnumerable<Transaction> transactions = await transactionRepository.GetWidrawAndReplenishAsync(userId,dateFrom, dateTo);
+            if (!transactions.Any()) {
+                return new BaseResponse<IEnumerable<Transaction>>
+                {
+                    Description = "Выводы и пополненяи не найдены"
+                };
+            }
+            return new BaseResponse<IEnumerable<Transaction>>
+            {
+                Data = transactions,
+                StatusCode = 200
             };
         }
     }

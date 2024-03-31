@@ -7,6 +7,7 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<Donator>> GetDonator(int targetId, int typeId, int userId);
         Task<BaseResponse<IEnumerable<Donator>>> GetDonators(int userId);
+        Task<BaseResponse<IEnumerable<Donator>>> GetDonators(int userId, DateTime dateFrom, DateTime dateTo);
         Task<BaseResponse<Dictionary<int, decimal>>> GetCollectedSumOfGoals(List<int> optionId);
 
     }

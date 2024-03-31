@@ -4,5 +4,6 @@ namespace Cactus.Infrastructure.Interfaces
 {
     public interface IPayMethodSettingRepository:IBaseRepository<PayMethodSetting>
     {
+        Task<PayMethodSetting> GetIntrasystemOperationsSettingAsync();
     }
 }

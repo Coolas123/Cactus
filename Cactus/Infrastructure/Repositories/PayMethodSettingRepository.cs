@@ -1,6 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 
 namespace Cactus.Infrastructure.Repositories
 {
@@ -22,6 +23,10 @@ namespace Cactus.Infrastructure.Repositories
 
         public async Task<PayMethodSetting> GetAsync(int id) {
             return await dbContext.PayMethodSettings.FirstOrDefaultAsync(x=>x.Id==id);
+        }
+
+        public async Task<PayMethodSetting> GetIntrasystemOperationsSettingAsync() {
+            return await dbContext.PayMethodSettings.FirstOrDefaultAsync(x => x.TransactionTypeId==(int)Models.Enums.TransactionType.IntrasystemOperations);
         }
 
         public Task<IEnumerable<PayMethodSetting>> SelectAsync() {

@@ -5,6 +5,7 @@ using Cactus.Models.Database;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HostFiltering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cactus
@@ -37,6 +38,10 @@ namespace Cactus
                     opts.AccessDeniedPath = "/Account/Login";
                     opts.Cookie.HttpOnly = true;
                 });
+            services.AddHsts(opt => {
+                opt.MaxAge = TimeSpan.FromDays(60);
+                opt.IncludeSubDomains = true;
+            });
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IProfileMaterialRepository, ProfileMaterialRepository>();

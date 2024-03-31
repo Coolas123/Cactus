@@ -10,7 +10,6 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("user_name")]
         public string UserName { get; set; }
-        //[DataType(DataType.Date)]
         [Column(name:"date_of_birth", TypeName = "Date")]
         public DateTime DateOfBirth { get; set; }
         [Column("email")]

@@ -8,5 +8,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<bool>> CreateTransaction(TransactionViewModel model);
         Task<BaseResponse<IEnumerable<Transaction>>> GetWidrawAndReplenishAsync(int userId);
+        Task<BaseResponse<IEnumerable<Transaction>>> GetWidrawAndReplenishAsync(int userId, DateTime dateFrom, DateTime dateTo);
     }
 }

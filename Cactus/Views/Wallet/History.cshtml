@@ -2,7 +2,21 @@
 <h1>History</h1>
 
 <div class="row">
-    <div class="col"></div>
+    <div class="col">
+        <br />
+        <div class="d-flex justify-content-end">
+            <form style="width:15%" asp-controller="wallet" asp-action="HistoryFilter" method="post">
+                <h4>Выберите период</h4>
+                <div>
+                    <label>с даты</label>
+                    <input class="form-control" type="date" name="dateFrom" />
+                    <label>по дату</label>
+                    <input class="form-control" type="date" name="dateTo" />
+                </div>
+                <button class="btn btn-secondary">Применить</button>
+            </form>
+        </div>
+    </div>
     <div class="col">
         <br>
         <table class="table table-bordered table-hover">

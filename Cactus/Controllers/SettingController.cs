@@ -66,12 +66,12 @@ namespace Cactus.Controllers
                 BaseResponse<Author> author = await authorService.GetAsync(userId);
                 if(author.StatusCode==200)
                     profile.Author = author.Data;
-
-                BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetMethods();
-                if (methods.StatusCode == 200) {
-                    profile.PayMethods = methods.Data;
-                }
             }
+            BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetMethods();
+            if (methods.StatusCode == 200) {
+                profile.PayMethods = methods.Data;
+            }
+
             BaseResponse<Wallet> wallet = await walletService.GetWallet(userId);
             profile.Wallet = wallet.Data;
 

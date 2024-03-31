@@ -8,5 +8,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<bool>> AddSetting(PayMethodSettingViewModel model);
         Task<BaseResponse<PayMethodSetting>> GetSettingAsync(int id);
+        Task<BaseResponse<PayMethodSetting>> GetIntrasystemOperationsSetting();
     }
 }

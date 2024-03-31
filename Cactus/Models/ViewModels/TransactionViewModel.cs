@@ -14,5 +14,6 @@ namespace Cactus.Models.ViewModels
         public decimal Received {  get; set; }
         public DateTime Created { get; set; }
         public int StatusId { get; set; }
+        public int AuthorId { get; set; }
     }
 }

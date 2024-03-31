@@ -36,6 +36,15 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<PayMethodSetting>> GetIntrasystemOperationsSetting() {
+            PayMethodSetting setting = await payMethodSettingRepository.GetIntrasystemOperationsSettingAsync();
+            return new BaseResponse<PayMethodSetting>
+            {
+                Data= setting,
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<PayMethodSetting>> GetSettingAsync(int id) {
             PayMethodSetting setting = await payMethodSettingRepository.GetAsync(id);
             if (setting == null) {

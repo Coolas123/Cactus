@@ -34,8 +34,19 @@ namespace Cactus.Infrastructure.Repositories
                 .Include(x => x.PayMethod)
                 .Include(x => x.PayMethod.PayMethodSetting)
                 .Include(x => x.PayMethod.PayMethodSetting.TransactionType)
-                .Where(x => x.PayMethod.PayMethodSetting.TransactionType.Id == (int)Models.Enums.TransactionType.Withdraw ||
-                        x.PayMethod.PayMethodSetting.TransactionType.Id == (int)Models.Enums.TransactionType.Replenish)
+                .Where(x =>x.UserId==userId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Transaction>> GetWidrawAndReplenishAsync(int userId, DateTime dateFrom, DateTime dateTo) {
+            return await dbContext.Transactions
+                .Include(x => x.PayMethod)
+                .Include(x => x.PayMethod.PayMethodSetting)
+                .Include(x => x.PayMethod.PayMethodSetting.TransactionType)
+                .Where(x => 
+                        x.UserId == userId 
+                        && x.Created.Date >= dateFrom.Date 
+                        && x.Created.Date <= dateTo.Date)
                 .ToListAsync();
         }
     }
