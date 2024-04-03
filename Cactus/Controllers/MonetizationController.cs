@@ -1,4 +1,5 @@
 ﻿using Cactus.Models.Database;
+using Cactus.Models.Enums;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
@@ -16,14 +17,17 @@ namespace Cactus.Controllers
         private readonly ITransactionService transactionService;
         private readonly IWalletService walletService;
         private readonly IPayMethodSettingService payMethodSettingService;
+        private readonly IDonatorService donatorService;
         public MonetizationController(IDonationOptionService donationOptionService,
             ISubLevelMaterialService subLevelMaterialServices, ITransactionService transactionService,
-            IWalletService walletService, IPayMethodSettingService payMethodSettingService) {
+            IWalletService walletService, IPayMethodSettingService payMethodSettingService,
+            IDonatorService donatorService) {
             this.donationOptionService = donationOptionService;
             this.subLevelMaterialServices = subLevelMaterialServices;
             this.transactionService = transactionService;
             this.walletService = walletService;
             this.payMethodSettingService = payMethodSettingService;
+            this.donatorService = donatorService;
         }
 
         [HttpPost]
@@ -54,7 +58,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Patron")]
+        [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> SubscribePaidSub(PagingAuthorViewModel model) {
             BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
             model.PaidSub.Created = DateTime.Now;
@@ -66,7 +70,44 @@ namespace Cactus.Controllers
             await transactionService.CreateTransaction(model.PaidSub);
             await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
             await walletService.ReplenishWallet(model.PaidSub.AuthorId, model.PaidSub.Received);
+
+            BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
+            var donatorViewModel = new DonatorViewModel
+            {
+                UserId = model.PaidSub.UserId,
+                DonationOptionId = model.PaidSub.DonationOptionId,
+                DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
+                TransactionId = newTransaction.Data.Id
+            };
+            await donatorService.AddDonator(donatorViewModel);
             return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId});
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Author, Patron")]
+        public async Task<IActionResult> PayGoal(PagingAuthorViewModel model) {
+            BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
+            model.PayGoal.Created = DateTime.Now;
+            model.PayGoal.PayMethodId = setting.Data.Id;
+            model.PayGoal.Received = model.PayGoal.Sended - model.PayGoal.Sended / 100 * setting.Data.Comission;
+            model.PayGoal.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+            model.PayGoal.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
+            await transactionService.CreateTransaction(model.PayGoal);
+            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Sended);
+            await walletService.ReplenishWallet(model.PayGoal.AuthorId, model.PayGoal.Received);
+            await donationOptionService.PayGoalAsync(model.PayGoal.DonationOptionId, model.PayGoal.Received);
+
+            BaseResponse<Transaction> newTransaction= await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Created);
+            var donatorViewModel = new DonatorViewModel
+            {
+                UserId = model.PayGoal.UserId,
+                DonationOptionId = model.PayGoal.DonationOptionId,
+                DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
+                TransactionId = newTransaction.Data.Id
+            };
+            await donatorService.AddDonator(donatorViewModel);
+            return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId });
         }
     }
 }

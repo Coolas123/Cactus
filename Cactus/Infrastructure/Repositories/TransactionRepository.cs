@@ -49,5 +49,9 @@ namespace Cactus.Infrastructure.Repositories
                         && x.Created.Date <= dateTo.Date)
                 .ToListAsync();
         }
+
+        public async Task<Transaction> GetLastTransaction(int userId, DateTime date) {
+            return await dbContext.Transactions.FirstOrDefaultAsync(x=>x.UserId== userId && x.Created==date);
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<Author> GetAsync(int id) {
-            return await dbContext.Authors.FirstOrDefaultAsync(x => x.UserId == id);
+            return await dbContext.Authors.Include(x=>x.User).FirstOrDefaultAsync(x => x.UserId == id);
         }
 
         public async Task<Author> GetByUrlPageAsync(string urlPage) {

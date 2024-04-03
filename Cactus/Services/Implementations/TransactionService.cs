@@ -3,7 +3,6 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cactus.Services.Implementations
 {
@@ -36,6 +35,15 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<bool>
             {
                 Data=true,
+                StatusCode=200
+            };
+        }
+
+        public async Task<BaseResponse<Transaction>> GetLastTransaction(int userId, DateTime date) {
+            Transaction transactions = await transactionRepository.GetLastTransaction(userId, date.ToUniversalTime());
+            return new BaseResponse<Transaction>
+            {
+                Data=transactions,
                 StatusCode=200
             };
         }

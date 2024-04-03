@@ -69,5 +69,24 @@ namespace Cactus.Services.Implementations
                 StatusCode = 200
             };
         }
+
+        public async Task<BaseResponse<bool>> PayGoalAsync(int donationOptionId, decimal price) {
+            DonationOption option = await donationOptionRepository.GetAsync(donationOptionId);
+            option.Price += price;
+            try {
+                await donationOptionRepository.UpdateAsync(option);
+            }
+            catch {
+                return new BaseResponse<bool>
+                {
+                    Description="Не удалось пополнить цель"
+                };
+            }
+            return new BaseResponse<bool>
+            {
+                Data=true,
+                StatusCode = 200
+            };
+        }
     }
 }

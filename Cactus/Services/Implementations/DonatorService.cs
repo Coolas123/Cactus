@@ -1,6 +1,7 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
+using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 
 namespace Cactus.Services.Implementations
@@ -12,7 +13,7 @@ namespace Cactus.Services.Implementations
             this.donatorRepository = donatorRepository;
         }
         public async Task<BaseResponse<Donator>> GetDonator(int targetId, int typeId, int userId) {
-            Donator donator = await donatorRepository.GetDonatorAsync(targetId, typeId, userId);
+            Donator donator = await donatorRepository.GetDonatorAsync(typeId, userId);
             if (donator == null) {
                 return new BaseResponse<Donator>
                 {
@@ -67,6 +68,30 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<IEnumerable<Donator>>
             {
                 Data = donators,
+                StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<bool>> AddDonator(DonatorViewModel model) {
+            var donator = new Donator
+            {
+                UserId = model.UserId,
+                DonationOptionId = model.DonationOptionId,
+                DonationTargetTypeId = model.DonationTargetTypeId,
+                TransactionId = model.TransactionId
+            };
+            try {
+                await donatorRepository.CreateAsync(donator);
+            }
+            catch {
+                return new BaseResponse<bool>
+                {
+                    Description = "Не удолось сохранить"
+                };
+            }
+            return new BaseResponse<bool>
+            {
+                Data = true,
                 StatusCode = 200
             };
         }

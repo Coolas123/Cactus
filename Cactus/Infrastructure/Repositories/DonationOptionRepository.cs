@@ -20,8 +20,8 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<DonationOption> GetAsync(int id) {
-            throw new NotImplementedException();
+        public async Task<DonationOption> GetAsync(int id) {
+            return await dbContext.DonationOptions.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<DonationOption> GetByPriceAsync(decimal price) {
@@ -34,6 +34,12 @@ namespace Cactus.Infrastructure.Repositories
 
         public Task<IEnumerable<DonationOption>> SelectAsync() {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateAsync(DonationOption entity) {
+            dbContext.Update(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

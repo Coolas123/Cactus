@@ -10,8 +10,10 @@ namespace Cactus.Infrastructure.Repositories
         public DonatorRepository(ApplicationDbContext dbContext) {
             this.dbContext = dbContext;
         }
-        public Task<bool> CreateAsync(Donator entity) {
-            throw new NotImplementedException();
+        public async Task<bool> CreateAsync(Donator entity) {
+            await dbContext.Donators.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return true;
         }
 
         public Task<bool> DeleteAsync(Donator entity) {
@@ -23,19 +25,20 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<Dictionary<int, decimal>> GetCollectedSumOfGoalsAsync(List<int> optionId) {
-            return await dbContext.Donators.Where(x =>
+            return await dbContext.Donators
+                .Include(x=>x.Transaction)
+                .Where(x =>
                     optionId.Contains(x.DonationOptionId))
                 .GroupBy(x => new { x.DonationOptionId })
-                .Select(x => new KeyValuePair<int, decimal>(x.Key.DonationOptionId, x.Sum(x=>x.TotalAmount)))
+                .Select(x => new KeyValuePair<int, decimal>(x.Key.DonationOptionId, x.Sum(x=>x.Transaction.Received)))
                 .ToDictionaryAsync(p => p.Key, p => p.Value);
         }
 
-        public async Task<Donator> GetDonatorAsync(int targetId, int typeId, int userId) {
+        public async Task<Donator> GetDonatorAsync(int typeId, int userId) {
             return await dbContext
                 .Donators
                 .Include(x=>x.DonationOption)
                 .FirstOrDefaultAsync(x=>
-                    x.DonationTargetId== targetId&&
                     x.DonationTargetTypeId==typeId&&
                     x.UserId== userId
                     );

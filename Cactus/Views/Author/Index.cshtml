@@ -41,6 +41,12 @@
                                 else {
                                     <p>0/@o.Price собрано</p>
                                 }
+                                <form asp-controller="Monetization" asp-action="PayGoal" method="post">
+                                    <input class="form-control" asp-for="PayGoal.Sended"/>
+                                    <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
+                                    <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
+                                    <button class="btn btn-danger m-1">Купить</button>
+                                </form>
                             </div>
                         }
                     }
@@ -296,6 +302,7 @@
                                 <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
                                     <input hidden asp-for="PaidSub.Sended" value="@o.Price"/>
                                     <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
+                                    <input hidden asp-for="PaidSub.DonationOptionId" value="@o.Id" />
                                     <button class="btn btn-danger">Купить</button>
                                 </form>
                             </div>

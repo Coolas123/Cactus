@@ -43,7 +43,7 @@ namespace Cactus.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string UrlPage, int id=0 ,int authorPage = 1, int postPage = 1) {
             var response = new PagingAuthorViewModel();
-            BaseResponse<User> author = await authorService.GetUserByUrlPageAsync(UrlPage);
+            BaseResponse<User> author;
             if (id == 0) {
                 author = await authorService.GetUserByUrlPageAsync(UrlPage);
             }

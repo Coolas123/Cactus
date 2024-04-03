@@ -6,5 +6,6 @@ namespace Cactus.Infrastructure.Interfaces
     {
         Task<IEnumerable<DonationOption>> GetOptionsAsync(int authorId);
         Task<DonationOption> GetByPriceAsync(decimal price);
+        Task<bool> UpdateAsync(DonationOption entity);
     }
 }
