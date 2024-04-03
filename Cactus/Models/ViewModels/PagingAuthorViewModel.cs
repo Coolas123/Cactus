@@ -23,5 +23,6 @@ namespace Cactus.Models.ViewModels
         public Dictionary<int,decimal> NewRemittance {  get; set; }
         public TransactionViewModel PaidSub { get; set; }
         public TransactionViewModel PayGoal { get; set; }
+        public TransactionViewModel Remittance { get; set; }
     }
 }

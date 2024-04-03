@@ -6,6 +6,7 @@
 </div>
 <div class="row">
     <div class="col">
+        <h4>Подписки</h4>
         <table class="table">
             <tbody>
                 @if (Model.Authors != null)
@@ -41,12 +42,14 @@
                                 else {
                                     <p>0/@o.Price собрано</p>
                                 }
-                                <form asp-controller="Monetization" asp-action="PayGoal" method="post">
-                                    <input class="form-control" asp-for="PayGoal.Sended"/>
-                                    <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
-                                    <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
-                                    <button class="btn btn-danger m-1">Купить</button>
-                                </form>
+                                @if(!Model.IsOwner){
+                                    <form asp-controller="Monetization" asp-action="PayGoal" method="post">
+                                        <input class="form-control" asp-for="PayGoal.Sended" />
+                                        <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
+                                        <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
+                                        <button class="btn btn-danger m-1">Купить</button>
+                                    </form>
+                                    }
                             </div>
                         }
                     }
@@ -108,16 +111,25 @@
                 </a>
             </div>
         }
-        @{
-            var opt = Model.DonationOptions?.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
-            if (opt!=null&&opt.Any()) {
-                <div class="text-center">
-                    <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
-                        Отправить донат
-                    </button>
-                </div>
-            }
-        }
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                @{
+                    var opt = Model.DonationOptions?.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
+                    if (opt != null && opt.Any()) {
+                        <div class="text-center border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                            <p>@opt.Last().OptionName</p>
+                            <p>@opt.Last().Description</p>
+                            <hr />
+                            <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
+                                Отправить донат
+                            </button>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="col"></div>
+        </div>
         <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -208,12 +220,12 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form asp-controller="Author" asp-action="AddPost" method="post" enctype="multipart/form-data">
-                                <div>
-                                    
-                                </div>
+                            <form class="" asp-controller="monetization" asp-action="remittance" method="post">
+                                <input class="form-control" asp-for="Remittance.Sended" />
+                                <input hidden asp-for="Remittance.AuthorId" value="@Model.CurrentUser.Id" />
+                                <input hidden asp-for="Remittance.DonationOptionId" />
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger">Опубликовать</button>
+                                    <button type="submit" class="btn btn-danger">Отправить</button>
                                 </div>
                             </form>
                         </div>
@@ -255,6 +267,7 @@
         </div>
     </div>
     <div class="col">
+        <h4>Посты</h4>
         <table class="table">
             <thead>
                 <tr>
@@ -299,12 +312,14 @@
                                 <p>@count-й уровень</p>
                                 <hr/>
                                 <p>Цена @o.Price</p>
-                                <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
-                                    <input hidden asp-for="PaidSub.Sended" value="@o.Price"/>
-                                    <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
-                                    <input hidden asp-for="PaidSub.DonationOptionId" value="@o.Id" />
-                                    <button class="btn btn-danger">Купить</button>
-                                </form>
+                                @if (!Model.IsOwner) {
+                                    <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
+                                        <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
+                                        <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
+                                        <input hidden asp-for="PaidSub.DonationOptionId" value="@o.Id" />
+                                        <button class="btn btn-danger">Купить</button>
+                                    </form>
+                                }
                             </div>
                             count++;
                         }
@@ -348,5 +363,10 @@
             notFree.style.display = 'none'
         }
         else notFree.style.display = 'block'
+    }
+
+    function sendDonate(){
+        var optionId = document.getElementById('donateBtn')
+        document.getElementById('PaidSub_DonationOptionId').value = optionId.value
     }
 </script>

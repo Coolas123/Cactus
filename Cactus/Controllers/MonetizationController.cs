@@ -109,5 +109,31 @@ namespace Cactus.Controllers
             await donatorService.AddDonator(donatorViewModel);
             return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId });
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Author, Patron")]
+        public async Task<IActionResult> Remittance(PagingAuthorViewModel model) {
+            BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
+            model.Remittance.Created = DateTime.Now;
+            model.Remittance.PayMethodId = setting.Data.Id;
+            model.Remittance.Received = model.Remittance.Sended - model.Remittance.Sended / 100 * setting.Data.Comission;
+            model.Remittance.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+            model.Remittance.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
+            await transactionService.CreateTransaction(model.Remittance);
+            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Sended);
+            await walletService.ReplenishWallet(model.Remittance.AuthorId, model.Remittance.Received);
+
+            BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Created);
+            var donatorViewModel = new DonatorViewModel
+            {
+                UserId = model.Remittance.UserId,
+                DonationOptionId = model.Remittance.DonationOptionId,
+                DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
+                TransactionId = newTransaction.Data.Id
+            };
+            await donatorService.AddDonator(donatorViewModel);
+            return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId });
+        }
     }
 }
