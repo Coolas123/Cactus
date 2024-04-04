@@ -3,6 +3,7 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using System.Threading;
 
 namespace Cactus.Services.Implementations
 {
@@ -12,15 +13,15 @@ namespace Cactus.Services.Implementations
         public DonatorService(IDonatorRepository donatorRepository) {
             this.donatorRepository = donatorRepository;
         }
-        public async Task<BaseResponse<Donator>> GetDonator(int targetId, int typeId, int userId) {
-            Donator donator = await donatorRepository.GetDonatorAsync(typeId, userId);
-            if (donator == null) {
-                return new BaseResponse<Donator>
+        public async Task<BaseResponse<IEnumerable<Donator>>> GetPostDonator(int postId, int DonationOptinoId, int userId) {
+            IEnumerable<Donator> donator = await donatorRepository.GetPostDonator(postId, DonationOptinoId, userId);
+            if (donator == null || !donator.Any()) {
+                return new BaseResponse<IEnumerable<Donator>>
                 {
                     Description="Пост недоступен"
                 };
             }
-            return new BaseResponse<Donator>
+            return new BaseResponse<IEnumerable<Donator>>
             {
                 Data = donator,
                 StatusCode = 200
@@ -92,6 +93,21 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<bool>
             {
                 Data = true,
+                StatusCode = 200
+            };
+        }
+
+        public async Task<BaseResponse<Donator>> GetLastDonator(DateTime created, int userId) {
+            Donator donator = await donatorRepository.GetLastDonator(created, userId);
+            if (donator == null) {
+                return new BaseResponse<Donator>
+                {
+                    Description="Не удалось найти запись"
+                };
+            }
+            return new BaseResponse<Donator>
+            {
+                Data = donator,
                 StatusCode = 200
             };
         }

@@ -16,7 +16,10 @@
             <h3 class="text-center">@Model.Post.Title</h3>
             <hr/>
         </div>
-        @if (Model.IsOwner||Model.DonationOption == null || Model.DonationOption?.OptionName == Model.CurrentDonator?.DonationOption.OptionName) {
+        @if (Model.IsOwner || 
+            Model.DonationOption == null || 
+                Model.CurrentDonator!=null &&
+                Model.CurrentDonator.Any(x => x.DonationOption.OptionName == Model.DonationOption?.OptionName)) {
             <div>
                 <img class="m-2" src="@Model.Material?.Path"/>
             </div>
@@ -28,6 +31,18 @@
         }
         else {
             <h3 class="text-danger">@Model.PostAccessDescription</h3>
+            if (Model.DonationOption != null && Model.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.OneTimePurchase) {
+                <form class="m-1" asp-page-handler="OneTimePurschase" method="post">
+                    <input hidden asp-for="@Model.NewOneTimePurschase.AuthorId" value="@Model.DonationOption.AuthorId" />
+                    <input hidden asp-for="@Model.NewOneTimePurschase.DonationOptionId" value="@Model.DonationOption.Id"/>
+                    <input hidden asp-for="@Model.NewOneTimePurschase.Sended" value="@Model.DonationOption.Price" />
+                    <input hidden asp-for="@Model.NewOneTimePurschase.PostId" value="@Model.Post.Id" />
+                    <div class="text-center border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                        <h5>Цена: @Model.DonationOption.Price</h5>
+                        <button class="btn btn-danger m-1">Купить доступ</button>
+                    </div>
+                </form>
+            }
         }
         <div>
             <div>

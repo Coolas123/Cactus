@@ -15,6 +15,7 @@ namespace Cactus.Models.ViewModels
         public DateTime Created { get; set; }
         public int StatusId { get; set; }
         public int AuthorId { get; set; }
+        public int PostId { get; set; }
         public int DonationOptionId { get; set; }
     }
 }

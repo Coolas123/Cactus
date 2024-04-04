@@ -83,14 +83,16 @@
                                 </a>
                             </li>
                         }
-                        <li>
-                            <div class="text-center">
-                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#complainModal">
-                                    Пожаловаться
-                                </button>
-                            </div>
-                            
-                        </li>
+                        @if (!Model.IsOwner)
+                        {
+                            <li>
+                                <div class="text-center">
+                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#complainModal">
+                                        Пожаловаться
+                                    </button>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -121,9 +123,12 @@
                             <p>@opt.Last().OptionName</p>
                             <p>@opt.Last().Description</p>
                             <hr />
-                            <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
-                                Отправить донат
-                            </button>
+                            @if (!Model.IsOwner)
+                            {
+                                <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
+                                    Отправить донат
+                                </button>
+                            }
                         </div>
                     }
                 }
@@ -176,13 +181,20 @@
                                 </div>
                                 <div id="notFree">
                                     <div>
-                                        @if (Model.DonationOptions is not null) {
-                                            <h5>Созданные опции</h5>
-                                            <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(Model.DonationOptions, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
-                                                <option value="0" selected>Создать новую опцию</option>
-                                            </select>
-                                        }
-                                    </div>
+                                        @{
+                                            if (Model.DonationOptions is not null)
+                                            {
+                                                var optionsForPost = Model.DonationOptions.Where(x=>
+                                                    x.MonetizationTypeId!=(int)Cactus.Models.Enums.MonetizationType.Goal&&
+                                                    x.MonetizationTypeId!=(int)Cactus.Models.Enums.MonetizationType.Remittance).ToList();
+                                                <h5>Созданные опции</h5>
+                                                <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(optionsForPost, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
+                                                    <option value="0" selected>Создать новую опцию</option>
+                                                </select>
+
+                                            }
+                                         }
+                                            </div>
                                     <div id="newOption">
                                         <div>
                                             <h5>Добавить новый вид монетизации</h5>

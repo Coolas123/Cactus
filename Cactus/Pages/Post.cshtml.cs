@@ -1,15 +1,17 @@
-using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Globalization;
 using System.Security.Claims;
+using System.Threading;
 
 namespace Cactus.Pages
 {
+    [Authorize(Roles = "Author, Patron")]
+    [AutoValidateAntiforgeryToken]
     public class PostModel : PageModel
     {
         private readonly IPostService postService;
@@ -18,30 +20,42 @@ namespace Cactus.Pages
         private readonly IPostTagService postTagService;
         private readonly IDonatorService donatorService;
         private readonly IPostDonationOptionService postDonationOptionService;
+        private readonly IPayMethodSettingService payMethodSettingService;
+        private readonly ITransactionService transactionService;
+        private readonly IWalletService walletService;
+        private readonly IPostOneTimePurschaseDonatorService postOneTimePurschaseDonatorService;
         public PostModel(IPostService postService, IPostMaterialService postMaterialService,
             IPostCommentService postCommentService, IPostTagService postTagService,
-            IDonatorService donatorService, IPostDonationOptionService postDonationOptionService) {
+            IDonatorService donatorService, IPostDonationOptionService postDonationOptionService,
+            IPayMethodSettingService payMethodSettingService, ITransactionService transactionService,
+            IWalletService walletService, IPostOneTimePurschaseDonatorService postOneTimePurschaseDonatorService) {
             this.postService = postService;
             this.postMaterialService = postMaterialService;
             this.postCommentService = postCommentService;
             this.postTagService = postTagService;
             this.donatorService = donatorService;
             this.postDonationOptionService = postDonationOptionService;
+            this.payMethodSettingService = payMethodSettingService;
+            this.transactionService = transactionService;
+            this.walletService = walletService;
+            this.postOneTimePurschaseDonatorService = postOneTimePurschaseDonatorService;
         }
 
         public string ReturnUrl { get; set; }
+        [BindProperty]
         public Post Post { get; set; }
         public PostMaterial Material { get; set; }
-        [BindProperty]
         public CommentViewModel PostComment { get; set; }
         public IEnumerable<PostComment> PostComments { get; set; }=new List<PostComment>();
         public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
         public string CommentDescription {  get; set; }
         public NewComplainViewModel NewComplain { get; set; }
         public DonationOption DonationOption { get; set; }
-        public Donator CurrentDonator { get; set; }
+        public IEnumerable<Donator> CurrentDonator { get; set; }
         public string PostAccessDescription { get; set; }
         public bool IsOwner { get; set; }
+        [BindProperty]
+        public TransactionViewModel NewOneTimePurschase { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int postId)
         {
@@ -70,11 +84,20 @@ namespace Cactus.Pages
                 if (donationOption.StatusCode == 200) {
                     DonationOption = donationOption.Data;
 
-                    BaseResponse<Donator> donator = await donatorService.GetDonator(post.Data.Id, (int)Models.Enums.DonationTargetType.Post, Convert.ToInt32(User.FindFirstValue("Id")));
-                    if (donator.StatusCode == 200) {
-                        CurrentDonator = donator.Data;
+                    if (donationOption.Data.MonetizationTypeId == (int)Models.Enums.MonetizationType.OneTimePurchase) {
+                        BaseResponse<PostOneTimePurschaseDonator> Postdonator = await postOneTimePurschaseDonatorService.GetDonator(Post.Id, Convert.ToInt32(User.FindFirstValue("Id")));
+                        if (Postdonator.StatusCode == 200) {
+                            CurrentDonator = new List<Donator> { Postdonator.Data.Donator };
+                        }
+                        else PostAccessDescription = Postdonator.Description;
                     }
-                    else PostAccessDescription = donator.Description;
+                    else {
+                        BaseResponse<IEnumerable<Donator>> donator = await donatorService.GetPostDonator(post.Data.Id, DonationOption.Id, Convert.ToInt32(User.FindFirstValue("Id")));
+                        if (donator.StatusCode == 200) {
+                            CurrentDonator = donator.Data;
+                        }
+                        else PostAccessDescription = donator.Description;
+                    }
                 }
             }
             return Page ();
@@ -84,6 +107,32 @@ namespace Cactus.Pages
             BaseResponse<PostComment> response =await postCommentService.Create(PostComment);
             CommentDescription = response.Description;
             return RedirectToPage("/Post", new {postId= PostComment.PostId});
+        }
+
+        public async Task<IActionResult> OnPostOneTimePurschase() {
+            BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
+            NewOneTimePurschase.Created = DateTime.Now;
+            NewOneTimePurschase.PayMethodId = setting.Data.Id;
+            NewOneTimePurschase.Received = NewOneTimePurschase.Sended - NewOneTimePurschase.Sended / 100 * setting.Data.Comission;
+            NewOneTimePurschase.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+            NewOneTimePurschase.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
+            await transactionService.CreateTransaction(NewOneTimePurschase);
+            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Sended);
+            await walletService.ReplenishWallet(NewOneTimePurschase.AuthorId, NewOneTimePurschase.Received);
+
+            BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Created);
+            var donatorViewModel = new DonatorViewModel
+            {
+                UserId = NewOneTimePurschase.UserId,
+                DonationOptionId = NewOneTimePurschase.DonationOptionId,
+                DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
+                TransactionId = newTransaction.Data.Id
+            };
+            await donatorService.AddDonator(donatorViewModel);
+            BaseResponse<Donator> lastDonator = await donatorService.GetLastDonator(NewOneTimePurschase.Created.ToUniversalTime(), Convert.ToInt32(User.FindFirstValue("Id")));
+            await postOneTimePurschaseDonatorService.AddDonator(NewOneTimePurschase.PostId, lastDonator.Data.Id);
+            return RedirectToPage("/Post", new { postId = NewOneTimePurschase.PostId });
         }
     }
 }

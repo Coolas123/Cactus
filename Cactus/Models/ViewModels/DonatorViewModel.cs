@@ -6,5 +6,6 @@
         public int DonationOptionId { get; set; }
         public int DonationTargetTypeId { get; set; }
         public int TransactionId { get; set; }
+        public int DonationTargetId { get; set; }
     }
 }

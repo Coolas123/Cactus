@@ -65,6 +65,22 @@ namespace Cactus.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Donator> GetLastDonator(DateTime created, int userId) {
+            return await dbContext.Donators
+                .Include(x=>x.Transaction)
+                .FirstOrDefaultAsync(x => x.Transaction.Created== created&&x.UserId==userId);
+        }
+
+        public async Task<IEnumerable<Donator>> GetPostDonator(int postId, int optionId ,int userId) {
+            return await dbContext.Donators
+                .Include(x=>x.DonationOption)
+                .Where(x=>
+                x.DonationOptionId==optionId&&
+                x.DonationTargetTypeId== postId&&
+                x.UserId == userId)
+                .ToListAsync();
+        }
+
         public Task<IEnumerable<Donator>> SelectAsync() {
             throw new NotImplementedException();
         }

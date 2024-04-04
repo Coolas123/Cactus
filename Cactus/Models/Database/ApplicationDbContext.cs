@@ -44,6 +44,7 @@ namespace Cactus.Models.Database
         public DbSet<TransactionType> TransactionTypes { get; set; }
         public DbSet<TransactionStatus> TransactionStatues { get; set; }
         public DbSet<PayMethodSetting> PayMethodSettings { get; set; }
+        public DbSet<PostOneTimePurschaseDonator> PostOneTimePurschaseDonators { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
@@ -130,6 +131,9 @@ namespace Cactus.Models.Database
             });
             builder.Entity<PostDonationOption>(x => {
                 x.HasKey(p => new { p.PostId, p.DonationOptionId });
+            });
+            builder.Entity<PostOneTimePurschaseDonator>(x => {
+                x.HasKey(p => new { p.PostId, p.DonatorId });
             });
             builder.Entity<Currency>(x => {
                 x.HasData([
