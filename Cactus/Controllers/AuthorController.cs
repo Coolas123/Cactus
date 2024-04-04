@@ -3,8 +3,13 @@ using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Nest;
+using System;
 using System.Security.Claims;
+using System.Web;
 
 namespace Cactus.Controllers
 {
@@ -84,32 +89,39 @@ namespace Cactus.Controllers
                 response.Categories = categories.Data;
             }
             response.CurrentUser = author.Data;
-            if (NotEnoughBalance) response.NotEnoughBalance = NotEnoughBalance;
+            if (NotEnoughBalance) {
+                response.NotEnoughBalance = NotEnoughBalance;
+               
+                //HttpContext.Request.QueryString = QueryString.Empty;
+            }
             return View(response);
         }
 
         [HttpPost]
         [Authorize(Roles = "Author")]
         public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
-            model.Post.Created=DateTime.Now.ToUniversalTime();
-            await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
-            
-            var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
-            BaseResponse<Post> post =await postService.GetLastAsync(model.Post.Created);
-            if(tags is not null)
-                await postTagService.AddTagsToPost(post.Data.Id, tags);
+            if (ModelState.IsValid) {
 
-            if (model.SelectedDonationOption == 0) {
-                if (!model.Post.IsFree) {
-                    await donationOptionService.AddOptionAsync(model.NewDonationOption);
-                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
-                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
+
+                model.Post.Created = DateTime.Now.ToUniversalTime();
+                await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
+
+                var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
+                BaseResponse<Post> post = await postService.GetLastAsync(model.Post.Created);
+                if (tags is not null)
+                    await postTagService.AddTagsToPost(post.Data.Id, tags);
+
+                if (model.SelectedDonationOption == 0) {
+                    if (!model.Post.IsFree) {
+                        await donationOptionService.AddOptionAsync(model.NewDonationOption);
+                        BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
+                        await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
+                    }
+                }
+                else {
+                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, model.SelectedDonationOption);
                 }
             }
-            else {
-                await postDonationOptionService.AddOptionToPostAsync(post.Data.Id,model.SelectedDonationOption);
-            }
-
 
 
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));

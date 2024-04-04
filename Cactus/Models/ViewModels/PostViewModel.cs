@@ -5,6 +5,7 @@ namespace Cactus.Models.ViewModels
 {
     public class PostViewModel
     {
+        [Required]
         [Display(Name = "Оглавление")]
         public string Title { get; set; }
         [Display(Name = "Описание")]

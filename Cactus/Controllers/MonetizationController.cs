@@ -4,6 +4,7 @@ using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -59,29 +60,31 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> SubscribePaidSub(PagingAuthorViewModel model) {
-            BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
-            model.PaidSub.Created = DateTime.Now;
-            model.PaidSub.PayMethodId = setting.Data.Id;
-            model.PaidSub.Received = model.PaidSub.Sended - model.PaidSub.Sended / 100 * setting.Data.Comission;
-            model.PaidSub.StatusId = (int)Models.Enums.TransactionStatus.Sended;
-            model.PaidSub.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+            if (ModelState.GetValidationState(nameof(model.PaidSub)) == ModelValidationState.Unvalidated) {
+                BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
+                model.PaidSub.Created = DateTime.Now;
+                model.PaidSub.PayMethodId = setting.Data.Id;
+                model.PaidSub.Received = model.PaidSub.Sended - model.PaidSub.Sended / 100 * setting.Data.Comission;
+                model.PaidSub.StatusId = (int)Models.Enums.TransactionStatus.Sended;
+                model.PaidSub.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
-            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
-            if (walletResponse.StatusCode != 200) {
-                return RedirectToAction("Index", "Author", new { id = model.PaidSub.AuthorId, NotEnoughBalance = true });
+                BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
+                if (walletResponse.StatusCode != 200) {
+                    return RedirectToAction("Index", "Author", new { id = model.PaidSub.AuthorId, NotEnoughBalance = true });
+                }
+                await transactionService.CreateTransaction(model.PaidSub);
+                await walletService.ReplenishWallet(model.PaidSub.AuthorId, model.PaidSub.Received);
+
+                BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
+                var donatorViewModel = new DonatorViewModel
+                {
+                    UserId = model.PaidSub.UserId,
+                    DonationOptionId = model.PaidSub.DonationOptionId,
+                    DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
+                    TransactionId = newTransaction.Data.Id
+                };
+                await donatorService.AddDonator(donatorViewModel);
             }
-            await transactionService.CreateTransaction(model.PaidSub);
-            await walletService.ReplenishWallet(model.PaidSub.AuthorId, model.PaidSub.Received);
-
-            BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
-            var donatorViewModel = new DonatorViewModel
-            {
-                UserId = model.PaidSub.UserId,
-                DonationOptionId = model.PaidSub.DonationOptionId,
-                DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
-                TransactionId = newTransaction.Data.Id
-            };
-            await donatorService.AddDonator(donatorViewModel);
             return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId});
         }
 

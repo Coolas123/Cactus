@@ -61,7 +61,8 @@
     </div>
     <div class="col">
         @if (Model.NotEnoughBalance) {
-            <script>
+            <script type="text/javascript">
+                history.pushState("", document.title, window.location.pathname);
                 alert("Недостаточно средств")
             </script>
         }
