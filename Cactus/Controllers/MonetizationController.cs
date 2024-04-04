@@ -66,8 +66,11 @@ namespace Cactus.Controllers
             model.PaidSub.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             model.PaidSub.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
+            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
+            if (walletResponse.StatusCode != 200) {
+                return RedirectToAction("Index", "Author", new { id = model.PaidSub.AuthorId, NotEnoughBalance = true });
+            }
             await transactionService.CreateTransaction(model.PaidSub);
-            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
             await walletService.ReplenishWallet(model.PaidSub.AuthorId, model.PaidSub.Received);
 
             BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
@@ -92,8 +95,11 @@ namespace Cactus.Controllers
             model.PayGoal.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             model.PayGoal.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
+            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Sended);
+            if (walletResponse.StatusCode != 200) {
+                return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, NotEnoughBalance = true });
+            }
             await transactionService.CreateTransaction(model.PayGoal);
-            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Sended);
             await walletService.ReplenishWallet(model.PayGoal.AuthorId, model.PayGoal.Received);
             await donationOptionService.PayGoalAsync(model.PayGoal.DonationOptionId, model.PayGoal.Received);
 
@@ -119,8 +125,11 @@ namespace Cactus.Controllers
             model.Remittance.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             model.Remittance.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
+            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Sended);
+            if (walletResponse.StatusCode != 200) {
+                return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, NotEnoughBalance = true });
+            }
             await transactionService.CreateTransaction(model.Remittance);
-            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Sended);
             await walletService.ReplenishWallet(model.Remittance.AuthorId, model.Remittance.Received);
 
             BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Created);

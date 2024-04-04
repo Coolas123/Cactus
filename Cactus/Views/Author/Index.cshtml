@@ -60,6 +60,11 @@
         </div>
     </div>
     <div class="col">
+        @if (Model.NotEnoughBalance) {
+            <script>
+                alert("Недостаточно средств")
+            </script>
+        }
         @if (ViewData["ComplainError"] != null) {
             <script type="text/javascript">
                 alert();

@@ -24,5 +24,6 @@ namespace Cactus.Models.ViewModels
         public TransactionViewModel PaidSub { get; set; }
         public TransactionViewModel PayGoal { get; set; }
         public TransactionViewModel Remittance { get; set; }
+        public bool NotEnoughBalance { get; set; }
     }
 }

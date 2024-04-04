@@ -41,7 +41,7 @@ namespace Cactus.Controllers
         [Route("{UrlPage}")]
         [Route("/id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string UrlPage, int id=0 ,int authorPage = 1, int postPage = 1) {
+        public async Task<IActionResult> Index(string UrlPage, int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> author;
             if (id == 0) {
@@ -84,6 +84,7 @@ namespace Cactus.Controllers
                 response.Categories = categories.Data;
             }
             response.CurrentUser = author.Data;
+            if (NotEnoughBalance) response.NotEnoughBalance = NotEnoughBalance;
             return View(response);
         }
 
