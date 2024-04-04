@@ -73,6 +73,13 @@ namespace Cactus.Services.Implementations
         public async Task<BaseResponse<Wallet>> WithdrawWallet(int userId, decimal sum) {
             BaseResponse<Wallet> wallet = await GetWallet(userId);
             if (wallet.StatusCode == 200) {
+                if (wallet.Data.Balance < sum) {
+                    return new BaseResponse<Wallet>
+                    {
+                        Description = "Недостаточно средств"
+                    };
+                }
+
                 wallet.Data.Balance -= sum;
                 await walletRepository.UpdateAsync(wallet.Data);
                 return new BaseResponse<Wallet>
@@ -84,7 +91,7 @@ namespace Cactus.Services.Implementations
             }
             return new BaseResponse<Wallet>
             {
-                Description = "Не удалось вывести"
+                Description = "Не удалось списать средства"
             };
         }
     }

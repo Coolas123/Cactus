@@ -56,9 +56,11 @@ namespace Cactus.Pages
         public bool IsOwner { get; set; }
         [BindProperty]
         public TransactionViewModel NewOneTimePurschase { get; set; }
+        public bool NotEnoughBalance { get; set; } = false;
 
-        public async Task<IActionResult> OnGetAsync(int postId)
+        public async Task<IActionResult> OnGetAsync(int postId, bool notEnoughBalance = false)
         {
+            if (notEnoughBalance) NotEnoughBalance = true;
             BaseResponse<Post> post = await postService.GetPostByIdAsync(postId);
             if (post.StatusCode == 200) {
                 Post = post.Data;
@@ -117,8 +119,13 @@ namespace Cactus.Pages
             NewOneTimePurschase.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             NewOneTimePurschase.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
+            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Sended);
+            if (walletResponse.StatusCode != 200) {
+                NotEnoughBalance = false;
+                return RedirectToPage("/Post", new { postId = NewOneTimePurschase.PostId, NotEnoughBalance = true});
+            }
+
             await transactionService.CreateTransaction(NewOneTimePurschase);
-            await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Sended);
             await walletService.ReplenishWallet(NewOneTimePurschase.AuthorId, NewOneTimePurschase.Received);
 
             BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Created);

@@ -6,6 +6,11 @@
 
     </div>
     <div class="col">
+        @if (Model.NotEnoughBalance) {
+            <script>
+                alert("Недостаточно средств")
+            </script>
+        }
         <div>
             <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
             <button id="postId" onClick="postId()" value="@Model.Post.Id" type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#complainModal">
