@@ -91,8 +91,6 @@ namespace Cactus.Controllers
             response.CurrentUser = author.Data;
             if (NotEnoughBalance) {
                 response.NotEnoughBalance = NotEnoughBalance;
-               
-                //HttpContext.Request.QueryString = QueryString.Empty;
             }
             return View(response);
         }
@@ -100,27 +98,23 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author")]
         public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
-            if (ModelState.IsValid) {
+            model.Post.Created = DateTime.Now.ToUniversalTime();
+            await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
 
+            var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
+            BaseResponse<Post> post = await postService.GetLastAsync(model.Post.Created);
+            if (tags is not null)
+                await postTagService.AddTagsToPost(post.Data.Id, tags);
 
-                model.Post.Created = DateTime.Now.ToUniversalTime();
-                await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
-
-                var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
-                BaseResponse<Post> post = await postService.GetLastAsync(model.Post.Created);
-                if (tags is not null)
-                    await postTagService.AddTagsToPost(post.Data.Id, tags);
-
-                if (model.SelectedDonationOption == 0) {
-                    if (!model.Post.IsFree) {
-                        await donationOptionService.AddOptionAsync(model.NewDonationOption);
-                        BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
-                        await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
-                    }
+            if (model.SelectedDonationOption == 0) {
+                if (!model.Post.IsFree) {
+                    await donationOptionService.AddOptionAsync(model.NewDonationOption);
+                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
+                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
                 }
-                else {
-                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, model.SelectedDonationOption);
-                }
+            }
+            else {
+                await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, model.SelectedDonationOption);
             }
 
 

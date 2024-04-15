@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Cactus.Properties  {
+namespace Cactus.Properties {
     using System;
     
     
