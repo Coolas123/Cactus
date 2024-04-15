@@ -5,7 +5,6 @@ using Cactus.Models.Database;
 using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.HostFiltering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cactus
@@ -107,6 +106,9 @@ namespace Cactus
             app.UseEndpoints(endpoints => {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapGet("/", context => {
+                    return Task.Run(() => context.Response.Redirect("/NewsFeed"));
+                });
                 endpoints.MapFallback(async context => {
                     await context.Response.WriteAsync("Страница не найдена");
                 });
