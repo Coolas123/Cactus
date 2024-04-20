@@ -20,7 +20,8 @@ namespace Cactus.Components
         public async Task<IViewComponentResult> InvokeAsync(int id,string html="") {
             string path = "";
             BaseResponse<ProfileMaterial> result = await profileMaterialService.GetAvatarAsync(id);
-            if(result.StatusCode==200) path=result.Data.Path;
+            if (result.StatusCode == 200) path = result.Data.Path;
+            else path = "/avatar.png";
             return new HtmlContentViewComponentResult(
                 new HtmlString($"<img src=\"{path}\" width=\"50\" height=\"50\" {html}>"));
         }

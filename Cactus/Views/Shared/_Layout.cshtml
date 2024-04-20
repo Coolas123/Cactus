@@ -23,34 +23,22 @@
             <div class="navbar-right" id="navbarNavDarkDropdown">
                 <ul class="navbar-nav">
                     @if (User.Identity.IsAuthenticated) {
+                        @await Component.InvokeAsync("Wallet", new { id = Convert.ToInt32(User.FindFirst("Id").Value) })
                         <li class="nav-item dropdown">
                             <a class="navbar-brand dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Аккаунт
+                                @await Component.InvokeAsync("AvatarPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"avatar\"" })
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                                 @if (User.IsInRole("Patron")) {
                                     <li><a class="dropdown-item" asp-controller="Patron" asp-action="Index" asp-route-id="@Convert.ToInt32(@User.FindFirst("Id").Value)">Профиль</a></li>
                                 }
                                 else @if (User.IsInRole("Author")) {
                                     <li>@await Component.InvokeAsync("UrlPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"dropdown-item\"" })</li>
                                 }
-                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" asp-controller="Setting" asp-action="Index">Настройки</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item">...</a></li>
+                                <li><a class="dropdown-item" asp-page="/UninterestingAuthor">Серый список</a></li>
+                                <li><a class="dropdown-item" asp-controller="account" asp-action="logOut">Выйти</a></li>
                             </ul>
-                        </li>
-                        <li style="color:white">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16">
-                                <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z" />
-                            </svg>
-                        </li>
-                        @await Component.InvokeAsync("Wallet", new { id = Convert.ToInt32(User.FindFirst("Id").Value) })
-                        <li>
-                            @await Component.InvokeAsync("AvatarPath", new { id = Convert.ToInt32(User.FindFirst("Id").Value), html = "class=\"avatar\"" })
-                        </li>
-                        <li>
-                            <a class="navbar-brand" asp-controller="account" asp-action="logOut">Выйти</a>
                         </li>
                     }
                     <li>

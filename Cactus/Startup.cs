@@ -104,11 +104,11 @@ namespace Cactus
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=NewsFeed}/{action=Index}");
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
-                endpoints.MapGet("/", context => {
-                    return Task.Run(() => context.Response.Redirect("/NewsFeed"));
-                });
                 endpoints.MapFallback(async context => {
                     await context.Response.WriteAsync("Страница не найдена");
                 });

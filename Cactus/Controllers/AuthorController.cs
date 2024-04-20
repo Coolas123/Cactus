@@ -3,13 +3,8 @@ using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Nest;
-using System;
 using System.Security.Claims;
-using System.Web;
 
 namespace Cactus.Controllers
 {

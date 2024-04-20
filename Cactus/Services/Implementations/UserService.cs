@@ -121,7 +121,7 @@ namespace Cactus.Services.Implementations
         public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(SettingViewModel model, int id) {
             User user = await userRepository.GetAsync(id);
 
-            ModelErrorsResponse<ClaimsIdentity> response = new ModelErrorsResponse<ClaimsIdentity>()
+            var response = new ModelErrorsResponse<ClaimsIdentity>()
             {
                 Descriptions = new Dictionary<string, string>()
             };
@@ -131,14 +131,22 @@ namespace Cactus.Services.Implementations
                 if (result != null) {
                     response.Descriptions.Add(nameof(model.UserName), "Пользователь с таким прозвищем уже существует");
                 }
-                else user.UserName = model.UserName;
+                else {
+                    user.UserName = model.UserName;
+                    response.IsSettingChanged = true;
+                }
             }
             if (model.DateOfBirth != DateTime.MinValue &&
-                DateOnly.FromDateTime(model.DateOfBirth) != DateOnly.FromDateTime(user.DateOfBirth))
+                DateOnly.FromDateTime(model.DateOfBirth) != DateOnly.FromDateTime(user.DateOfBirth)) 
+            {
                 user.DateOfBirth = model.DateOfBirth.Date;
+                response.IsSettingChanged = true;
+            }
 
-            if (model.Password != null)
+            if (model.Password != null) {
                 user.HashPassword = HashPassword.Generate(model.Password);
+                response.IsSettingChanged = true;
+            }
 
             if (model.Email != null && model.Email != user.Email) {
                 User result = await userRepository.GetByEmailAsync(model.Email);
@@ -148,6 +156,7 @@ namespace Cactus.Services.Implementations
                 else {
                     user.Email = model.Email;
                     response.Data = Authenticate(user, id);
+                    response.IsSettingChanged = true;
                 }
             }
             await userRepository.UpdateAsync(user);

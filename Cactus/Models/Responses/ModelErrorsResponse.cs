@@ -5,5 +5,6 @@
         public T Data { get; set; }
         public Dictionary<string, string> Descriptions { get; set; }
         public int StatusCode { get; set; }
+        public bool IsSettingChanged { get; set; }
     }
 }

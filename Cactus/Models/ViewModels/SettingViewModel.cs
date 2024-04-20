@@ -28,6 +28,8 @@ namespace Cactus.Models.ViewModels
 
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Длина пароля должна быть больше 5-ти символов")]
+        [MaxLength(20, ErrorMessage = "Длина пароля должна быть меньше 20-ти символов")]
+        [RegularExpression(@"((?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{6,20})", ErrorMessage = "Пароль должен содержать: Латинскую букву в нижнем и верхнем регистре, одна цифра, спецсимвол @#$%!")]
         [Display(Name = "Сменить пароль")]
         public string Password { get; set; }
 
@@ -56,8 +58,6 @@ namespace Cactus.Models.ViewModels
         public string LastName { get; set; }
 
 
-        public PagingUninterestingAuthorsViewModel PagingUninterestingAuthors { get; set; }
-
         public NewSubLevelDonationOptionViewModel NewSubLevelDonationOption { get;set; }
 
         public IEnumerable<PayMethod> PayMethods { get; set; }
@@ -66,5 +66,7 @@ namespace Cactus.Models.ViewModels
         public TransactionViewModel Withdraw { get; set; }
 
         public Wallet Wallet { get; set; }
+
+        public bool IsSettingChanged { get; set; }
     }
 }

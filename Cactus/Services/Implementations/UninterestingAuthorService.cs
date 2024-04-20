@@ -7,8 +7,7 @@ using SportsStore.Models;
 
 namespace Cactus.Services.Implementations
 {
-    public class UninterestingAuthorService : IUninterestingAuthorService
-    {
+    public class UninterestingAuthorService : IUninterestingAuthorService {
         private readonly IUninterestingAuthorRepository uninterestingAuthorRepository;
         public UninterestingAuthorService(IUninterestingAuthorRepository uninterestingAuthorRepository) {
             this.uninterestingAuthorRepository = uninterestingAuthorRepository;
@@ -41,13 +40,13 @@ namespace Cactus.Services.Implementations
             if (uninterestingAuthor == null) {
                 return new BaseResponse<UninterestingAuthor>
                 {
-                    Description="Автор не в списке неинтересного"
+                    Description = "Автор не в списке неинтересного"
                 };
             }
             return new BaseResponse<UninterestingAuthor>
             {
-                Data= uninterestingAuthor,
-                StatusCode=200
+                Data = uninterestingAuthor,
+                StatusCode = 200
             };
         }
 
@@ -66,32 +65,21 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<PagingUninterestingAuthorsViewModel>> GetUninterestingAuthorsViewAsync(int userId, int authorPage, int PageSize) {
-            BaseResponse<IEnumerable<UninterestingAuthor>> authorpage = await GetPagingUninterestingsAsync(userId, authorPage, PageSize);
+        public async Task<BaseResponse<IEnumerable<UninterestingAuthor>>> GetUninterestingAuthorsViewAsync(int userId) {
             BaseResponse<IEnumerable<UninterestingAuthor>> allAuthors = await GetUninterestingsAsync(userId);
-
-            var response = new PagingUninterestingAuthorsViewModel();
-            if (authorpage.StatusCode == 200) {
-                response.UninterestingAuthors = authorpage.Data;
-                response.PagingInfo = new PagingInfo
+            if (allAuthors.StatusCode == 200) {
+                return new BaseResponse<IEnumerable<UninterestingAuthor>>
                 {
-                    CurrentPage = authorPage,
-                    ItemsPerPage = PageSize,
-                    TotalItems = allAuthors.Data.Count()
+                    Data = allAuthors.Data,
+                    StatusCode = 200
                 };
             }
-            else {
-                response.PagingInfo = new PagingInfo
-                {
-                    Description = authorpage.Description
-                };
-            }
-            return new BaseResponse<PagingUninterestingAuthorsViewModel>
+            return new BaseResponse<IEnumerable<UninterestingAuthor>>
             {
-                Data = response,
-                StatusCode = 200
+                Description="Авторы не найдены"
             };
         }
+
 
         public async Task<BaseResponse<IEnumerable<UninterestingAuthor>>> GetUninterestingsAsync(int userId) {
             IEnumerable<UninterestingAuthor> authors = await uninterestingAuthorRepository.GetAuthorsAsync(userId);
@@ -103,7 +91,7 @@ namespace Cactus.Services.Implementations
             }
             return new BaseResponse<IEnumerable<UninterestingAuthor>>
             {
-                Data = await uninterestingAuthorRepository.GetAuthorsAsync(userId),
+                Data = authors,
                 StatusCode = 200
             };
         }

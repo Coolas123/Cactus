@@ -1,0 +1,32 @@
+﻿@page
+@model Cactus.Pages.UninterestingAuthorModel
+
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        @if (Model.UninterestingAuthors != null && Model.UninterestingAuthors.Any()) {
+            <table class="table">
+                <tbody>
+                    @foreach (var p in Model.UninterestingAuthors) {
+                        <tr>
+                            <td>@p.User.UserName</td>
+                            <td><a class="btn btn-primary" asp-controller="Author" asp-action="Index" asp-route-UrlPage="@p.Author.UrlPage">Профиль</a></td>
+                            <td>
+                                <form asp-page-handler ="RemoveUninterestingAuthor" method="post">
+                                    <input hidden name="authorId" value="@p.AuthorId" />
+                                    <button class="btn btn-danger">Убрать</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else {
+            <div class="text-center">
+                <h4>@Model.UninterestingAuthorsMessage</h4>
+            </div>
+        }
+    </div>
+    <div class="col"></div>
+</div>

@@ -28,11 +28,15 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<UninterestingAuthor> GetAuthorAsync(int userId, int authorId) {
-            return await dbContext.UninterestingAuthors.FirstOrDefaultAsync(x => x.UserId == userId && x.AuthorId == authorId);
+            return await dbContext.UninterestingAuthors
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.AuthorId == authorId);
         }
 
         public async Task<IEnumerable<UninterestingAuthor>> GetAuthorsAsync(int userId) {
-            return await dbContext.UninterestingAuthors.Where(x => x.UserId == userId).ToListAsync();
+            return await dbContext.UninterestingAuthors.
+                Include(x => x.User)
+                .Include(x => x.Author)
+                .Where(x => x.UserId == userId).ToListAsync();
         }
 
         public async Task<IEnumerable<UninterestingAuthor>> GetPagingAuthorsAsync(int userId, int authorPage, int pageSize) {

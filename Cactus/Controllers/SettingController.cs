@@ -21,39 +21,28 @@ namespace Cactus.Controllers
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
         private readonly IAuthorService authorService;
-        private readonly IUninterestingAuthorService uninterestingAuthorService;
         private readonly IPayMethodService payMethodService;
         private readonly IWalletService walletService;
 
         public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
             IUserRepository userRepository, IAuthorService authorService, IWalletService walletService,
-            IUninterestingAuthorService uninterestingAuthorService, IPayMethodService payMethodService) {
+            IPayMethodService payMethodService) {
 
             this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.authorService = authorService;
-            this.uninterestingAuthorService = uninterestingAuthorService;
             this.payMethodService = payMethodService;
             this.walletService = walletService;
         }
-        public async Task<IActionResult> Index(int UninterestingPage=1) {
+        public async Task<IActionResult> Index(int UninterestingPage=1,bool isSettingChanged=false) {
             SettingViewModel profile= new SettingViewModel();
             int userId = Convert.ToInt32(User.FindFirstValue("Id"));
             BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(userId);
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
             }
-            BaseResponse<PagingUninterestingAuthorsViewModel> uninterestings = 
-                await uninterestingAuthorService
-                .GetUninterestingAuthorsViewAsync(userId, UninterestingPage, PageSize);
-            if (uninterestings.StatusCode == 200) {
-                profile.PagingUninterestingAuthors = new PagingUninterestingAuthorsViewModel
-                {
-                    PagingInfo = uninterestings.Data.PagingInfo,
-                    UninterestingAuthors = uninterestings.Data.UninterestingAuthors
-                };
-            }
+            
            
             if (!User.IsInRole("Patron")) {
                 BaseResponse<ProfileMaterial> banner = await profileMaterialService.GetBannerAsync(User.Identity.Name);
@@ -74,21 +63,24 @@ namespace Cactus.Controllers
 
             BaseResponse<Wallet> wallet = await walletService.GetWallet(userId);
             profile.Wallet = wallet.Data;
-
+            profile.IsSettingChanged = isSettingChanged;
             return View(profile);
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
+            bool isSettingChanged=false;
             if (model.AvatarFile != null) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
                 await profileMaterialService.ChangeAvatarAsync(model.AvatarFile, id);
+                isSettingChanged = true;
             }
 
             if (User.IsInRole("Author")) {
                 if (model.BannerFile != null) {
                     int id = Convert.ToInt32(User.FindFirst("Id").Value);
                     await profileMaterialService.ChangeBannerAsync(model.BannerFile, id);
+                    isSettingChanged = true;
                 }
             }
 
@@ -107,7 +99,9 @@ namespace Cactus.Controllers
                             new ClaimsPrincipal(result.Data));
                 return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("Index");
+            if(result.IsSettingChanged) isSettingChanged=true;
+            model.IsSettingChanged = isSettingChanged;
+            return RedirectToAction("Index", new { isSettingChanged = isSettingChanged });
         }
 
         [HttpPost]
@@ -127,13 +121,6 @@ namespace Cactus.Controllers
                 return RedirectToAction("Index", "Author", new { UrlPage = model.RegisterAuthor.UrlPage });
             }
             return View("Index", model);
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> RemoveUninterestingAuthor(int authorId) {
-            BaseResponse<bool> response = await uninterestingAuthorService.RemoveUninterestingAuthor(Convert.ToInt32(User.FindFirstValue("Id")),authorId);
-            return RedirectToAction("Index");
         }
     }
 }

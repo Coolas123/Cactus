@@ -1,5 +1,4 @@
 ﻿@model SettingViewModel
-<h1>Settings</h1>
 <div>
     @if (User.IsInRole("Author")){
     @await Component.InvokeAsync("BannerPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value),html="id=\"myBanner\""})
@@ -9,12 +8,9 @@
     <div class="row">
         <div class="col d-flex flex-column align-items-end">
             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <button class="btn btn-outline-secondary active m-1" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Профиль</button>
+                <button class="btn btn-outline-secondary active m-1" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Общие</button>
                 @if (User.IsInRole("Patron")){
-                    <button class="btn btn-outline-secondary m-1" id="v-pills-registerAuthor-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerAuthor" type="button" role="tab" aria-controls="v-pills-registerAuthor" aria-selected="true">Стать автором</button>
-                }
-                @if (User.IsInRole("User")) {
-                    <button class="btn btn-outline-secondary m-1" id="v-pills-UninterestingAuthors-tab" data-bs-toggle="pill" data-bs-target="#v-pills-UninterestingAuthors" type="button" role="tab" aria-controls="v-pills-UninterestingAuthors" aria-selected="true">Список неинтересного</button>
+                    <button class="btn btn-outline-secondary m-1" id="v-pills-registerAuthor-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerAuthor" type="button" role="tab" aria-controls="v-pills-registerAuthor" aria-selected="true">Авторство</button>
                 }
                 @if (User.IsInRole("Author")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
@@ -24,6 +20,12 @@
         </div >
 
         <div class="col flex-column d-flex align-items-start">
+            @if (Model.IsSettingChanged) {
+                <script type="text/javascript">
+                    history.pushState("", document.title, window.location.pathname)
+                    alert("Настройки успешно изменены")
+                </script>
+            }
             <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <form asp-action="ChangeSettings" asp-controller="Setting" method="post" enctype="multipart/form-data">
@@ -92,28 +94,6 @@
                             </button>
                         </div>
                     </form>
-                </div>
-
-                <div class="tab-pane fade" id="v-pills-UninterestingAuthors" role="tabpanel" aria-labelledby="v-pills-UninterestingAuthors-tab">
-                    <div>
-                        <table class="table">
-                            <tbody>
-                                @if (Model.PagingUninterestingAuthors?.UninterestingAuthors != null) {
-                                    @foreach (var p in Model.PagingUninterestingAuthors.UninterestingAuthors) {
-                                        <tr>
-                                            <td>@p.User.UserName</td>
-                                            <td><a class="btn btn-primary" asp-controller="Author" asp-action="Index" asp-route-UrlPage="@p.Author.UrlPage">Профиль</a></td>
-                                            <td><a class="btn btn-danger" asp-controller="Setting" asp-action="RemoveUninterestingAuthor" asp-route-authorId="@p.AuthorId">Убрать</a></td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                        <div page-model="@Model.PagingUninterestingAuthors?.PagingInfo" page-action="Index" type-page="UninterestingAuthorsPage"
-                             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
-                             page-class-selected="btn-primary" class="btn-group pull-right m-1">
-                        </div>
-                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="v-pills-Monetization" role="tabpanel" aria-labelledby="v-pills-Monetization-tab">

@@ -1,8 +1,6 @@
 ﻿using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
-using Cactus.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using SportsStore.Models;
 
 namespace Cactus.Infrastructure.Repositories
 {
