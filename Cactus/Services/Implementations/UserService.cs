@@ -118,7 +118,7 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(SettingViewModel model, int id) {
+        public async Task<ModelErrorsResponse<ClaimsIdentity>> ChangeSettingsAsync(NewSettingViewModel model, int id) {
             User user = await userRepository.GetAsync(id);
 
             var response = new ModelErrorsResponse<ClaimsIdentity>()
@@ -137,9 +137,9 @@ namespace Cactus.Services.Implementations
                 }
             }
             if (model.DateOfBirth != DateTime.MinValue &&
-                DateOnly.FromDateTime(model.DateOfBirth) != DateOnly.FromDateTime(user.DateOfBirth)) 
+                DateOnly.FromDateTime((DateTime)model.DateOfBirth) != DateOnly.FromDateTime(user.DateOfBirth)) 
             {
-                user.DateOfBirth = model.DateOfBirth.Date;
+                user.DateOfBirth = ((DateTime)model.DateOfBirth).Date;
                 response.IsSettingChanged = true;
             }
 

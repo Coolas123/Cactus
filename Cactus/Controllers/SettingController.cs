@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -51,35 +52,43 @@ namespace Cactus.Controllers
                     profile.Author = author.Data;
             }
             
-            profile.IsSettingChanged = isSettingChanged;
+            profile.NewSettingViewModel = new NewSettingViewModel();
+            profile.NewSettingViewModel.IsSettingChanged = isSettingChanged;
             return View(profile);
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
             bool isSettingChanged=false;
-            if (model.AvatarFile != null) {
+            if (model.NewSettingViewModel.AvatarFile != null) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                await profileMaterialService.ChangeAvatarAsync(model.AvatarFile, id);
+                await profileMaterialService.ChangeAvatarAsync(model.NewSettingViewModel.AvatarFile, id);
                 isSettingChanged = true;
             }
 
             if (User.IsInRole("Author")) {
-                if (model.BannerFile != null) {
+                if (model.NewSettingViewModel.BannerFile != null) {
                     int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                    await profileMaterialService.ChangeBannerAsync(model.BannerFile, id);
+                    await profileMaterialService.ChangeBannerAsync(model.NewSettingViewModel.BannerFile, id);
                     isSettingChanged = true;
+                }
+            }
+            model.User = await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
+
+            foreach (var state in ModelState) {
+                if (state.Key.Split('.').Contains("NewSettingViewModel")&&
+                    state.Value.Errors.Count != 0) {
+                    return View("Index", model);
                 }
             }
 
             ModelErrorsResponse<ClaimsIdentity> result = await userService.
-                ChangeSettingsAsync(model, Convert.ToInt32(User.FindFirst("Id").Value));
+                ChangeSettingsAsync(model.NewSettingViewModel, Convert.ToInt32(User.FindFirst("Id").Value));
             if (result.StatusCode != StatusCodes.Status200OK) {
                 foreach (var error in result.Descriptions) {
                     ModelState.AddModelError(error.Key, error.Value);
                 }
             }
-            model.User = await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
 
             if (result.Data != null) {
                 await HttpContext.SignOutAsync();
@@ -88,8 +97,9 @@ namespace Cactus.Controllers
                 return RedirectToAction("Login", "Account");
             }
             if(result.IsSettingChanged) isSettingChanged=true;
-            model.IsSettingChanged = isSettingChanged;
-            return RedirectToAction("Index", new { isSettingChanged = isSettingChanged });
+            model.NewSettingViewModel.IsSettingChanged = isSettingChanged;
+            //return RedirectToAction("Index", new { isSettingChanged = isSettingChanged });
+            return View("Index",model);
         }
 
         [HttpPost]
