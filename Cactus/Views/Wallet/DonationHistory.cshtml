@@ -1,0 +1,67 @@
+﻿@model BaseResponse<IEnumerable<Cactus.Models.Database.Donator>>
+
+<div class="row">
+    <div class="col">
+        <br />
+        <div class="d-flex justify-content-end">
+            <form style="width:15%" asp-controller="wallet" asp-action="IndexFilter" method="post">
+                <h4>Выберите период</h4>
+                <div>
+                    <label>с даты</label>
+                    <input class="form-control" type="date" name="dateFrom" />
+                    <label>по дату</label>
+                    <input class="form-control" type="date" name="dateTo" />
+                </div>
+                <button class="btn btn-secondary">Применить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col">
+        <br>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Способ поступления</th>
+                    <th scope="col">Сумма без комиссии</th>
+                    <th scope="col">Сумма с комиссией</th>
+                    <th scope="col">Ссылка на страницу</th>
+                </tr>
+            </thead>
+                @if (Model.StatusCode==200) {
+                    @foreach (var c in Model.Data) {
+                    <tbody>
+                        <tr>
+                            <td>@c.Transaction.Created</td>
+                            @if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
+                                <td>@(Cactus.Models.Enums.MonetizationType.Goal.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            else if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance) {
+                                <td>@(Cactus.Models.Enums.MonetizationType.Remittance.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            else if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.OneTimePurchase) {
+                                <td>@(Cactus.Models.Enums.MonetizationType.OneTimePurchase.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            else if (c.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
+                                <td>@(Cactus.Models.Enums.MonetizationType.SubLevel.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
+                            <td>@c.Transaction.Sended</td>
+                            <td>@c.Transaction.Received</td>
+                            @if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Patron) {
+                                <td>@Html.ActionLink("Patron", "Index", new { id =c.UserId})</td>
+                            }
+                            else  @if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Author) {
+                                <td>@Html.ActionLink("/id/","Author", "Index", new { id = c.UserId })</td>
+                            }
+                        </tr>
+                    </tbody>
+                    }
+                }
+        </table>
+        @if (Model.StatusCode != 200) {
+            <h4>@Model.Description</h4>
+        }
+    </div>
+    <div class="col"></div>
+</div>

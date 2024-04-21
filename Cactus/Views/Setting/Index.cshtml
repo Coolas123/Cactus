@@ -15,7 +15,6 @@
                 @if (User.IsInRole("Author")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
                 }
-                <button class="btn btn-outline-secondary m-1" id="v-pills-Wallet-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Wallet" type="button" role="tab" aria-controls="v-pills-Wallet" aria-selected="true">Настройка кошелька</button>
             </div>
         </div >
 
@@ -158,72 +157,6 @@
                         <button class="btn btn-danger" type="submit">Сохранить</button>
                     </form>
                 </div>
-                <div class="tab-pane fade" id="v-pills-Wallet" role="tabpanel" aria-labelledby="v-pills-Wallet-tab">
-                    <h4>Пополнение кошелька</h4>
-                    <div>
-                        <form class="form-control" method="post" asp-controller="wallet" asp-action="replenishWallet">
-                            <div>
-                                <input hidden asp-for="Replenish.Comission" />
-                                <label asp-for="Replenish.PayMethodId"></label>
-                                <select class="form-select" asp-for="Replenish.PayMethodId"
-                                        asp-items="@(new SelectList(Model.PayMethods.Where(x => x.PayMethodSetting.TransactionTypeId == (int)Cactus.Models.Enums.TransactionType.Replenish),
-                                            nameof(Cactus.Models.Database.PayMethod.Id),
-                                            nameof(Cactus.Models.Database.PayMethod.Name)))">
-                                    <option value="0" selected>Выберите метод пополнения</option>
-                                </select>
-                                <p class="m-1" id="payMethodLabel1"></p>
-                            </div>
-                            <label asp-for="Replenish.Sended"></label>
-                            <div class="d-flex ">
-                                <input class="form-control" oninput="getReceived1()" asp-for="Replenish.Sended" />
-                                <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
-                            </div>
-                            <div>
-                                <label asp-for="Replenish.Received"></label>
-                                <input class="form-control" asp-for="Replenish.Received" />
-                            </div>
-                            <button class="btn btn-danger m-1" type="submit">Пополнить</button>
-                        </form>
-                    </div>
-                    <hr />
-                    <h4>Вывод с кошелька</h4>
-                    <div>
-                        <form class="form-control" method="post" asp-controller="wallet" asp-action="WithdrawWallet">
-                            <div>
-                                <input hidden asp-for="Withdraw.Comission" />
-                                <label asp-for="Withdraw.PayMethodId"></label>
-                                <select class="form-select" asp-for="Withdraw.PayMethodId"
-                                        asp-items="@(new SelectList(Model.PayMethods.Where(x => x.PayMethodSetting.TransactionTypeId == (int)Cactus.Models.Enums.TransactionType.Withdraw),
-                                                nameof(Cactus.Models.Database.PayMethod.Id),
-                                                nameof(Cactus.Models.Database.PayMethod.Name)))">
-                                    <option value="0" selected>Выберите метод вывода</option>
-                                </select>
-                                <p class="m-1" id="payMethodLabel2"></p>
-                            </div>
-                            <label asp-for="Withdraw.Sended"></label>
-                            <div class="d-flex ">
-                                <input class="form-control" oninput="getReceived2()" asp-for="Withdraw.Sended" />
-                                <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
-                            </div>
-                            <div>
-                                <label asp-for="Withdraw.Received"></label>
-                                <input class="form-control" asp-for="Withdraw.Received" />
-                            </div>
-                            <button class="btn btn-danger m-1" type="submit">Вывести</button>
-                        </form>
-                    </div>
-                    <hr />
-                    @if (User.IsInRole("Author")) {
-                        <div>
-                            <a class="btn btn-secondary m-1" asp-controller="wallet" asp-action="Index">История пожертвований</a>
-                        </div>
-                    }
-                    <div>
-                        <a class="btn btn-secondary m-1" asp-controller="wallet" asp-action="History">
-                            История пополнений/выводов
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col">
@@ -231,64 +164,3 @@
         </div>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    function getReceived1() {
-        if ($("#Replenish_PayMethodId").val() != 0) {
-            var selectElement = document.getElementById("Replenish_Sended");
-            var value = $("#Replenish_PayMethodId").val()
-            var response = ajaxPayMethodId(value)
-            document.getElementById("Replenish_Received").value = selectElement.value - selectElement.value / 100 * response;
-            //document.getElementById("Replenish_Comission").value = response;
-        }
-    }
-
-    function getReceived2() {
-        if ($("#Withdraw_PayMethodId").val() != 0) {
-            var selectElement = document.getElementById("Withdraw_Sended");
-            var value = $("#Withdraw_PayMethodId").val()
-            var response = ajaxPayMethodId(value)
-            document.getElementById("Withdraw_Received").value = selectElement.value - selectElement.value / 100 * response;
-            //document.getElementById("Withdraw_Comission").value = response;
-        }
-    }
-</script>
-
-<script type="text/javascript">
-    $(function () {
-        $("#Replenish_PayMethodId").change(function () {
-            if ($("#Replenish_PayMethodId").val() != 0) {
-                var value = $("#Replenish_PayMethodId").val()
-                var response = ajaxPayMethodId(value)
-                document.getElementById("payMethodLabel1").textContent = "Комиссия " + response + " %";
-                document.getElementById("Replenish_Comission").value = response;
-            }
-        });
-    });
-
-    $(function () {
-        $("#Withdraw_PayMethodId").change(function () {
-            if ($("#Withdraw_PayMethodId").val() != 0) {
-                var value = $("#Withdraw_PayMethodId").val()
-                var response = ajaxPayMethodId(value)
-                document.getElementById("payMethodLabel2").textContent = "Комиссия " + response + " %";
-                document.getElementById("Withdraw_Comission").value = response;
-            }
-        });
-    });
-
-    function ajaxPayMethodId(value) {
-        var res
-        $.ajax({
-            url: "@Url.ActionLink("SelectPaySetting", "Wallet")",
-            type: 'POST',
-            dataType: "json",
-            async: false,
-            data: { payMethodId: value },
-            success: function (response) {
-                res = response
-            }
-        });
-        return res
-    }
-</script>

@@ -4,6 +4,7 @@ using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -22,7 +23,19 @@ namespace Cactus.Controllers
             this.donatorService = donatorService;
             this.payMethodService = payMethodService;
         }
+
         public async Task<IActionResult> Index() {
+            var walletSettingViewModel = new WalletSettingViewModel();
+            BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetMethods();
+            if (methods.StatusCode == 200) {
+                walletSettingViewModel.PayMethods = methods.Data;
+            }
+
+            BaseResponse<Wallet> wallet = await walletService.GetWallet(Convert.ToInt32(User.FindFirstValue("Id")));
+            walletSettingViewModel.Wallet = wallet.Data;
+            return View(walletSettingViewModel);
+        }
+        public async Task<IActionResult> DonationHistory() {
             BaseResponse<IEnumerable<Donator>> donators = await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")));
             return View(donators);
         }
@@ -37,7 +50,7 @@ namespace Cactus.Controllers
 
             await transactionService.CreateTransaction(model.Replenish);
             await walletService.ReplenishWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Replenish.Received);
-            return RedirectToAction("Index","Setting");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -63,7 +76,7 @@ namespace Cactus.Controllers
 
             await transactionService.CreateTransaction(model.Withdraw);
             await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Withdraw.Sended);
-            return RedirectToAction("Index", "Setting");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -80,7 +93,7 @@ namespace Cactus.Controllers
         public async Task<IActionResult> IndexFilter(DateTime dateFrom, DateTime dateTo) {
             BaseResponse<IEnumerable<Donator>> donators = 
                 await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")), dateFrom, dateTo);
-            return View("Index", donators);
+            return View("DonationHistory", donators);
         }
     }
 }

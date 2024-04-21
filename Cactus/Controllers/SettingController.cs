@@ -16,26 +16,20 @@ namespace Cactus.Controllers
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
     {
-        private int PageSize = 4;
         private readonly IProfileMaterialService profileMaterialService;
         private readonly IUserRepository userRepository;
         private readonly IUserService userService;
         private readonly IAuthorService authorService;
-        private readonly IPayMethodService payMethodService;
-        private readonly IWalletService walletService;
 
         public SettingController(IProfileMaterialService profileMaterialService, IUserService userService,
-            IUserRepository userRepository, IAuthorService authorService, IWalletService walletService,
-            IPayMethodService payMethodService) {
+            IUserRepository userRepository, IAuthorService authorService) {
 
             this.profileMaterialService = profileMaterialService;
             this.userService = userService;
             this.userRepository = userRepository;
             this.authorService = authorService;
-            this.payMethodService = payMethodService;
-            this.walletService = walletService;
         }
-        public async Task<IActionResult> Index(int UninterestingPage=1,bool isSettingChanged=false) {
+        public async Task<IActionResult> Index(bool isSettingChanged=false) {
             SettingViewModel profile= new SettingViewModel();
             int userId = Convert.ToInt32(User.FindFirstValue("Id"));
             BaseResponse<ProfileMaterial> response = await profileMaterialService.GetAvatarAsync(userId);
@@ -56,13 +50,7 @@ namespace Cactus.Controllers
                 if(author.StatusCode==200)
                     profile.Author = author.Data;
             }
-            BaseResponse<IEnumerable<PayMethod>> methods = await payMethodService.GetMethods();
-            if (methods.StatusCode == 200) {
-                profile.PayMethods = methods.Data;
-            }
-
-            BaseResponse<Wallet> wallet = await walletService.GetWallet(userId);
-            profile.Wallet = wallet.Data;
+            
             profile.IsSettingChanged = isSettingChanged;
             return View(profile);
         }
