@@ -57,16 +57,6 @@ namespace Cactus.Models.ViewModels
         [Display(Name = "Фамилия")]
         public string LastName { get; set; }
 
-
-        public NewSubLevelDonationOptionViewModel NewSubLevelDonationOption { get;set; }
-
-        public IEnumerable<PayMethod> PayMethods { get; set; }
-
-        public TransactionViewModel Replenish { get; set; }
-        public TransactionViewModel Withdraw { get; set; }
-
-        public Wallet Wallet { get; set; }
-
         public bool IsSettingChanged { get; set; }
     }
 }

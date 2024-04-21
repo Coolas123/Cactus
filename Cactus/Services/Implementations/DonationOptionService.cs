@@ -16,7 +16,7 @@ namespace Cactus.Services.Implementations
             this.postDonationOptionService = postDonationOptionService;
         }
 
-        public async Task<BaseResponse<bool>> AddOptionAsync(NewDonationOption model) {
+        public async Task<BaseResponse<bool>> AddOptionAsync(NewDonationOptionViewModel model) {
             DonationOption Option = new DonationOption
             {
                 AuthorId = model.AuthorId,

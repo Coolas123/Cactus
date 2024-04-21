@@ -12,9 +12,6 @@
                 @if (User.IsInRole("Patron")){
                     <button class="btn btn-outline-secondary m-1" id="v-pills-registerAuthor-tab" data-bs-toggle="pill" data-bs-target="#v-pills-registerAuthor" type="button" role="tab" aria-controls="v-pills-registerAuthor" aria-selected="true">Авторство</button>
                 }
-                @if (User.IsInRole("Author")){
-                    <button class="btn btn-outline-secondary m-1" id="v-pills-Monetization-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Monetization" type="button" role="tab" aria-controls="v-pills-Monetization" aria-selected="true">Настройка монетизации</button>
-                }
             </div>
         </div >
 
@@ -92,69 +89,6 @@
                                 Стать автором
                             </button>
                         </div>
-                    </form>
-                </div>
-
-                <div class="tab-pane fade" id="v-pills-Monetization" role="tabpanel" aria-labelledby="v-pills-Monetization-tab">
-                    <form asp-action="AddSubLevel" asp-controller="Monetization" method="post" enctype="multipart/form-data">
-                        <div>
-                            <h5>Добавить платную подписку</h5>
-                            <img src="" width="150" height="150" class="subLevelCover" id="mySubLevelCover">
-                            <button type="button" class="btn btn-outline-secondary m-2" onclick="document.getElementById('subLevelCover').click()">Изменить обложку</button>
-                            <input type='file' id="subLevelCover" style="display:none" asp-for="NewSubLevelDonationOption.CoverFile">
-                        </div>
-                        <div>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName"></label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName" />
-                        </div>
-                        <div>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></label>
-                            <textarea class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></textarea>
-                        </div>
-                        <div>
-                            <label>Введите сумму подписки</label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Price" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.SubLevel)" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
-                        </div>
-                        <button class="btn btn-danger" type="submit">Сохранить</button>
-                    </form>
-                    <form asp-action="AddGoal" asp-controller="Monetization" method="post">
-                        <div>
-                            <h5>Добавить цель</h5>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName"></label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName" />
-                        </div>
-                        <div>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></label>
-                            <textarea class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></textarea>
-                        </div>
-                        <div>
-                            <label>Введите сумму цели</label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Price" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Goal)" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
-                        </div>
-                        <button class="btn btn-danger" type="submit">Сохранить</button>
-                    </form>
-
-                    <form asp-action="AddRemittance" asp-controller="Monetization" method="post">
-                        <div>
-                            <h5>Добавить перевод</h5>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName"></label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.OptionName" />
-                        </div>
-                        <div>
-                            <label asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></label>
-                            <textarea class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Description"></textarea>
-                        </div>
-                        <div>
-                            <label>Введите минимальную сумму перевода</label>
-                            <input class="form-control" asp-for="NewSubLevelDonationOption.NewDonationOption.Price" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Remittance)" />
-                            <input type="hidden" asp-for="NewSubLevelDonationOption.NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
-                        </div>
-                        <button class="btn btn-danger" type="submit">Сохранить</button>
                     </form>
                 </div>
             </div>

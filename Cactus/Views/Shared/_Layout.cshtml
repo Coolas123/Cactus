@@ -38,6 +38,9 @@
                                 <li><a class="dropdown-item" asp-controller="Setting" asp-action="Index">Настройки</a></li>
                                 <li><a class="dropdown-item" asp-page="/UninterestingAuthor">Серый список</a></li>
                                 <li><a class="dropdown-item" asp-controller="wallet" asp-action="index">Кошелек</a></li>
+                                @if (User.IsInRole("Author")) {
+                                    <li><a class="dropdown-item" asp-controller="monetization" asp-action="index">Монетизация</a></li>
+                                }
                                 <li><a class="dropdown-item" asp-controller="account" asp-action="logOut">Выйти</a></li>
                             </ul>
                         </li>

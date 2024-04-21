@@ -30,31 +30,37 @@ namespace Cactus.Controllers
             this.donatorService = donatorService;
         }
 
+        [Authorize(Roles = "Author")]
+        public IActionResult Index() {
+
+            return View();
+        }
+
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddSubLevel(SettingViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
-            if (model.NewSubLevelDonationOption.CoverFile != null) {
-                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.NewSubLevelDonationOption.NewDonationOption.Price);
+        public async Task<IActionResult> AddSubLevel(MonetizationViewModel model) {
+            await donationOptionService.AddOptionAsync(model.NewDonationOption);
+            if (model.NewDonationOption.CoverFile != null) {
+                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
                 if (donationOption.StatusCode == 200) {
-                    await subLevelMaterialServices.UpdateCoverAsync(model.NewSubLevelDonationOption.CoverFile, donationOption.Data.Id);
+                    await subLevelMaterialServices.UpdateCoverAsync(model.NewDonationOption.CoverFile, donationOption.Data.Id);
                 }
             }
-            return RedirectToAction("Index","Setting");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddGoal(SettingViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
-            return RedirectToAction("Index", "Setting");
+        public async Task<IActionResult> AddGoal(MonetizationViewModel model) {
+            await donationOptionService.AddOptionAsync(model.NewDonationOption);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddRemittance(SettingViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewSubLevelDonationOption.NewDonationOption);
-            return RedirectToAction("Index", "Setting");
+        public async Task<IActionResult> AddRemittance(MonetizationViewModel model) {
+            await donationOptionService.AddOptionAsync(model.NewDonationOption);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

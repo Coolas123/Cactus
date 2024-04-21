@@ -10,6 +10,7 @@ using System.Security.Claims;
 namespace Cactus.Controllers
 {
     [Authorize(Roles = "Patron, Author")]
+    [AutoValidateAntiforgeryToken]
     public class WalletController: Controller
     {
         private readonly ITransactionService transactionService;
@@ -41,8 +42,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> ReplenishWallet(SettingViewModel model) {
+        public async Task<IActionResult> ReplenishWallet(MonetizationViewModel model) {
             model.Replenish.Created = DateTime.Now;
             model.Replenish.Received = model.Replenish.Sended-model.Replenish.Sended/100*model.Replenish.Comission;
             model.Replenish.StatusId = (int)Models.Enums.TransactionStatus.Sended;
@@ -67,8 +67,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> WithdrawWallet(SettingViewModel model) {
+        public async Task<IActionResult> WithdrawWallet(MonetizationViewModel model) {
             model.Withdraw.Created = DateTime.Now;
             model.Withdraw.Received = model.Withdraw.Sended - model.Withdraw.Sended / 100 * model.Withdraw.Comission;
             model.Withdraw.StatusId = (int)Models.Enums.TransactionStatus.Sended;
@@ -80,7 +79,6 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> HistoryFilter(DateTime dateFrom, DateTime dateTo) {
             BaseResponse<IEnumerable<Transaction>> transactions =
                 await transactionService
@@ -89,7 +87,6 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> IndexFilter(DateTime dateFrom, DateTime dateTo) {
             BaseResponse<IEnumerable<Donator>> donators = 
                 await donatorService.GetDonators(Convert.ToInt32(User.FindFirstValue("Id")), dateFrom, dateTo);

@@ -36,7 +36,6 @@ namespace Cactus.Controllers
             if (response.StatusCode == StatusCodes.Status200OK) {
                 profile.AvatarPath = response.Data.Path;
             }
-            
            
             if (!User.IsInRole("Patron")) {
                 BaseResponse<ProfileMaterial> banner = await profileMaterialService.GetBannerAsync(User.Identity.Name);
@@ -44,6 +43,7 @@ namespace Cactus.Controllers
                     profile.BannerPath = banner.Data.Path;
                 }
             }
+
             profile.User= await userRepository.GetAsync(userId);
             if (User.IsInRole("Author")) {
                 BaseResponse<Author> author = await authorService.GetAsync(userId);

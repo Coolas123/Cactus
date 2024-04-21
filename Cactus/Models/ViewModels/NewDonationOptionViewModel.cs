@@ -2,8 +2,10 @@
 
 namespace Cactus.Models.ViewModels
 {
-    public class NewDonationOption
+    public class NewDonationOptionViewModel
     {
+        [Display(Name = "Обложка")]
+        public IFormFile? CoverFile { get; set; }
         public int AuthorId { get; set; }
         [Display(Name = "Описание")]
         public string Description { get; set; }
