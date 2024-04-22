@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -61,9 +61,15 @@ namespace Cactus.Controllers
         public async Task<IActionResult> ChangeSettings(SettingViewModel model) {
             bool isSettingChanged=false;
             if (model.NewSettingViewModel.AvatarFile != null) {
-                int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                await profileMaterialService.ChangeAvatarAsync(model.NewSettingViewModel.AvatarFile, id);
-                isSettingChanged = true;
+                var image = Image.FromStream(model.NewSettingViewModel.AvatarFile.OpenReadStream());
+                if (image.Width % image.Height != 0) {
+                    ModelState.AddModelError("NewSettingViewModel.AvatarFile", "Авватарка должна иметь соотношение 1 к 1");
+                }
+                else {
+                    int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                    await profileMaterialService.ChangeAvatarAsync(model.NewSettingViewModel.AvatarFile, id);
+                    isSettingChanged = true;
+                }
             }
 
             if (User.IsInRole("Author")) {

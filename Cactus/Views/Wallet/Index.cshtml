@@ -22,7 +22,7 @@
             </div>
             <div>
                 <label asp-for="Replenish.Received"></label>
-                <input class="form-control" asp-for="Replenish.Received" />
+                <input readonly class="form-control" asp-for="Replenish.Received" />
             </div>
             <button class="btn btn-danger m-1" type="submit">Пополнить</button>
         </form>
@@ -48,7 +48,7 @@
             </div>
             <div>
                 <label asp-for="Withdraw.Received"></label>
-                <input class="form-control" asp-for="Withdraw.Received" />
+                    <input readonly class="form-control" asp-for="Withdraw.Received" />
             </div>
             <button class="btn btn-danger m-1" type="submit">Вывести</button>
         </form>
@@ -88,19 +88,44 @@
         }
     }
 
+
     $(function () {
-        $("#Replenish_PayMethodId").change(function () {
-            if ($("#Replenish_PayMethodId").val() != 0) {
-                var value = $("#Replenish_PayMethodId").val()
-                var response = ajaxPayMethodId(value)
-                document.getElementById("payMethodLabel1").textContent = "Комиссия " + response + " %";
-                document.getElementById("Replenish_Comission").value = response;
-            }
-        });
+        $("#Replenish_PayMethodId").change(
+            function () {
+                if ($("#Replenish_PayMethodId").val() != 0) {
+                    var value = $("#Replenish_PayMethodId").val()
+                    var response = ajaxPayMethodId(value)
+                    document.getElementById("payMethodLabel1").textContent = "Комиссия " + response + " %";
+                    document.getElementById("Replenish_Comission").value = response;
+                }
+            });
     });
+    $(function () {
+        $("#Replenish_PayMethodId").ready(
+            function () {
+                if ($("#Replenish_PayMethodId").val() != 0) {
+                    var value = $("#Replenish_PayMethodId").val()
+                    var response = ajaxPayMethodId(value)
+                    document.getElementById("payMethodLabel1").textContent = "Комиссия " + response + " %";
+                    document.getElementById("Replenish_Comission").value = response;
+                }
+            });
+    });
+    
+    
 
     $(function () {
         $("#Withdraw_PayMethodId").change(function () {
+            if ($("#Withdraw_PayMethodId").val() != 0) {
+                var value = $("#Withdraw_PayMethodId").val()
+                var response = ajaxPayMethodId(value)
+                document.getElementById("payMethodLabel2").textContent = "Комиссия " + response + " %";
+                document.getElementById("Withdraw_Comission").value = response;
+            }
+        });
+    });
+    $(function () {
+        $("#Withdraw_PayMethodId").ready(function () {
             if ($("#Withdraw_PayMethodId").val() != 0) {
                 var value = $("#Withdraw_PayMethodId").val()
                 var response = ajaxPayMethodId(value)

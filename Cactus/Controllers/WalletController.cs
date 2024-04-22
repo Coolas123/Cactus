@@ -54,6 +54,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<JsonResult> SelectPaySetting(int payMethodId) {
             BaseResponse<PayMethod> method = await payMethodService.GetPayMethod(payMethodId);
             return new JsonResult(method.Data.PayMethodSetting.Comission);
