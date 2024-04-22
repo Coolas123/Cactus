@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Sockets;
+using System.Net;
 using System.Security.Claims;
+using Aspose.Email.Tools.Verifications;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Controllers
 {
@@ -54,6 +58,12 @@ namespace Cactus.Controllers
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Registration(RegisterViewModel model, string returnUrl) {
+            EmailValidator validator = new EmailValidator();
+            Aspose.Email.Tools.Verifications.ValidationResult isValid;
+            validator.Validate(model.Email, ValidationPolicy.SyntaxAndDomain, out isValid);
+            if (isValid.ReturnCode == ValidationResponseCode.DomainValidationFailed) {
+                ModelState.AddModelError("Email","неверный домен почты");
+            }
             if (ModelState.IsValid) {
                 var result = await userService.Register(model);
                 if (result.StatusCode==StatusCodes.Status200OK) {

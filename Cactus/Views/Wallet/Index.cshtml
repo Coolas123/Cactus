@@ -27,33 +27,36 @@
             <button class="btn btn-danger m-1" type="submit">Пополнить</button>
         </form>
     </div>
-    <hr />
-    <h4>Вывод с кошелька</h4>
-    <div>
-        <form class="form-control" method="post" asp-controller="wallet" asp-action="WithdrawWallet">
+        @if (User.IsInRole("Author"))
+        {
+            <hr />
+            <h4>Вывод с кошелька</h4>
             <div>
-                <input hidden asp-for="Withdraw.Comission" />
-                <label asp-for="Withdraw.PayMethodId"></label>
-                <select class="form-select" asp-for="Withdraw.PayMethodId"
+                <form class="form-control" method="post" asp-controller="wallet" asp-action="WithdrawWallet">
+                    <div>
+                        <input hidden asp-for="Withdraw.Comission" />
+                        <label asp-for="Withdraw.PayMethodId"></label>
+                        <select class="form-select" asp-for="Withdraw.PayMethodId"
                         asp-items="@(new SelectList(Model.PayMethods.Where(x => x.PayMethodSetting.TransactionTypeId == (int)Cactus.Models.Enums.TransactionType.Withdraw),
                                                 nameof(Cactus.Models.Database.PayMethod.Id),
                                                 nameof(Cactus.Models.Database.PayMethod.Name)))">
-                </select>
-                <p class="m-1" id="payMethodLabel2"></p>
+                        </select>
+                        <p class="m-1" id="payMethodLabel2"></p>
+                    </div>
+                    <label asp-for="Withdraw.Sended"></label>
+                    <div class="d-flex ">
+                        <input class="form-control" oninput="getReceived2()" asp-for="Withdraw.Sended" />
+                        <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
+                    </div>
+                    <div>
+                        <label asp-for="Withdraw.Received"></label>
+                        <input readonly class="form-control" asp-for="Withdraw.Received" />
+                    </div>
+                    <button class="btn btn-danger m-1" type="submit">Вывести</button>
+                </form>
             </div>
-            <label asp-for="Withdraw.Sended"></label>
-            <div class="d-flex ">
-                <input class="form-control" oninput="getReceived2()" asp-for="Withdraw.Sended" />
-                <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
-            </div>
-            <div>
-                <label asp-for="Withdraw.Received"></label>
-                    <input readonly class="form-control" asp-for="Withdraw.Received" />
-            </div>
-            <button class="btn btn-danger m-1" type="submit">Вывести</button>
-        </form>
-    </div>
-    <hr />
+        }
+        <hr />
     @if (User.IsInRole("Author")) {
         <div>
                 <a class="btn btn-secondary m-1" asp-controller="wallet" asp-action="DonationHistory">История пожертвований</a>
