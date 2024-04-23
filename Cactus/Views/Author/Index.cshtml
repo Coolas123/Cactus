@@ -344,7 +344,8 @@
                                 <select class="form-select m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
                             </div>
                             <div>
-                                <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
+                                Описание жалобы
+                                <textarea style="resize:none; height: 150px;" class="form-control m-1" asp-for="NewComplain.Description"></textarea>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-danger">Отправить</button>

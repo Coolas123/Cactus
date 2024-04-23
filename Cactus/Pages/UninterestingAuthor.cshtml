@@ -9,7 +9,9 @@
                 <tbody>
                     @foreach (var p in Model.UninterestingAuthors) {
                         <tr>
-                            <td>@p.Author.User.UserName</td>
+                            <td class="text-center">@p.Author.User.UserName
+                                @await Component.InvokeAsync("AvatarPath", new { @p.Author.UserId, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
+                            </td>
                             <td><a class="btn btn-primary" asp-controller="Author" asp-action="Index" asp-route-UrlPage="@p.Author.UrlPage">Профиль</a></td>
                             <td>
                                 <form asp-page-handler ="RemoveUninterestingAuthor" method="post">

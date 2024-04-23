@@ -11,12 +11,15 @@
                 alert("Недостаточно средств")
             </script>
         }
-        <div>
-            <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
+        @if (Model.IsOwner)
+        {
+            <div>
+                <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
             <button id="postId" onClick="postId()" value="@Model.Post.Id" type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#complainModal">
                 Пожаловаться на пост
             </button>
         </div>
+        }
         <div>
             <h3 class="text-center">@Model.Post.Title</h3>
             <hr/>
@@ -79,7 +82,7 @@
             }
             <form method="post">
                 <div>
-                    <textarea class="form-control" asp-for="PostComment.Comment" placeholder="Оставить комментарий"></textarea>
+                    <textarea style="resize:none; height: 150px;" class="form-control" asp-for="PostComment.Comment" placeholder="Оставить комментарий"></textarea>
                     <input type="hidden" asp-for="PostComment.PostId" value="@Model.Post.Id" />
                     <input type="hidden" asp-for="PostComment.UserId" value="@User.FindFirst("Id").Value" />
                     <input type="hidden" asp-for="PostComment.Created" value="@DateTime.Now" />
@@ -107,7 +110,8 @@
                                     <select class="form-control m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
                                 </div>
                                 <div>
-                                    <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
+                                    Описание жалобы
+                                    <textarea style="resize:none; height: 150px;" class="form-control m-1" asp-for="NewComplain.Description"></textarea>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-danger">Отправить</button>
