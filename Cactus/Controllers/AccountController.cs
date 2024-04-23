@@ -78,7 +78,7 @@ namespace Cactus.Controllers
 
         public async Task<IActionResult> LogOut() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "NewsFeed");
         }
     }
 }

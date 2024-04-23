@@ -32,7 +32,7 @@ namespace SportsStore.Infrastructure
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
             if (PageModel?.TotalItems == 0) {
-                TagBuilder tagH = new TagBuilder("h3");
+                TagBuilder tagH = new TagBuilder("h5");
                 tagH.InnerHtml.Append(PageModel.Description);
                 result.InnerHtml.AppendHtml(tagH);
             }

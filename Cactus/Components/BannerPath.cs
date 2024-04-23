@@ -20,9 +20,16 @@ namespace Cactus.Components
         public async Task<IViewComponentResult> InvokeAsync(int id, string html = "") {
             string path = "";
             BaseResponse<ProfileMaterial> result = await profileMaterialService.GetBannerAsync(id);
-            if (result.StatusCode == 200) path = result.Data.Path;
-            return new HtmlContentViewComponentResult(
-                new HtmlString($"<img src=\"{path}\" class=\"banner my-2\" style=\"width:100%; height:250px;\" {html}>"));
+            if (result.StatusCode == 200) {
+                path = result.Data.Path;
+                return new HtmlContentViewComponentResult(
+                    new HtmlString($"<img src=\"{path}\" class=\"banner my-2\" style=\"width:100%; height:250px;\" {html}>"));
+            }
+            else { 
+                path = "/banner.png";
+                return new HtmlContentViewComponentResult(
+                    new HtmlString($"<img src=\"{path}\" class=\"banner my-2 text-center\" style=\"\" {html}>"));
+            }
         }
     }
 }

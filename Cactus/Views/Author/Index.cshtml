@@ -1,114 +1,170 @@
 ﻿@using Cactus.Models.Database
 @model PagingAuthorViewModel
 
-<div>
-    @await Component.InvokeAsync("BannerPath", new {Model.CurrentUser?.Id})
+<div class="text-center">
+    @await Component.InvokeAsync("BannerPath", new { Model.CurrentUser?.Id })
+    @if (Model.NotEnoughBalance) {
+        <script type="text/javascript">
+            history.pushState("", document.title, window.location.pathname);
+            alert("Недостаточно средств")
+        </script>
+    }
+    @if (ViewData["ComplainError"] != null) {
+        <script type="text/javascript">
+            alert();
+        </script>
+    }
 </div>
+
 <div class="row">
-    <div class="col">
-        <h4>Подписки</h4>
-        <table class="table">
-            <tbody>
-                @if (Model.Authors != null)
-                {
-                    @foreach (var p in Model.Authors)
-                    {
-                        <tr>
-                            <td>@p.Author.UserName</td>
-                            <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
-             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
-             page-class-selected="btn-primary" class="btn-group pull-right m-1">
-        </div>
-        <div class="row">
-            <div class="col">
-                @if (Model.DonationOptions != null) {
-                    <h3>Цели</h3>
-                    <hr/>
-                    foreach (var o in Model.DonationOptions) {
-                        if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
-                            <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
-                                <h4>@o.OptionName</h4>
-                                <p>@o.Description</p>
-                                <hr />
-                                @if (@Model.CollectedGoal.ContainsKey(o.Id)) {
-                                    <p>@Model.CollectedGoal[o.Id]/@o.Price собрано</p>
-                                }
-                                else {
-                                    <p>0/@o.Price собрано</p>
-                                }
-                                @if(!Model.IsOwner){
-                                    <form asp-controller="Monetization" asp-action="PayGoal" method="post">
-                                        <input class="form-control" asp-for="PayGoal.Sended" />
-                                        <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
-                                        <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
-                                        <button class="btn btn-danger m-1">Купить</button>
-                                    </form>
-                                    }
-                            </div>
-                        }
-                    }
-                }
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
+    <div class="col-lg-2">
+        ter
     </div>
-    <div class="col">
-        @if (Model.NotEnoughBalance) {
-            <script type="text/javascript">
-                history.pushState("", document.title, window.location.pathname);
-                alert("Недостаточно средств")
-            </script>
-        }
-        @if (ViewData["ComplainError"] != null) {
-            <script type="text/javascript">
-                alert();
-            </script>
-        }
+    <div class="col-lg-2">
         <div class="row">
             <div class="col"></div>
             <div class="col">
                 <h3 class="text-center">@Model.CurrentUser.UserName</h3>
             </div>
             <div class="col">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuAuthor" data-bs-toggle="dropdown" aria-expanded="false">
-                        Еще
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuAuthor">
-                        @if (!Model.IsUninteresting&&!Model.IsOwner) {
-                            <li>
-                                <a class="dropdown-item" asp-controller="Author" asp-action="AddUninterestingAuthor" asp-route-authorId="@Model.CurrentUser.Id">
-                                    Добавить в список неинтересного
-                                </a>
-                            </li>
-                        }
-                        @if (!Model.IsOwner)
-                        {
-                            <li>
-                                <div class="text-center">
-                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#complainModal">
-                                        Пожаловаться
-                                    </button>
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                @if (!Model.IsOwner)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuAuthor" data-bs-toggle="dropdown" aria-expanded="false">
+                            Еще
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuAuthor">
+                            @if (!Model.IsUninteresting && !Model.IsOwner)
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Author" asp-action="AddUninterestingAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                                        Добавить в список неинтересного
+                                    </a>
+                                </li>
+                            }
+                            @if (!Model.IsOwner)
+                            {
+                                <li>
+                                    <div class="text-center">
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#complainModal">
+                                            Пожаловаться
+                                        </button>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
         </div>
         @await Component.InvokeAsync("AvatarPath", new { Model.CurrentUser.Id, html = "class=\"avatarProfile mx-auto d-block border border-dark\"" })
+        @{
+            var opt = Model.DonationOptions?.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
+            if (opt != null && opt.Any()) {
+                <div class="text-center border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                    <p>@opt.Last().OptionName</p>
+                    <p>@opt.Last().Description</p>
+                    <hr />
+                    @if (!Model.IsOwner) {
+                        <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
+                            Отправить донат
+                        </button>
+                    }
+                </div>
+            }
+        }
+
+        @if (Model.DonationOptions != null) {
+            <h3>Уровни подписки</h3>
+            <hr />
+            @if (!Model.IsSubscribe && !Model.IsOwner) {
+                <div class="text-center m-1">
+                    <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                        Подписаться бесплатно
+                    </a>
+                </div>
+            }
+            int count = 1;
+            foreach (var o in Model.DonationOptions) {
+                if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
+                    <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                        <h4>@o.OptionName</h4>
+                        @await Component.InvokeAsync("CoverPath", new { o.Id })
+                        <p>@o.Description</p>
+                        <p>@count-й уровень</p>
+                        <hr />
+                        <p>Цена @o.Price</p>
+                        @if (!Model.IsOwner) {
+                            <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
+                                <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
+                                <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
+                                <input hidden asp-for="PaidSub.DonationOptionId" value="@o.Id" />
+                                <button class="btn btn-danger">Купить</button>
+                            </form>
+                        }
+                    </div>
+                    count++;
+                }
+            }
+        }
+
+        @if (Model.DonationOptions != null) {
+            <h4>Цели</h4>
+            <hr />
+            foreach (var o in Model.DonationOptions) {
+                if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
+                    <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                        <h5>@o.OptionName</h5>
+                        <p>@o.Description</p>
+                        @if (@Model.CollectedGoal.ContainsKey(o.Id)) {
+                            <p>@Model.CollectedGoal[o.Id]/@o.Price собрано</p>
+                        }
+                        else {
+                            <p>0/@o.Price собрано</p>
+                        }
+                        @if (!Model.IsOwner) {
+                            <form asp-controller="Monetization" asp-action="PayGoal" method="post">
+                                <input class="form-control" asp-for="PayGoal.Sended" />
+                                <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
+                                <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
+                                <button class="btn btn-danger m-1">Купить</button>
+                            </form>
+                        }
+                    </div>
+                }
+            }
+        }
         @if (Model.IsOwner)
         {
-            <div class="text-center">
+            <h4>Подписки</h4>
+            <hr />
+            <table class="table">
+                <tbody>
+                    @if (Model.Authors != null)
+                    {
+                        @foreach (var p in Model.Authors)
+                        {
+                            <tr>
+                                <td>@p.Author.UserName</td>
+                                <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div page-model="@Model.SubscribesPagingInfo" page-action="Index" type-page="authorPage"
+            page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+                 page-class-selected="btn-primary" class="btn-group pull-right m-1">
+            </div>
+        }
+    </div>
+    <div class="col">
+        <br/>
+        <br/>
+        @if (Model.IsOwner) {
+            <div class="text-start">
                 <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Создать пост
+                    Создать пост
                 </button>
             </div>
         }
@@ -119,272 +175,218 @@
                 </a>
             </div>
         }
-        <div class="row">
-            <div class="col"></div>
-            <div class="col">
-                @{
-                    var opt = Model.DonationOptions?.Where(x => x.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Remittance);
-                    if (opt != null && opt.Any()) {
-                        <div class="text-center border border-secondary p-2 mb-2 rounded border-2 bg-light">
-                            <p>@opt.Last().OptionName</p>
-                            <p>@opt.Last().Description</p>
-                            <hr />
-                            @if (!Model.IsOwner)
-                            {
-                                <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
-                                    Отправить донат
-                                </button>
-                            }
-                        </div>
-                    }
-                }
-            </div>
-            <div class="col"></div>
-        </div>
-        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Создать пост</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form asp-controller="Author" asp-action="AddPost" method="post" enctype="multipart/form-data">
-                                <div asp-validation-summary="All" class="text-danger"></div>
-                                <input type="hidden" name="Id" value="@Model.CurrentUser.Id"/>
-                                <div class="form-control">
-                                    <img width="300" height="450" id="myPostPhoto" class="postPhoto">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('postPhoto').click()">Добавить фото</button>
-                                    <input type='file' id="postPhoto" style="display:none" asp-for="Post.PostPhoto">
-                                </div>
-                                <div class="form-control">
-                                    <label asp-for="Post.Title"></label>
-                                    <input class="form-control" asp-for="Post.Title">
-                                </div>
-                                <div class="form-control">
-                                    <label asp-for="Post.Description"></label>
-                                    <textarea class="form-control" asp-for="Post.Description"></textarea>
-                                </div>
-                                <div>
-                                    <label asp-for="Post.CategoryId">Выберите категорию</label>
-                                    <select class="form-select" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
-                                </div>
-                                <div>
-                                    <label asp-for="Post.Tags">Выбранные теги поста</label>
-                                    <input class="form-control" type="text" readonly id="allTags" />
-                                    <label asp-for="Post.Tags">Напишите теги начиная c знака #</label>
-                                    <input class="form-control" asp-for="Post.Tags" id="myTag" />
-                                    <div class="text-end">
-                                        <button class="btn btn-secondary m-1" type="button" id="postTag" onClick="getTag()">Добавить тег</button>
-                                    </div>
-                                </div>
-                                <hr />
-                                <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
-                                <div>
-                                    <input onclick="freePost()" type="checkbox" class="btn-check btn-sm" asp-for="Post.IsFree" value="true" autocomplete="off">
-                                    <label class="btn btn-outline-danger" for="Post_IsFree">Сделать пост бесплатным</label>
-                                </div>
-                                <div id="notFree">
-                                    <div>
-                                        @{
-                                            if (Model.DonationOptions is not null)
-                                            {
-                                                var optionsForPost = Model.DonationOptions.Where(x=>
-                                                    x.MonetizationTypeId!=(int)Cactus.Models.Enums.MonetizationType.Goal&&
-                                                    x.MonetizationTypeId!=(int)Cactus.Models.Enums.MonetizationType.Remittance).ToList();
-                                                <h5>Созданные опции</h5>
-                                                <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(optionsForPost, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
-                                                    <option value="0" selected>Создать новую опцию</option>
-                                                </select>
 
-                                            }
-                                         }
-                                            </div>
-                                    <div id="newOption">
-                                        <div>
-                                            <h5>Добавить новый вид монетизации</h5>
-                                            <label asp-for="NewDonationOption.OptionName"></label>
-                                            <input class="form-control" asp-for="NewDonationOption.OptionName" />
-                                        </div>
-                                        <div>
-                                            <label asp-for="NewDonationOption.Description"></label>
-                                            <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
-                                        </div>
-                                        <div>
-                                            <label>Введите сумму за просмотр поста</label>
-                                            <input class="form-control" asp-for="NewDonationOption.Price" />
-                                            <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
-                                            <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger">Опубликовать</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-            <div class="modal fade" id="remittanceModal" tabindex="-1" aria-labelledby="remittanceModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="remittanceModalLabel">Отправить донат</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="" asp-controller="monetization" asp-action="remittance" method="post">
-                                <input class="form-control" asp-for="Remittance.Sended" />
-                                <input hidden asp-for="Remittance.AuthorId" value="@Model.CurrentUser.Id" />
-                                <input hidden asp-for="Remittance.DonationOptionId" />
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger">Отправить</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-            <div class="modal fade" id="complainModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Пожаловаться</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
-                                <div asp-validation-summary="All" class="text-danger"></div>
-                                <input type="hidden" asp-for="NewComplain.ComplainTargetId" value="@Model.CurrentUser.Id" />
-                                <input type="hidden" asp-for="NewComplain.ComplainTargetTypeId" value="@((int)Cactus.Models.Enums.ComplainTargetType.User)" />
-                                <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
-                                <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
-                                <div>
-                                    <label asp-for="NewComplain.ComplainTypeId"></label>
-                                    <select class="form-select m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
-                                </div>
-                                <div>
-                                    <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger">Отправить</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <h4>Посты</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Заголовок</th>
-                    <th scope="col">Содержание</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Posts != null) {
-                    @foreach (var p in Model.Posts) {
-                        <tr>
-                            <td>@p.Title</td>
-                            <td>@p.Description</td>
-                            <td><a class="btn btn-primary" asp-page="/Post" asp-route-postId="@p.Id">Открыть</a></td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div page-model="@Model.PostsPagingInfo" page-action="Index" type-page="postPage"
-             page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
-             page-class-selected="btn-primary" class="btn-group pull-right m-1">
-        </div>
-        <div class="row">
-            <div class="col">
-                @if (Model.DonationOptions != null) {
-                    <h3>Уровни подписки</h3>
-                    @if (!Model.IsSubscribe && !Model.IsOwner) {
-                        <div class="text-center m-1">
-                            <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
-                                Подписаться бесплатно
-                            </a>
-                        </div>
-                    }
-                    int count = 1;
-                    foreach (var o in Model.DonationOptions) {
-                        if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
-                            <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
-                                <h4>@o.OptionName</h4>
-                                @await Component.InvokeAsync("CoverPath", new { o.Id })
-                                <p>@o.Description</p>
-                                <p>@count-й уровень</p>
-                                <hr/>
-                                <p>Цена @o.Price</p>
-                                @if (!Model.IsOwner) {
-                                    <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
-                                        <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
-                                        <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
-                                        <input hidden asp-for="PaidSub.DonationOptionId" value="@o.Id" />
-                                        <button class="btn btn-danger">Купить</button>
-                                    </form>
-                                }
-                            </div>
-                            count++;
+        <div class="col">
+            <h4>Посты</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Заголовок</th>
+                        <th scope="col">Содержание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Posts != null) {
+                        @foreach (var p in Model.Posts) {
+                            <tr>
+                                <td>@p.Title</td>
+                                <td>@p.Description</td>
+                                <td><a class="btn btn-primary" asp-page="/Post" asp-route-postId="@p.Id">Открыть</a></td>
+                            </tr>
                         }
                     }
-                }
+                </tbody>
+            </table>
+            <div page-model="@Model.PostsPagingInfo" page-action="Index" type-page="postPage"
+                 page-classes-enabled="true" page-class="btn" page-class-normal="btn-outline-dark"
+                 page-class-selected="btn-primary" class="btn-group pull-right m-1">
             </div>
-            <div class="col"></div>
-            <div class="col"></div>
+        </div>
+        sdgdfgdfgfd
+    </div>
+    <div class="col-lg-2">
+        ter
+    </div>
+
+    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Создать пост</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-controller="Author" asp-action="AddPost" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <input type="hidden" name="Id" value="@Model.CurrentUser.Id" />
+                            <div class="form-control">
+                                <img width="300" height="450" id="myPostPhoto" class="postPhoto">
+                                <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('postPhoto').click()">Добавить фото</button>
+                                <input type='file' id="postPhoto" style="display:none" asp-for="Post.PostPhoto">
+                            </div>
+                            <div class="form-control">
+                                <label asp-for="Post.Title"></label>
+                                <input class="form-control" asp-for="Post.Title">
+                            </div>
+                            <div class="form-control">
+                                <label asp-for="Post.Description"></label>
+                                <textarea class="form-control" asp-for="Post.Description"></textarea>
+                            </div>
+                            <div>
+                                <label asp-for="Post.CategoryId">Выберите категорию</label>
+                                <select class="form-select" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
+                            </div>
+                            <div>
+                                <label asp-for="Post.Tags">Выбранные теги поста</label>
+                                <input class="form-control" type="text" readonly id="allTags" />
+                                <label asp-for="Post.Tags">Напишите теги начиная c знака #</label>
+                                <input class="form-control" asp-for="Post.Tags" id="myTag" />
+                                <div class="text-end">
+                                    <button class="btn btn-secondary m-1" type="button" id="postTag" onClick="getTag()">Добавить тег</button>
+                                </div>
+                            </div>
+                            <hr />
+                            <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
+                            <div>
+                                <input onclick="freePost()" type="checkbox" class="btn-check btn-sm" asp-for="Post.IsFree" value="true" autocomplete="off">
+                                <label class="btn btn-outline-danger" for="Post_IsFree">Сделать пост бесплатным</label>
+                            </div>
+                            <div id="notFree">
+                                <div>
+                                    @{
+                                        if (Model.DonationOptions is not null) {
+                                            var optionsForPost = Model.DonationOptions.Where(x =>
+                                            x.MonetizationTypeId != (int)Cactus.Models.Enums.MonetizationType.Goal &&
+                                            x.MonetizationTypeId != (int)Cactus.Models.Enums.MonetizationType.Remittance).ToList();
+                                            <h5>Созданные опции</h5>
+                                            <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(optionsForPost, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
+                                                <option value="0" selected>Создать новую опцию</option>
+                                            </select>
+
+                                        }
+                                    }
+                                </div>
+                                <div id="newOption">
+                                    <div>
+                                        <h5>Добавить новый вид монетизации</h5>
+                                        <label asp-for="NewDonationOption.OptionName"></label>
+                                        <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                                    </div>
+                                    <div>
+                                        <label asp-for="NewDonationOption.Description"></label>
+                                        <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                                    </div>
+                                    <div>
+                                        <label>Введите сумму за просмотр поста</label>
+                                        <input class="form-control" asp-for="NewDonationOption.Price" />
+                                        <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
+                                        <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Опубликовать</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<style>
-    .avatarProfile {
-        width: 300px;
-        height: 300px;
-        margin:0;
-        padding:0;
-    }
-</style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    function getTag() {
-        var inputElement = document.getElementById("myTag");
-        var result = inputElement.value.match(/#[a-zA-Z]/);
-        if (inputElement.value.indexOf(' ') == -1 && result != null) {
-            document.getElementById("allTags").value += inputElement.value;
-        }
-    }
-    function newOption() {
-        var sel = document.getElementById('SelectedDonationOption')
-        var newOption = document.getElementById('newOption')
-        if (sel.value > 0) {
-            newOption.style.display = 'none'
-        }
-        else newOption.style.display = 'block'
-    }
-    function freePost() {
-        var free = document.getElementById('Post_IsFree')
-        var notFree = document.getElementById('notFree')
-        if (free.value == "true") {
-            notFree.style.display = 'none'
-        }
-        else notFree.style.display = 'block'
-    }
 
-    function sendDonate(){
-        var optionId = document.getElementById('donateBtn')
-        document.getElementById('PaidSub_DonationOptionId').value = optionId.value
-    }
-</script>
+    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <div class="modal fade" id="remittanceModal" tabindex="-1" aria-labelledby="remittanceModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="remittanceModalLabel">Отправить донат</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="" asp-controller="monetization" asp-action="remittance" method="post">
+                            <input class="form-control" asp-for="Remittance.Sended" />
+                            <input hidden asp-for="Remittance.AuthorId" value="@Model.CurrentUser.Id" />
+                            <input hidden asp-for="Remittance.DonationOptionId" />
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Отправить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <div class="modal fade" id="complainModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Пожаловаться</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <input type="hidden" asp-for="NewComplain.ComplainTargetId" value="@Model.CurrentUser.Id" />
+                            <input type="hidden" asp-for="NewComplain.ComplainTargetTypeId" value="@((int)Cactus.Models.Enums.ComplainTargetType.User)" />
+                            <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                            <input type="hidden" asp-for="NewComplain.ReturnUrl" value="@ViewContext.HttpContext.Request.Path" />
+                            <div>
+                                <label asp-for="NewComplain.ComplainTypeId"></label>
+                                <select class="form-select m-1" asp-for="NewComplain.ComplainTypeId" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.ComplainType>()"></select>
+                            </div>
+                            <div>
+                                <textarea class="form-control m-1" asp-for="NewComplain.Description"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Отправить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dib>
+
+    <style>
+        .avatarProfile {
+            width: 300px;
+            height: 300px;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function getTag() {
+            var inputElement = document.getElementById("myTag");
+            var result = inputElement.value.match(/#[a-zA-Z]/);
+            if (inputElement.value.indexOf(' ') == -1 && result != null) {
+                document.getElementById("allTags").value += inputElement.value;
+            }
+        }
+        function newOption() {
+            var sel = document.getElementById('SelectedDonationOption')
+            var newOption = document.getElementById('newOption')
+            if (sel.value > 0) {
+                newOption.style.display = 'none'
+            }
+            else newOption.style.display = 'block'
+        }
+        function freePost() {
+            var free = document.getElementById('Post_IsFree')
+            var notFree = document.getElementById('notFree')
+            if (free.value == "true") {
+                notFree.style.display = 'none'
+            }
+            else notFree.style.display = 'block'
+        }
+
+        function sendDonate() {
+            var optionId = document.getElementById('donateBtn')
+            document.getElementById('PaidSub_DonationOptionId').value = optionId.value
+        }
+    </script>
