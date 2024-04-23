@@ -4,7 +4,7 @@
     <div class="col">
         <br />
         <div class="d-flex justify-content-end">
-            <form style="width:15%" asp-controller="wallet" asp-action="IndexFilter" method="post">
+            <form style="width:30%" asp-controller="wallet" asp-action="IndexFilter" method="post">
                 <h4>Выберите период</h4>
                 <div>
                     <label>с даты</label>
@@ -49,10 +49,10 @@
                             <td>@c.Transaction.Sended</td>
                             <td>@c.Transaction.Received</td>
                             @if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Patron) {
-                                <td>@Html.ActionLink("Patron", "Index", new { id =c.UserId})</td>
+                                <td>@Html.ActionLink(c.User.UserName, "Index", "Patron", new { id = c.UserId })</td>
                             }
-                            else  @if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Author) {
-                                <td>@Html.ActionLink("/id/","Author", "Index", new { id = c.UserId })</td>
+                            else if (c.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Author) {
+                                <td>@Html.ActionLink(c.User.UserName, "Index/id/", "Author", new { id = c.UserId })</td>
                             }
                         </tr>
                     </tbody>

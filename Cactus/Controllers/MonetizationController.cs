@@ -97,6 +97,12 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> PayGoal(PagingAuthorViewModel model) {
+            foreach (var state in ModelState) {
+                if (state.Key.Split('.').Contains("PayGoal") &&
+                    state.Value.Errors.Count != 0) {
+                    return RedirectToAction("Index","Author", new { UrlPage = "",id = model .PayGoal.AuthorId});
+                }
+            }
             BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
             model.PayGoal.Created = DateTime.Now;
             model.PayGoal.PayMethodId = setting.Data.Id;

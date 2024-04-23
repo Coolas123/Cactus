@@ -30,7 +30,7 @@ namespace Cactus.Infrastructure.Repositories
                 .Where(x =>
                     optionId.Contains(x.DonationOptionId))
                 .GroupBy(x => new { x.DonationOptionId })
-                .Select(x => new KeyValuePair<int, decimal>(x.Key.DonationOptionId, x.Sum(x=>x.Transaction.Received)))
+                .Select(x => new KeyValuePair<int, decimal>(x.Key.DonationOptionId, x.Sum(x=>x.Transaction.Sended)))
                 .ToDictionaryAsync(p => p.Key, p => p.Value);
         }
 
