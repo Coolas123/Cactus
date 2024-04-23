@@ -104,7 +104,6 @@ namespace Cactus.Controllers
             }
             if(result.IsSettingChanged) isSettingChanged=true;
             model.NewSettingViewModel.IsSettingChanged = isSettingChanged;
-            //return RedirectToAction("Index", new { isSettingChanged = isSettingChanged });
             return View("Index",model);
         }
 

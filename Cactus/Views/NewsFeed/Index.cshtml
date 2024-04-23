@@ -13,11 +13,11 @@
             </div>
             <div class="text-start">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" asp-for="IsAuthor" />
+                    <input onclick="checkIsAuthor()" class="form-check-input" type="checkbox" asp-for="IsAuthor" checked />
                     <label class="form-check-label">Авторы</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" asp-for="IsPost" />
+                    <input onclick="checkIsPost()" class="form-check-input" type="checkbox" asp-for="IsPost" checked />
                     <label class="form-check-label">Посты</label>
                 </div>
             </div>
@@ -50,3 +50,20 @@
         border-radius: 0px !important;
     }
 </style>
+
+<script>
+    function checkIsAuthor(){
+        var isAuthor = document.getElementById("IsAuthor");
+        var isPost = document.getElementById("IsPost");
+        if (!isAuthor.checked && !isPost.checked) {
+            document.getElementById("IsAuthor").checked = true;
+        }
+    }
+    function checkIsPost() {
+        var isAuthor = document.getElementById("IsAuthor");
+        var isPost = document.getElementById("IsPost");
+        if (!isAuthor.checked && !isPost.checked) {
+            document.getElementById("IsPost").checked = true;
+        }
+    }
+</script>
