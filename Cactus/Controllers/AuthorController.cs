@@ -141,5 +141,13 @@ namespace Cactus.Controllers
                 path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage })!;
             return Redirect(path);
         }
+
+        [HttpGet("RemoveUninterestingAuthor")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RemoveUninterestingAuthor(int authorId) {
+            BaseResponse<bool> response = await uninterestingAuthorService.RemoveUninterestingAuthor(Convert.ToInt32(User.FindFirstValue("Id")), authorId);
+            BaseResponse<Author> responseAuthor = await authorService.GetAsync(authorId);
+            return RedirectToAction("Index", new { responseAuthor.Data.UrlPage });
+        }
     }
 }

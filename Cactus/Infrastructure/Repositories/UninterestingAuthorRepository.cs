@@ -33,9 +33,10 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<UninterestingAuthor>> GetAuthorsAsync(int userId) {
-            return await dbContext.UninterestingAuthors.
-                Include(x => x.User)
+            return await dbContext.UninterestingAuthors
+                .Include(x => x.User)
                 .Include(x => x.Author)
+                .ThenInclude(x=>x.User)
                 .Where(x => x.UserId == userId).ToListAsync();
         }
 

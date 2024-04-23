@@ -34,11 +34,17 @@
                             Еще
                         </button>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuAuthor">
-                            @if (!Model.IsUninteresting && !Model.IsOwner)
-                            {
+                            @if (!Model.IsUninteresting && !Model.IsOwner && !Model.IsSubscribe) {
                                 <li>
                                     <a class="dropdown-item" asp-controller="Author" asp-action="AddUninterestingAuthor" asp-route-authorId="@Model.CurrentUser.Id">
                                         Добавить в список неинтересного
+                                    </a>
+                                </li>
+                            }
+                            else if(!Model.IsSubscribe && !Model.IsOwner){
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Author" asp-action="RemoveUninterestingAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                                        Убрать из списока неинтересного
                                     </a>
                                 </li>
                             }
@@ -79,7 +85,7 @@
             <hr />
             @if (!Model.IsSubscribe && !Model.IsOwner) {
                 <div class="text-center m-1">
-                    <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                    <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor">
                         Подписаться бесплатно
                     </a>
                 </div>

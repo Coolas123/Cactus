@@ -9,7 +9,7 @@
                 <tbody>
                     @foreach (var p in Model.UninterestingAuthors) {
                         <tr>
-                            <td>@p.User.UserName</td>
+                            <td>@p.Author.User.UserName</td>
                             <td><a class="btn btn-primary" asp-controller="Author" asp-action="Index" asp-route-UrlPage="@p.Author.UrlPage">Профиль</a></td>
                             <td>
                                 <form asp-page-handler ="RemoveUninterestingAuthor" method="post">
