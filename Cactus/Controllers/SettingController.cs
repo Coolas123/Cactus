@@ -74,9 +74,15 @@ namespace Cactus.Controllers
 
             if (User.IsInRole("Author")) {
                 if (model.NewSettingViewModel.BannerFile != null) {
-                    int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                    await profileMaterialService.ChangeBannerAsync(model.NewSettingViewModel.BannerFile, id);
-                    isSettingChanged = true;
+                    var image = Image.FromStream(model.NewSettingViewModel.BannerFile.OpenReadStream());
+                    if (image.Width <= 1900 || image.Height <=250) {
+                        ModelState.AddModelError("NewSettingViewModel.BannerFile", "Баннер должен иметь разрешение не более чем 1900px на 250px");
+                    }
+                    else {
+                        int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                        await profileMaterialService.ChangeBannerAsync(model.NewSettingViewModel.BannerFile, id);
+                        isSettingChanged = true;
+                    }
                 }
             }
             model.User = await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));

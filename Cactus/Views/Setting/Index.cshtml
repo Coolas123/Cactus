@@ -1,5 +1,5 @@
 ﻿@model SettingViewModel
-<div>
+<div class="text-center">
     @if (User.IsInRole("Author")){
     @await Component.InvokeAsync("BannerPath",new{id=Convert.ToInt32(User.FindFirst("Id").Value),html="id=\"myBanner\""})
     }
@@ -33,6 +33,7 @@
                         </div>
                         @if (User.IsInRole("Author")) {
                             <div> 
+                                <span>Разрешение баннера должно быть не более чем 1900px на 250px</span>
                                 <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('banner').click()">Изменить баннер</button>
                                 <input type='file' id="banner" style="display:none" asp-for="NewSettingViewModel.BannerFile">
                             </div>
