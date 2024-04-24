@@ -49,8 +49,8 @@ namespace Cactus.Controllers
             bool postCreated = false;
             if (model.Post.PostPhoto != null) {
                 var image = Image.FromStream(model.Post.PostPhoto.OpenReadStream());
-                if (image.Width > 590 || image.Height > 450) {
-                    ModelState.AddModelError("Post.PostPhoto", "Изображение должно быть не более чем 590px на 450px");
+                if (image.Width < 590 || image.Height < 450) {
+                    ModelState.AddModelError("Post.PostPhoto", "Изображение должно быть не больше чем 590px на 450px");
                 }
             }
             if (ModelState["NewDonationOption.Price"].Errors.Count != 0) {

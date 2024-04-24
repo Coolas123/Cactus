@@ -1,68 +1,78 @@
-﻿@model MonetizationViewModel
+﻿@model NewDonationOptionViewModel
 
 <div class="row">
     <div class="col"></div>
     <div class="col">
         <form asp-action="AddSubLevel" asp-controller="Monetization" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div>
                 <h5>Добавить платную подписку</h5>
                 <img src="" width="150" height="150" class="subLevelCover" id="mySubLevelCover">
-                <button type="button" class="btn btn-outline-secondary m-2" onclick="document.getElementById('subLevelCover').click()">Изменить обложку</button>
-                <input type='file' id="subLevelCover" style="display:none" asp-for="NewDonationOption.CoverFile">
+                <span>Изображение должно быть не меньше чем 150px на 150px</span>
+                <button type="button" class="btn btn-outline-secondary m-2" onclick="document.getElementById('subLevelCover').click()">Добавить обложку</button>
+                <input type='file' id="subLevelCover" style="display:none" asp-for="CoverFile">
             </div>
             <div>
-                <label asp-for="NewDonationOption.OptionName"></label>
-                <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                <label asp-for="OptionName"></label>
+                <input class="form-control" asp-for="OptionName" />
             </div>
             <div>
-                <label asp-for="NewDonationOption.Description"></label>
-                <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                <label asp-for="Description"></label>
+                <textarea class="form-control" asp-for="Description"></textarea>
             </div>
             <div>
                 <label>Введите сумму подписки</label>
-                <input class="form-control" asp-for="NewDonationOption.Price" />
-                <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.SubLevel)" />
-                <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                <input class="form-control" asp-for="Price" />
+                <input type="hidden" asp-for="MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.SubLevel)" />
+                <input type="hidden" asp-for="AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
             </div>
-            <button class="btn btn-danger" type="submit">Сохранить</button>
+            <button class="btn btn-danger m-1" type="submit">Сохранить</button>
         </form>
         <form asp-action="AddGoal" asp-controller="Monetization" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div>
                 <h5>Добавить цель</h5>
-                <label asp-for="NewDonationOption.OptionName"></label>
-                <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                <label asp-for="OptionName"></label>
+                <input class="form-control" asp-for="OptionName" />
             </div>
             <div>
-                <label asp-for="NewDonationOption.Description"></label>
-                <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                <label asp-for="Description"></label>
+                <textarea class="form-control" asp-for="Description"></textarea>
             </div>
             <div>
                 <label>Введите сумму цели</label>
-                <input class="form-control" asp-for="NewDonationOption.Price" />
-                <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Goal)" />
-                <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                <input class="form-control" asp-for="Price" />
+                <input type="hidden" asp-for="MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Goal)" />
+                <input type="hidden" asp-for="AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
             </div>
-            <button class="btn btn-danger" type="submit">Сохранить</button>
+            <button class="btn btn-danger m-1" type="submit">Сохранить</button>
         </form>
 
         <form asp-action="AddRemittance" asp-controller="Monetization" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div>
                 <h5>Добавить перевод</h5>
-                <label asp-for="NewDonationOption.OptionName"></label>
-                <input class="form-control" asp-for="NewDonationOption.OptionName" />
+                <label asp-for="OptionName"></label>
+                <input class="form-control" asp-for="OptionName" />
             </div>
             <div>
-                <label asp-for="NewDonationOption.Description"></label>
-                <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
+                <label asp-for="Description"></label>
+                <textarea class="form-control" asp-for="Description"></textarea>
             </div>
             <div>
                 <label>Введите минимальную сумму перевода</label>
-                <input class="form-control" asp-for="NewDonationOption.Price" />
-                <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Remittance)" />
-                <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
+                <input class="form-control" asp-for="Price" />
+                <input type="hidden" asp-for="MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.Remittance)" />
+                <input type="hidden" asp-for="AuthorId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
             </div>
-            <button class="btn btn-danger" type="submit">Сохранить</button>
+            <button class="btn btn-danger m-1" type="submit">Сохранить</button>
         </form>
     </div>
     <div class="col"></div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+    [src=""] {
+        display: none;
+    }
+</style>

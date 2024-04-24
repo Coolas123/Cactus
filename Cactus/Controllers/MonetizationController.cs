@@ -5,6 +5,7 @@ using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -18,16 +19,18 @@ namespace Cactus.Controllers
         private readonly IWalletService walletService;
         private readonly IPayMethodSettingService payMethodSettingService;
         private readonly IDonatorService donatorService;
+        private readonly IPaidAuthorSubscribeService paidAuthorSubscribeService;
         public MonetizationController(IDonationOptionService donationOptionService,
             ISubLevelMaterialService subLevelMaterialServices, ITransactionService transactionService,
             IWalletService walletService, IPayMethodSettingService payMethodSettingService,
-            IDonatorService donatorService) {
+            IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService) {
             this.donationOptionService = donationOptionService;
             this.subLevelMaterialServices = subLevelMaterialServices;
             this.transactionService = transactionService;
             this.walletService = walletService;
             this.payMethodSettingService = payMethodSettingService;
             this.donatorService = donatorService;
+            this.paidAuthorSubscribeService = paidAuthorSubscribeService;
         }
 
         [Authorize(Roles = "Author")]
@@ -38,12 +41,26 @@ namespace Cactus.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddSubLevel(MonetizationViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewDonationOption);
-            if (model.NewDonationOption.CoverFile != null) {
-                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
+        public async Task<IActionResult> AddSubLevel(NewDonationOptionViewModel model) {
+            if (model.CoverFile != null) {
+                var image = Image.FromStream(model.CoverFile.OpenReadStream());
+                if (image.Width % image.Height ==0) {
+                    ModelState.AddModelError("CoverFile", "Изображение должно имет ьсоотношение 1 к 1");
+                    return View("Index", model);
+                }
+            }
+            if (ModelState["Price"].Errors.Count != 0) {
+                ModelState["Price"].Errors.Clear();
+                ModelState.AddModelError("Price", "Неверная цена");
+            }
+            if (!ModelState.IsValid) {
+                return View("Index", model);
+            }
+            await donationOptionService.AddOptionAsync(model);
+            if (model.CoverFile != null) {
+                BaseResponse<DonationOption> donationOption = await donationOptionService.GetByPriceAsync(model.Price);
                 if (donationOption.StatusCode == 200) {
-                    await subLevelMaterialServices.UpdateCoverAsync(model.NewDonationOption.CoverFile, donationOption.Data.Id);
+                    await subLevelMaterialServices.UpdateCoverAsync(model.CoverFile, donationOption.Data.Id);
                 }
             }
             return RedirectToAction("Index");
@@ -51,21 +68,37 @@ namespace Cactus.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddGoal(MonetizationViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewDonationOption);
+        public async Task<IActionResult> AddGoal(NewDonationOptionViewModel model) {
+            if (ModelState["Price"].Errors.Count != 0) {
+                ModelState["Price"].Errors.Clear();
+                ModelState.AddModelError("Price", "Неверная цена");
+            }
+            if (!ModelState.IsValid) {
+                return View("Index", model);
+            }
+            await donationOptionService.AddOptionAsync(model);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddRemittance(MonetizationViewModel model) {
-            await donationOptionService.AddOptionAsync(model.NewDonationOption);
+        public async Task<IActionResult> AddRemittance(NewDonationOptionViewModel model) {
+            if (ModelState["Price"].Errors.Count != 0) {
+                ModelState["Price"].Errors.Clear();
+                ModelState.AddModelError("Price", "Неверная цена");
+            }
+            if (!ModelState.IsValid) {
+                return View("Index", model);
+            }
+            await donationOptionService.AddOptionAsync(model);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> SubscribePaidSub(PagingAuthorViewModel model) {
+            bool isPaidSubscribed = false;
+            var paidSub = new NewPaidSubscribeViewModel();
             if (ModelState.GetValidationState(nameof(model.PaidSub)) == ModelValidationState.Unvalidated) {
                 BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
                 model.PaidSub.Created = DateTime.Now;
@@ -73,6 +106,10 @@ namespace Cactus.Controllers
                 model.PaidSub.Received = model.PaidSub.Sended - model.PaidSub.Sended / 100 * setting.Data.Comission;
                 model.PaidSub.StatusId = (int)Models.Enums.TransactionStatus.Sended;
                 model.PaidSub.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
+
+                paidSub.StartDate= DateTime.Now;
+                paidSub.EndDate= paidSub.StartDate.AddDays(30);
+                paidSub.DonatorId = Convert.ToInt32(User.FindFirstValue("Id"));
 
                 BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
                 if (walletResponse.StatusCode != 200) {
@@ -90,8 +127,11 @@ namespace Cactus.Controllers
                     TransactionId = newTransaction.Data.Id
                 };
                 await donatorService.AddDonator(donatorViewModel);
+
+                await paidAuthorSubscribeService.SubscribeToAuthor(paidSub);
             }
-            return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId});
+            isPaidSubscribed = true;
+            return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId, isPaidSubscribed = isPaidSubscribed });
         }
 
         [HttpPost]

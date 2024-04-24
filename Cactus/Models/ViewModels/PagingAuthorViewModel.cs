@@ -22,5 +22,7 @@ namespace Cactus.Models.ViewModels
         public TransactionViewModel Remittance { get; set; }
         public bool NotEnoughBalance { get; set; }
         public bool PostCreated { get; set; }
+        public bool isPaidSubscribed { get; set; }
+        public IEnumerable<PaidAuthorSubscribe> PaidSubscribes { get; set; }
     }
 }

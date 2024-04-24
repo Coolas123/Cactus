@@ -20,10 +20,11 @@ namespace Cactus.Controllers
         private readonly IUninterestingAuthorService uninterestingAuthorService;
         private readonly IDonationOptionService donationOptionService;
         private readonly IDonatorService donatorService;
+        private readonly IPaidAuthorSubscribeService paidAuthorSubscribeService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
            LinkGenerator linkGenerator, IAuthorService authorService, IPostService postService,
            IUninterestingAuthorService uninterestingAuthorService,IDonationOptionService donationOptionService,
-           IDonatorService donatorService) {
+           IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -32,12 +33,13 @@ namespace Cactus.Controllers
             this.uninterestingAuthorService = uninterestingAuthorService;
             this.donationOptionService = donationOptionService;
             this.donatorService = donatorService;
+            this.paidAuthorSubscribeService = paidAuthorSubscribeService;
         }
 
         [Route("{UrlPage}")]
         [Route("/id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string UrlPage="/", int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false, bool postCreated=false) {
+        public async Task<IActionResult> Index(string UrlPage="/", int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false, bool postCreated=false, bool isPaidSubscribed=false) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> author;
             if (id == 0) {
@@ -68,9 +70,23 @@ namespace Cactus.Controllers
                     response.Posts = posts.Data.Posts;
                 }
             }
+            BaseResponse<IEnumerable<DonationOption>> options = await donationOptionService.GetOptionsAsync(author.Data.Id);
+            if (options.StatusCode == 200) {
+                response.DonationOptions = options.Data.OrderBy(x=>x.Price);
+                List<int> goals = options.Data.Where(x => x.MonetizationTypeId == (int)Models.Enums.MonetizationType.Goal).Select(x => x.Id).ToList();
+                BaseResponse<Dictionary<int, decimal>> donators = await donatorService.GetCollectedSumOfGoals(goals);
+                if (donators.StatusCode == 200) {
+                    response.CollectedGoal = donators.Data;
+                }
+            }
+            BaseResponse<IEnumerable<PaidAuthorSubscribe>> paidSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(Convert.ToInt32(User.FindFirstValue("Id")));
+            if (paidSubs.StatusCode == 200) {
+                response.PaidSubscribes= paidSubs.Data;
+            }
             response.CurrentUser = author.Data;
             response.NotEnoughBalance = NotEnoughBalance;
             response.PostCreated = postCreated;
+            response.isPaidSubscribed = isPaidSubscribed;
             return View(response);
         }
 
