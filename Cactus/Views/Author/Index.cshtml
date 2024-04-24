@@ -70,7 +70,6 @@
                 <div class="text-center border border-secondary p-2 mb-2 rounded border-2 bg-light">
                     <p>@opt.Last().OptionName</p>
                     <p>@opt.Last().Description</p>
-                    <hr />
                     @if (!Model.IsOwner) {
                         <button id="donateBtn" value="@opt.Last().Id" onclick="sendDonate()" type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#remittanceModal">
                             Отправить донат
@@ -80,16 +79,15 @@
             }
         }
 
+        @if (!Model.IsSubscribe && !Model.IsOwner) {
+            <div class="text-center m-1">
+                <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                    Подписаться бесплатно
+                </a>
+            </div>
+        }
         @if (Model.DonationOptions != null) {
             <h3>Уровни подписки</h3>
-            <hr />
-            @if (!Model.IsSubscribe && !Model.IsOwner) {
-                <div class="text-center m-1">
-                    <a class="btn btn-secondary" asp-controller="Author" asp-action="SubscribeToAuthor">
-                        Подписаться бесплатно
-                    </a>
-                </div>
-            }
             int count = 1;
             foreach (var o in Model.DonationOptions) {
                 if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
@@ -98,7 +96,6 @@
                         @await Component.InvokeAsync("CoverPath", new { o.Id })
                         <p>@o.Description</p>
                         <p>@count-й уровень</p>
-                        <hr />
                         <p>Цена @o.Price</p>
                         @if (!Model.IsOwner) {
                             <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
@@ -116,7 +113,6 @@
 
         @if (Model.DonationOptions != null && Model.DonationOptions.Any()) {
             <h4>Цели</h4>
-            <hr />
             foreach (var o in Model.DonationOptions) {
                 if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
                     <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
@@ -143,7 +139,6 @@
         @if (Model.IsOwner)
         {
             <h4>Подписки</h4>
-            <hr />
             <table class="table">
                 <tbody>
                     @if (Model.Authors != null)
@@ -151,7 +146,9 @@
                         @foreach (var p in Model.Authors)
                         {
                             <tr>
-                                <td>@p.Author.UserName</td>
+                                <td class="text-start">@p.Author.UserName
+                                    @await Component.InvokeAsync("AvatarPath", new { @p.Author.Id, html = "class=\"d-block border border-dark\"" })
+                                </td>
                                 <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
                             </tr>
                         }

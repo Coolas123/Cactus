@@ -7,7 +7,9 @@
                 @if (Model.AuthorSubscribe != null) {
                     @foreach (var p in Model.AuthorSubscribe) {
                         <tr>
-                            <td>@p.Author.UserName</td>
+                            <td class="text-start">@p.Author.UserName
+                                @await Component.InvokeAsync("AvatarPath", new { @p.Author.Id, html = "class=\"d-block border border-dark\"" })
+                            </td>
                             <td>@await Component.InvokeAsync("UrlPath", new { id = @p.Author.Id })</td>
                         </tr>
                     }
