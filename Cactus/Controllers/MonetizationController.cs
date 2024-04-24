@@ -137,6 +137,7 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> PayGoal(PagingAuthorViewModel model) {
+            bool isPaidSubscribed = false;
             foreach (var state in ModelState) {
                 if (state.Key.Split('.').Contains("PayGoal") &&
                     state.Value.Errors.Count != 0) {
@@ -167,12 +168,14 @@ namespace Cactus.Controllers
                 TransactionId = newTransaction.Data.Id
             };
             await donatorService.AddDonator(donatorViewModel);
-            return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId });
+            isPaidSubscribed = true;
+            return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, isPaidGoal = isPaidSubscribed });
         }
 
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> Remittance(PagingAuthorViewModel model) {
+            bool isRemittance = false;
             BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
             model.Remittance.Created = DateTime.Now;
             model.Remittance.PayMethodId = setting.Data.Id;
@@ -196,7 +199,8 @@ namespace Cactus.Controllers
                 TransactionId = newTransaction.Data.Id
             };
             await donatorService.AddDonator(donatorViewModel);
-            return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId });
+            isRemittance = true;
+            return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, isRemittance= isRemittance });
         }
     }
 }

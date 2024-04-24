@@ -24,6 +24,16 @@
             alert("Поздравляем! вы оформили платную подписку");
         </script>
     }
+    @if (Model.IsPaidGoal != false) {
+        <script type="text/javascript">
+            alert("Цель продвинулась!");
+        </script>
+    }
+    @if (Model.IsRemittance != false) {
+        <script type="text/javascript">
+            alert("Донат отправлен");
+        </script>
+    }
 </div>
 
 <div class="row">
@@ -230,6 +240,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="" asp-controller="monetization" asp-action="remittance" method="post">
+                            <span>Выберите сумму для отправления</span>
                             <input class="form-control" asp-for="Remittance.Sended" />
                             <input hidden asp-for="Remittance.AuthorId" value="@Model.CurrentUser.Id" />
                             <input hidden asp-for="Remittance.DonationOptionId" />
