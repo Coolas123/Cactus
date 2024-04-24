@@ -18,30 +18,26 @@ namespace Cactus.Controllers
         private readonly IAuthorService authorService;
         private readonly ICategoryService categoryService;
         private readonly IUninterestingAuthorService uninterestingAuthorService;
-        private readonly IPostTagService postTagService;
         private readonly IDonationOptionService donationOptionService;
-        private readonly IPostDonationOptionService postDonationOptionService;
         private readonly IDonatorService donatorService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService, ICategoryService categoryService,
-           IPostService postService, LinkGenerator linkGenerator, IAuthorService authorService,
-           IUninterestingAuthorService uninterestingAuthorService, IPostTagService postTagService, IDonationOptionService donationOptionService,
-           IPostDonationOptionService postDonationOptionService, IDonatorService donatorService) {
+           LinkGenerator linkGenerator, IAuthorService authorService, IPostService postService,
+           IUninterestingAuthorService uninterestingAuthorService,IDonationOptionService donationOptionService,
+           IDonatorService donatorService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
             this.authorService = authorService;
             this.categoryService = categoryService;
             this.uninterestingAuthorService = uninterestingAuthorService;
-            this.postTagService = postTagService;
             this.donationOptionService = donationOptionService;
-            this.postDonationOptionService = postDonationOptionService;
             this.donatorService = donatorService;
         }
 
         [Route("{UrlPage}")]
         [Route("/id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string UrlPage="/", int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false) {
+        public async Task<IActionResult> Index(string UrlPage="/", int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false, bool postCreated=false) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> author;
             if (id == 0) {
@@ -71,53 +67,11 @@ namespace Cactus.Controllers
                     response.PostsPagingInfo = posts.Data.PostsPagingInfo;
                     response.Posts = posts.Data.Posts;
                 }
-                BaseResponse<IEnumerable<DonationOption>> options = await donationOptionService.GetOptionsAsync(author.Data.Id);
-                if (options.StatusCode == 200) {
-                    response.DonationOptions = options.Data;
-                    List<int> goals = options.Data.Where(x => x.MonetizationTypeId == (int)Models.Enums.MonetizationType.Goal).Select(x => x.Id).ToList();
-                    BaseResponse<Dictionary<int, decimal>> donators = await donatorService.GetCollectedSumOfGoals(goals);
-                    if (donators.StatusCode == 200) {
-                        response.CollectedGoal = donators.Data;
-                    }
-                }
-                BaseResponse<IEnumerable<Category>> categories = await categoryService.GetAll();
-                response.Categories = categories.Data;
             }
             response.CurrentUser = author.Data;
-            if (NotEnoughBalance) {
-                response.NotEnoughBalance = NotEnoughBalance;
-            }
+            response.NotEnoughBalance = NotEnoughBalance;
+            response.PostCreated = postCreated;
             return View(response);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Author")]
-        public async Task<IActionResult> AddPost(PagingAuthorViewModel model) {
-            model.Post.Created = DateTime.Now.ToUniversalTime();
-            await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
-
-            var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
-            BaseResponse<Post> post = await postService.GetLastAsync(model.Post.Created);
-            if (tags is not null)
-                await postTagService.AddTagsToPost(post.Data.Id, tags);
-
-            if (model.SelectedDonationOption == 0) {
-                if (!model.Post.IsFree) {
-                    await donationOptionService.AddOptionAsync(model.NewDonationOption);
-                    BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
-                    await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, dbOption.Data.Id);
-                }
-            }
-            else {
-                await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, model.SelectedDonationOption);
-            }
-
-
-            BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
-            string path = "";
-            if (response.StatusCode == 200)
-                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage })!;
-            return Redirect(path);
         }
 
         [HttpGet]

@@ -16,7 +16,7 @@
         </div >
 
         <div class="col flex-column d-flex align-items-start">
-            @if (Model.NewSettingViewModel.IsSettingChanged) {
+            @if (Model.NewSettingViewModel!=null && Model.NewSettingViewModel.IsSettingChanged) {
                 <script type="text/javascript">
                     history.pushState("", document.title, window.location.pathname)
                     alert("Настройки успешно изменены")

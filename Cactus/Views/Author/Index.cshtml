@@ -11,7 +11,12 @@
     }
     @if (ViewData["ComplainError"] != null) {
         <script type="text/javascript">
-            alert();
+            alert(@ViewData["ComplainError"]);
+        </script>
+    }
+    @if (Model.PostCreated != false) {
+        <script type="text/javascript">
+            alert("Пост создан");
         </script>
     }
 </div>
@@ -166,9 +171,9 @@
         <br/>
         @if (Model.IsOwner) {
             <div class="text-start">
-                <button type="button" class="btn btn-danger m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <a class="btn btn-danger m-1" asp-controller="post" asp-action="index">
                     Создать пост
-                </button>
+                </a>
             </div>
         }
         else if (!Model.IsOwner) {
@@ -209,93 +214,6 @@
     </div>
     <div class="col-lg-2">
         ter
-    </div>
-
-    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Создать пост</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form asp-controller="Author" asp-action="AddPost" method="post" enctype="multipart/form-data">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-                            <input type="hidden" name="Id" value="@Model.CurrentUser.Id" />
-                            <div class="form-control">
-                                <img width="300" height="450" id="myPostPhoto" class="postPhoto">
-                                <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('postPhoto').click()">Добавить фото</button>
-                                <input type='file' id="postPhoto" style="display:none" asp-for="Post.PostPhoto">
-                            </div>
-                            <div class="form-control">
-                                <label asp-for="Post.Title"></label>
-                                <input class="form-control" asp-for="Post.Title">
-                            </div>
-                            <div class="form-control">
-                                <label asp-for="Post.Description"></label>
-                                <textarea class="form-control" asp-for="Post.Description"></textarea>
-                            </div>
-                            <div>
-                                <label asp-for="Post.CategoryId">Выберите категорию</label>
-                                <select class="form-select" asp-for="Post.CategoryId" asp-items="@(new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name)))"></select>
-                            </div>
-                            <div>
-                                <label asp-for="Post.Tags">Выбранные теги поста</label>
-                                <input class="form-control" type="text" readonly id="allTags" />
-                                <label asp-for="Post.Tags">Напишите теги начиная c знака #</label>
-                                <input class="form-control" asp-for="Post.Tags" id="myTag" />
-                                <div class="text-end">
-                                    <button class="btn btn-secondary m-1" type="button" id="postTag" onClick="getTag()">Добавить тег</button>
-                                </div>
-                            </div>
-                            <hr />
-                            <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
-                            <div>
-                                <input onclick="freePost()" type="checkbox" class="btn-check btn-sm" asp-for="Post.IsFree" value="true" autocomplete="off">
-                                <label class="btn btn-outline-danger" for="Post_IsFree">Сделать пост бесплатным</label>
-                            </div>
-                            <div id="notFree">
-                                <div>
-                                    @{
-                                        if (Model.DonationOptions is not null) {
-                                            var optionsForPost = Model.DonationOptions.Where(x =>
-                                            x.MonetizationTypeId != (int)Cactus.Models.Enums.MonetizationType.Goal &&
-                                            x.MonetizationTypeId != (int)Cactus.Models.Enums.MonetizationType.Remittance).ToList();
-                                            <h5>Созданные опции</h5>
-                                            <select onclick="newOption()" class="form-select" asp-for="SelectedDonationOption" asp-items="@(new SelectList(optionsForPost, nameof(DonationOption.Id), nameof(DonationOption.OptionName)))">
-                                                <option value="0" selected>Создать новую опцию</option>
-                                            </select>
-
-                                        }
-                                    }
-                                </div>
-                                <div id="newOption">
-                                    <div>
-                                        <h5>Добавить новый вид монетизации</h5>
-                                        <label asp-for="NewDonationOption.OptionName"></label>
-                                        <input class="form-control" asp-for="NewDonationOption.OptionName" />
-                                    </div>
-                                    <div>
-                                        <label asp-for="NewDonationOption.Description"></label>
-                                        <textarea class="form-control" asp-for="NewDonationOption.Description"></textarea>
-                                    </div>
-                                    <div>
-                                        <label>Введите сумму за просмотр поста</label>
-                                        <input class="form-control" asp-for="NewDonationOption.Price" />
-                                        <input type="hidden" asp-for="NewDonationOption.MonetizationTypeId" value="@((int)Cactus.Models.Enums.MonetizationType.OneTimePurchase)" />
-                                        <input type="hidden" asp-for="NewDonationOption.AuthorId" value="@Model.CurrentUser.Id" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-danger">Опубликовать</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
@@ -363,34 +281,4 @@
             padding: 0;
         }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        function getTag() {
-            var inputElement = document.getElementById("myTag");
-            var result = inputElement.value.match(/#[a-zA-Z]/);
-            if (inputElement.value.indexOf(' ') == -1 && result != null) {
-                document.getElementById("allTags").value += inputElement.value;
-            }
-        }
-        function newOption() {
-            var sel = document.getElementById('SelectedDonationOption')
-            var newOption = document.getElementById('newOption')
-            if (sel.value > 0) {
-                newOption.style.display = 'none'
-            }
-            else newOption.style.display = 'block'
-        }
-        function freePost() {
-            var free = document.getElementById('Post_IsFree')
-            var notFree = document.getElementById('notFree')
-            if (free.value == "true") {
-                notFree.style.display = 'none'
-            }
-            else notFree.style.display = 'block'
-        }
-
-        function sendDonate() {
-            var optionId = document.getElementById('donateBtn')
-            document.getElementById('PaidSub_DonationOptionId').value = optionId.value
-        }
-    </script>
+    

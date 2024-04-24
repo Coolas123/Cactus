@@ -36,7 +36,7 @@ namespace SportsStore.Infrastructure
                 tagH.InnerHtml.Append(PageModel.Description);
                 result.InnerHtml.AppendHtml(tagH);
             }
-            else
+            else if(PageModel?.TotalPages>1)
             for (int i = 1;i<=PageModel?.TotalPages;i++) {
                 TagBuilder tag = new TagBuilder("a");
                 PageUrlValues[TypePage] = i;

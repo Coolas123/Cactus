@@ -75,7 +75,7 @@ namespace Cactus.Controllers
             if (User.IsInRole("Author")) {
                 if (model.NewSettingViewModel.BannerFile != null) {
                     var image = Image.FromStream(model.NewSettingViewModel.BannerFile.OpenReadStream());
-                    if (image.Width <= 1900 || image.Height <=250) {
+                    if (image.Width > 1900 || image.Height >250) {
                         ModelState.AddModelError("NewSettingViewModel.BannerFile", "Баннер должен иметь разрешение не более чем 1900px на 250px");
                     }
                     else {

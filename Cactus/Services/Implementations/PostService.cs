@@ -30,10 +30,10 @@ namespace Cactus.Services.Implementations
                 UserId = id,
                 Title = model.Title,
                 Description = model.Description,
-                Created= model.Created
+                Created= (DateTime)model.Created
             };
             await postRepository.CreateAsync(post);
-            Post lastPost = await postRepository.GetLastAsync(model.Created);
+            Post lastPost = await postRepository.GetLastAsync((DateTime)model.Created);
             await postCategoryService.CreateAsync(lastPost.Id,model.CategoryId);
             if (model.PostPhoto != null)
                 await postMaterialService.AddPhotoAsync(model.PostPhoto, lastPost.Id);
