@@ -103,5 +103,17 @@ namespace Cactus.Controllers
             BaseResponse<Author> responseAuthor = await authorService.GetAsync(authorId);
             return RedirectToAction("Index", new { responseAuthor.Data.UrlPage });
         }
+
+        [HttpGet("/unsubscribe")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UnsubscribeToAuthor(int authorId) {
+            BaseResponse<AuthorSubscribe> unsub = await authorSubscribeService.UnsubscribeToAuthor(Convert.ToInt32(User.FindFirstValue("Id")), authorId);
+            BaseResponse<Author> response = await authorService.GetAsync(authorId);
+            string path = "";
+            if (response.StatusCode == 200)
+                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage })!;
+            return Redirect(path);
+        }
+
     }
 }

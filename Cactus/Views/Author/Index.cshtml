@@ -91,6 +91,13 @@
                 </a>
             </div>
         }
+        @if (!Model.IsOwner && Model.IsSubscribe) {
+        <div class="text-center m-1">
+                <a class="btn btn-danger" asp-action="UnsubscribeToAuthor" asp-route-authorId="@Model.CurrentUser.Id">
+                Отписаться
+            </a>
+        </div>
+        }
         @if (Model.DonationOptions != null) {
             <h3>Уровни подписки</h3>
             int count = 1;
@@ -173,13 +180,6 @@
             <div class="text-start">
                 <a class="btn btn-danger m-1" asp-controller="post" asp-action="index">
                     Создать пост
-                </a>
-            </div>
-        }
-        else if (!Model.IsOwner) {
-            <div class="text-center m-1">
-                <a class="btn btn-danger disabled">
-                    Отписаться
                 </a>
             </div>
         }

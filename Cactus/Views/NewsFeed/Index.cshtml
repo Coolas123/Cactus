@@ -26,7 +26,9 @@
             @if (Model?.searchResponse.Authors != null) {
                 foreach (var a in Model.searchResponse.Authors) {
                     <div class="form-control">
-                        <h6>@a.User.UserName</h6>
+                        <h6>@a.User.UserName
+                            @await Component.InvokeAsync("AvatarPath", new { @a.User.Id, html = "class=\"d-block border border-dark\"" })
+                        </h6>
                         <div>@await Component.InvokeAsync("UrlPath", new { id = a.UserId })</div>
                     </div>
                 }

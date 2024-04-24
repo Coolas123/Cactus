@@ -99,5 +99,29 @@ namespace Cactus.Services.Implementations
                 StatusCode=200
             };
         }
+
+        public async Task<BaseResponse<AuthorSubscribe>> UnsubscribeToAuthor(int subcriberId, int authorId) {
+            BaseResponse<AuthorSubscribe> sub = await GetSubscribe(subcriberId, authorId);
+            if (sub.StatusCode == 200) {
+                try {
+                    await subscribeRepository.DeleteAsync(sub.Data);
+                }
+                catch {
+                    return new BaseResponse<AuthorSubscribe>
+                    {
+                        Description = "Не удалось отписаться"
+                    };
+                }
+                return new BaseResponse<AuthorSubscribe>
+                {
+                    Data = sub.Data,
+                    StatusCode=200
+                };
+            }
+            return new BaseResponse<AuthorSubscribe>
+            {
+                Description = "Подписка не оформлена"
+            };
+        }
     }
 }
