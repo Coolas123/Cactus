@@ -9,11 +9,11 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("author_id")]
         public int AuthorId { get; set; }
-        [Column("description")]
+        [Column("description", TypeName = "varchar(512)")]
         public string Description { get; set; }
-        [Column("option_name")]
+        [Column("option_name", TypeName = "varchar(64)")]
         public string OptionName { get; set; }
-        [Column("price")]
+        [Column("price", TypeName = "decimal(10,2)")]
         public decimal Price { get; set; }
         [Column("monetization_type_id")]
         public int MonetizationTypeId { get; set; }

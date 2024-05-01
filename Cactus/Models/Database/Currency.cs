@@ -9,7 +9,7 @@ namespace Cactus.Models.Database
         public int Id { get; set; }
         [Column("country_id")]
         public int CountryId { get; set; }
-        [Column("symbol")]
+        [Column("symbol", TypeName = "varchar(8)")]
         public string Symbol { get; set; }
     }
 }

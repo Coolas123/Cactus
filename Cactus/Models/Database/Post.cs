@@ -10,10 +10,10 @@ namespace Cactus.Models.Database
         [Column("user_id")]
         public int UserId {  get; set; }
         public Author User {  get; set; }
-        [Column("title")]
-        public string? Title { get; set; }
-        [Column("description")]
-        public string? Description { get; set; }
+        [Column("title", TypeName = "varchar(64)")]
+        public string Title { get; set; }
+        [Column("description", TypeName = "varchar(20480)")]
+        public string Description { get; set; }
         [Column("created")]
         public DateTime Created { get; set; }
     }

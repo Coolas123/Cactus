@@ -12,7 +12,7 @@ namespace Cactus.Models.Database
         public User User { get; set; }
         [Column("post_id")]
         public int PostId { get; set; }
-        [Column("comment")]
+        [Column("comment",TypeName ="varchar(256)")]
         public string Comment { get; set; }
         [Column("created")]
         public DateTime Created {  get; set; }

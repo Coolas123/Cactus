@@ -50,37 +50,34 @@ namespace Cactus.Models.Database
             base.OnModelCreating(builder);
 
 
-            builder.Entity<SystemRole>(x =>
-            {
+            builder.Entity<SystemRole>(x => {
                 x.HasData(
                 [
-                    new {Id=1,Name="User" },
-                    new {Id=2,Name="Admin" }
+                    new { Id = 1, Name = "User" },
+                    new { Id = 2, Name = "Admin" }
                 ]);
             });
-            builder.Entity<UserRole>(x =>
-            {
+            builder.Entity<UserRole>(x => {
                 x.HasData(
                 [
-                    new {Id=1,Name="Patron" },
-                    new {Id=2,Name="Individual" }
+                    new { Id = 1, Name = "Patron" },
+                    new { Id = 2, Name = "Individual" }
                 ]);
             });
-            builder.Entity<Country>(x =>
-            {
+            builder.Entity<Country>(x => {
                 x.HasData(
                 [
-                    new {Id=1,Name="Russia" },
-                    new {Id=2,Name="USA" }
+                    new { Id = 1, Name = "Russia" },
+                    new { Id = 2, Name = "USA" }
                 ]);
             });
             builder.Entity<MaterialType>(x => {
                 x.HasData(
                 [
-                    new {Id=1,Name="Avatar" },
-                    new {Id=2,Name="Banner" },
-                    new {Id=3,Name="PostPhoto" },
-                    new {Id=4,Name= "SubLevelCover" }
+                    new { Id = 1, Name = "Avatar" },
+                    new { Id = 2, Name = "Banner" },
+                    new { Id = 3, Name = "PostPhoto" },
+                    new { Id = 4, Name = "SubLevelCover" }
                 ]);
             });
             builder.Entity<PostTag>(x => {
@@ -137,23 +134,23 @@ namespace Cactus.Models.Database
             });
             builder.Entity<Currency>(x => {
                 x.HasData([
-                    new { Id = 1, CountryId = (int)Models.Enums.Country.Russia,Symbol= "₽" },
+                    new { Id = 1, CountryId = (int)Models.Enums.Country.Russia, Symbol = "₽" },
                     new { Id = 2, CountryId = (int)Models.Enums.Country.USA, Symbol = "$" }
                 ]);
             });
             builder.Entity<PayMethodSetting>(x => {
                 x.HasData([
-                    new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)0, MonthlyWithdrawLimit = (decimal)0, TransactionTypeId=(int)Models.Enums.TransactionType.IntrasystemOperations },
+                    new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)0, MonthlyWithdrawLimit = (decimal)0, TransactionTypeId = (int)Models.Enums.TransactionType.IntrasystemOperations },
                     new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish },
                     new { Id = 3, Comission = (decimal)2, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Withdraw }
                 ]);
             });
             builder.Entity<PayMethod>(x => {
                 x.HasData([
-                    new { Id = 1, Name = "Balance", PayMethodSettingId=1 },
-                    new { Id = 2, Name = "Visa", PayMethodSettingId=2 },
-                    new { Id = 3, Name = "MasterCard", PayMethodSettingId=2 },
-                    new { Id = 4, Name = "Mir", PayMethodSettingId=2 },
+                    new { Id = 1, Name = "Balance", PayMethodSettingId = 1 },
+                    new { Id = 2, Name = "Visa", PayMethodSettingId = 2 },
+                    new { Id = 3, Name = "MasterCard", PayMethodSettingId = 2 },
+                    new { Id = 4, Name = "Mir", PayMethodSettingId = 2 },
                     new { Id = 5, Name = "MasterCard", PayMethodSettingId = 3 },
                     new { Id = 6, Name = "Mir", PayMethodSettingId = 3 }
                 ]);

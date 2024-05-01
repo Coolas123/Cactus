@@ -16,7 +16,7 @@ namespace Cactus.Models.ViewModels
         public string OptionName { get; set; }
         [Display(Name = "Цена")]
         [Required(ErrorMessage = "Введите цену опции")]
-        [Range(1,int.MaxValue,ErrorMessage ="Неверная цена")]
+        [Range(1, 9999999999, ErrorMessage ="Неверная цена")]
         public decimal Price { get; set; }
         [Required]
         public int MonetizationTypeId { get; set; }

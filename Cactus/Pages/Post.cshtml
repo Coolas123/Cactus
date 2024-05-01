@@ -82,6 +82,7 @@
             }
             <form method="post">
                 <div>
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <textarea style="resize:none; height: 150px;" class="form-control" asp-for="PostComment.Comment" placeholder="Оставить комментарий"></textarea>
                     <input type="hidden" asp-for="PostComment.PostId" value="@Model.Post.Id" />
                     <input type="hidden" asp-for="PostComment.UserId" value="@User.FindFirst("Id").Value" />

@@ -14,7 +14,7 @@ namespace Cactus.Models.Database
         [Column("currency_id")]
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
-        [Column("balance")]
+        [Column("balance", TypeName = "decimal(10,2)")]
         public decimal Balance { get; set; }
         [Column("is_active")]
         public bool IsActive { get; set; }

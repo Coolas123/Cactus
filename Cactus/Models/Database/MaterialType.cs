@@ -7,7 +7,7 @@ namespace Cactus.Models.Database
     {
         [Column("id")]
         public int Id { get; set; }
-        [Column("name")]
+        [Column("name", TypeName = "varchar(64)")]
         public string Name { get; set; }
     }
 }

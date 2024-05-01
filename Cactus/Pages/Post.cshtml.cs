@@ -1,9 +1,11 @@
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
+using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using System.Threading;
@@ -45,6 +47,7 @@ namespace Cactus.Pages
         [BindProperty]
         public Post Post { get; set; }
         public PostMaterial Material { get; set; }
+        [BindProperty]
         public CommentViewModel PostComment { get; set; }
         public IEnumerable<PostComment> PostComments { get; set; }=new List<PostComment>();
         public IEnumerable<Tag> PostTags { get; set; }=new List<Tag>();
@@ -106,7 +109,13 @@ namespace Cactus.Pages
         }
 
         public async Task<IActionResult> OnPostAsync() {
-            BaseResponse<PostComment> response =await postCommentService.Create(PostComment);
+            foreach (var state in ModelState) {
+                if (state.Key.Split('.').Contains("PostComment") &&
+                    state.Value.Errors.Count != 0) {
+                    return RedirectToPage("/Post", new { postId = PostComment.PostId });
+                }
+            }
+            BaseResponse<PostComment> response = await postCommentService.Create(PostComment);
             CommentDescription = response.Description;
             return RedirectToPage("/Post", new {postId= PostComment.PostId});
         }

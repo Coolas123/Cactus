@@ -13,7 +13,7 @@ namespace Cactus.Models.Database
         [Column("material_type_id")]
         public int MaterialTypeId {  get; set; }
         public MaterialType MaterialType {  get; set; }
-        [Column("title")]
+        [Column("title", TypeName = "varchar(256)")]
         public string Title { get; set; }
         [Column("path")]
         public string Path { get; set; }

@@ -7,13 +7,13 @@ namespace Cactus.Models.Database
     {
         [Column("id")]
         public int Id { get; set; }
-        [Column("user_name")]
+        [Column("user_name", TypeName = "varchar(64)")]
         public string UserName { get; set; }
         [Column(name:"date_of_birth", TypeName = "Date")]
         public DateTime DateOfBirth { get; set; }
-        [Column("email")]
+        [Column("email", TypeName = "varchar(64)")]
         public string Email { get; set; }
-        [Column("gender")]
+        [Column("gender", TypeName = "varchar(32)")]
         public string Gender { get; set; }
         [Column("hash_password")]
         public string HashPassword { get; set; }

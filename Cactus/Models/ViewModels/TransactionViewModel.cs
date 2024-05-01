@@ -11,7 +11,7 @@ namespace Cactus.Models.ViewModels
         public decimal Comission { get; set; }
         [Display(Name = "Выберите сумму пополнения")]
         [Required]
-        [Range(1,int.MaxValue)]
+        [Range(1,9999999999)]
         public decimal Sended {  get; set; }
         [Display(Name = "Сумма после комиссии")]
         public decimal Received {  get; set; }

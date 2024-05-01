@@ -12,9 +12,9 @@ namespace Cactus.Models.Database
         [Column("pay_method_id")]
         public int PayMethodId { get; set; }
         public PayMethod PayMethod { get; set; }
-        [Column("sended")]
+        [Column("sended", TypeName = "decimal(10,2)")]
         public decimal Sended { get; set; }
-        [Column("received")]
+        [Column("received", TypeName = "decimal(10,2)")]
         public decimal Received { get; set; }
         [Column("created")]
         public DateTime Created { get; set; }

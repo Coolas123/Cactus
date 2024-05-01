@@ -10,6 +10,7 @@ namespace Cactus.Models.ViewModels
         public string Title { get; set; }
         [Required(ErrorMessage = "Введите описание")]
         [Display(Name = "Описание")]
+        [MaxLength(20480)]
         public string Description { get; set; }
         public IFormFile? PostPhoto { get; set; }
         public string? PostPhotoPath { get; set; }

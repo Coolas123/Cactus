@@ -78,7 +78,7 @@ namespace Cactus.Controllers
                     return View("Index", model);
                 }
             }
-            if (!model.Post.IsFree && model.SelectedDonationOption==0) {
+            if (!model.Post.IsFree && (model.SelectedDonationOption==0 || model.SelectedDonationOption == null)) {
                 foreach (var state in ModelState) {
                     if (state.Key.Split('.').Contains("NewDonationOption") &&
                         state.Value.Errors.Count != 0) {
@@ -105,7 +105,7 @@ namespace Cactus.Controllers
             if (tags is not null)
                 await postTagService.AddTagsToPost(post.Data.Id, tags);
 
-            if (model.SelectedDonationOption == 0) {
+            if (model.SelectedDonationOption == 0 || model.SelectedDonationOption == null) {
                 if (!model.Post.IsFree) {
                     await donationOptionService.AddOptionAsync(model.NewDonationOption);
                     BaseResponse<DonationOption> dbOption = await donationOptionService.GetByPriceAsync(model.NewDonationOption.Price);
