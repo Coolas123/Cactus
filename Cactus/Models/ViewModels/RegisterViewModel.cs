@@ -32,7 +32,7 @@ namespace Cactus.Models.ViewModels
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Длина пароля должна быть больше 5-ти символов")]
         [MaxLength(20, ErrorMessage = "Длина пароля должна быть меньше 20-ти символов")]
-        [RegularExpression(@"((?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{6,20})", ErrorMessage = "Пароль должен содержать: Латинскую букву в нижнем и верхнем регистре, одна цифра, спецсимвол @#$%!")]
+        [RegularExpression(@"((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{6,20})", ErrorMessage = "Пароль должен содержать: Латинскую букву в нижнем и верхнем регистре, одна цифра, спецсимвол @#$%!")]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
 
