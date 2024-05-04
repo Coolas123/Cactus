@@ -1,4 +1,5 @@
 ﻿using Cactus.Models.Database;
+using Cactus.Models.Notifications;
 using SportsStore.Models;
 
 namespace Cactus.Models.ViewModels
@@ -20,11 +21,7 @@ namespace Cactus.Models.ViewModels
         public TransactionViewModel PaidSub { get; set; }
         public TransactionViewModel PayGoal { get; set; }
         public TransactionViewModel Remittance { get; set; }
-        public bool NotEnoughBalance { get; set; }
-        public bool PostCreated { get; set; }
-        public bool isPaidSubscribed { get; set; }
-        public bool IsPaidGoal { get; set; }
-        public bool IsRemittance { get; set; }
+        public AuthorNotifications? AuthorNotifications { get; set; }
         public IEnumerable<PaidAuthorSubscribe> PaidSubscribes { get; set; }
     }
 }

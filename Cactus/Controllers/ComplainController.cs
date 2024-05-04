@@ -10,10 +10,8 @@ namespace Cactus.Controllers
     public class ComplainController:Controller
     {
         private readonly IComplainService complainService;
-        private readonly LinkGenerator linkGenerator;
-        public ComplainController(IComplainService complainService, LinkGenerator linkGenerator) {
+        public ComplainController(IComplainService complainService) {
             this.complainService = complainService;
-            this.linkGenerator = linkGenerator;
         }
         public async Task<IActionResult> Index() {
             var date = DateTime.Now.AddYears(-10);

@@ -1,12 +1,13 @@
 ﻿using Cactus.Models.Database;
+using Cactus.Models.Notifications;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Drawing;
 using System.Security.Claims;
+using System.Web;
 
 namespace Cactus.Controllers
 {
@@ -46,7 +47,8 @@ namespace Cactus.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddPost(NewPostViewModel model) {
-            bool postCreated = false;
+            var authorNotifications = new AuthorNotifications();
+
             if (model.Post.PostPhoto != null) {
                 var image = Image.FromStream(model.Post.PostPhoto.OpenReadStream());
                 if (image.Width < 590 || image.Height < 450) {
@@ -97,8 +99,9 @@ namespace Cactus.Controllers
             model.Post.Created = DateTime.Now.ToUniversalTime();
             var res = await postService.AddPost(model.Post, Convert.ToInt32(User.FindFirstValue("Id")));
             if (res.StatusCode == 200) {
-                postCreated=true;
+                authorNotifications.PostCreated = "Пост создан";
             }
+            else authorNotifications.PostCreated = "Не удалось создать пост";
 
             var tags = model.Post.Tags?.Split('#').Where(x => x != "").ToList();
             BaseResponse<Post> post = await postService.GetLastAsync((DateTime)model.Post.Created);
@@ -116,11 +119,12 @@ namespace Cactus.Controllers
                 await postDonationOptionService.AddOptionToPostAsync(post.Data.Id, (int)model.SelectedDonationOption);
             }
 
-
             BaseResponse<Author> response = await authorService.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             string path = "";
-            if (response.StatusCode == 200)
-                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage, postCreated= postCreated })!;
+            if (response.StatusCode == 200) {
+
+                path = linkGenerator.GetPathByAction("Index", "Author", new { UrlPage = response.Data.UrlPage, authorNotifications.PostCreated })!;
+            }
             return Redirect(path);
         }
     }

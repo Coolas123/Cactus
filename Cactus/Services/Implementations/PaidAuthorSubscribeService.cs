@@ -13,8 +13,8 @@ namespace Cactus.Services.Implementations
             this.paidAuthorSubscribeRepository = paidAuthorSubscribeRepository;
         }
 
-        public async Task<BaseResponse<IEnumerable<PaidAuthorSubscribe>>> GetCurrentSubscribes(int donatorId) {
-            IEnumerable<PaidAuthorSubscribe> subs = await paidAuthorSubscribeRepository.GetCurrentSubscribes(donatorId);
+        public async Task<BaseResponse<IEnumerable<PaidAuthorSubscribe>>> GetCurrentSubscribes(int authorId, int donatorId) {
+            IEnumerable<PaidAuthorSubscribe> subs = await paidAuthorSubscribeRepository.GetCurrentSubscribes(authorId, donatorId);
             if (!subs.Any()) {
                 return new BaseResponse<IEnumerable<PaidAuthorSubscribe>>
                 {

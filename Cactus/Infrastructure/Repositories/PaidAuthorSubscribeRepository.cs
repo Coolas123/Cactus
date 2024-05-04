@@ -23,13 +23,14 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<PaidAuthorSubscribe>> GetCurrentSubscribes(int donatorId) {
+        public async Task<IEnumerable<PaidAuthorSubscribe>> GetCurrentSubscribes(int authorId, int donatorId) {
             return await dbContext.PaidAuthorSubscribes
                 .Include(x=>x.Donator)
                 .ThenInclude(x=>x.User)
                 .Include(x => x.Donator)
                 .ThenInclude(x => x.DonationOption)
-                .Where(x=>x.DonatorId== donatorId && x.EndDate.ToLocalTime()>=DateTime.Now)
+                .Where(x=>x.DonatorId== donatorId && 
+                x.EndDate.ToLocalTime()>=DateTime.Now)
                 .ToListAsync();
         }
 

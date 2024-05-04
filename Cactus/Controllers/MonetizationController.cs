@@ -1,4 +1,5 @@
 ﻿using Cactus.Models.Database;
+using Cactus.Models.Notifications;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
@@ -97,9 +98,14 @@ namespace Cactus.Controllers
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> SubscribePaidSub(PagingAuthorViewModel model) {
-            bool isPaidSubscribed = false;
             var paidSub = new NewPaidSubscribeViewModel();
-            if (ModelState.GetValidationState(nameof(model.PaidSub)) == ModelValidationState.Unvalidated) {
+            var authorNotifications = new AuthorNotifications();
+
+            BaseResponse<IEnumerable<PaidAuthorSubscribe>> existedSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(model.PaidSub.AuthorId, Convert.ToInt32(User.FindFirstValue("Id")));
+            if (ModelState.GetValidationState(nameof(model.PaidSub)) == ModelValidationState.Unvalidated &&
+                (existedSubs.StatusCode != 200 || 
+                existedSubs.Data?.Where(x=>x.Donator.DonationOption.Price>= model.PaidSub.Sended).Count()==0)) {
+
                 BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
                 model.PaidSub.Created = DateTime.Now;
                 model.PaidSub.PayMethodId = setting.Data.Id;
@@ -111,14 +117,19 @@ namespace Cactus.Controllers
                 paidSub.EndDate= paidSub.StartDate.AddDays(30);
                 paidSub.DonatorId = Convert.ToInt32(User.FindFirstValue("Id"));
 
-                BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
+                BaseResponse<Wallet> walletResponse = await walletService
+                    .WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
+
                 if (walletResponse.StatusCode != 200) {
-                    return RedirectToAction("Index", "Author", new { id = model.PaidSub.AuthorId, NotEnoughBalance = true });
+                    authorNotifications.EnoughBalance = "Недостаточно баланса";
+                    return RedirectToAction("Index", "Author", new { id = model.PaidSub.AuthorId, authorNotifications.EnoughBalance });
                 }
                 await transactionService.CreateTransaction(model.PaidSub);
                 await walletService.ReplenishWallet(model.PaidSub.AuthorId, model.PaidSub.Received);
 
-                BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
+                BaseResponse<Transaction> newTransaction = await transactionService
+                    .GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Created);
+
                 var donatorViewModel = new DonatorViewModel
                 {
                     UserId = model.PaidSub.UserId,
@@ -129,15 +140,16 @@ namespace Cactus.Controllers
                 await donatorService.AddDonator(donatorViewModel);
 
                 await paidAuthorSubscribeService.SubscribeToAuthor(paidSub);
+                authorNotifications.PaidSubscribed = "Поздравляем! вы оформили платную подписку";
             }
-            isPaidSubscribed = true;
-            return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId, isPaidSubscribed = isPaidSubscribed });
+            return RedirectToAction("Index","Author",new { id=model.PaidSub.AuthorId, authorNotifications.PaidSubscribed });
         }
 
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> PayGoal(PagingAuthorViewModel model) {
-            bool isPaidSubscribed = false;
+            var authorNotifications = new AuthorNotifications();
+
             foreach (var state in ModelState) {
                 if (state.Key.Split('.').Contains("PayGoal") &&
                     state.Value.Errors.Count != 0) {
@@ -153,7 +165,8 @@ namespace Cactus.Controllers
 
             BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Sended);
             if (walletResponse.StatusCode != 200) {
-                return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, NotEnoughBalance = true });
+                authorNotifications.EnoughBalance = "Недостаточно баланса";
+                return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, authorNotifications.EnoughBalance });
             }
             await transactionService.CreateTransaction(model.PayGoal);
             await walletService.ReplenishWallet(model.PayGoal.AuthorId, model.PayGoal.Received);
@@ -168,14 +181,15 @@ namespace Cactus.Controllers
                 TransactionId = newTransaction.Data.Id
             };
             await donatorService.AddDonator(donatorViewModel);
-            isPaidSubscribed = true;
-            return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, isPaidGoal = isPaidSubscribed });
+            authorNotifications.PaidGoal = "Цель продвинулась!";
+            return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, authorNotifications.PaidGoal });
         }
 
         [HttpPost]
         [Authorize(Roles = "Author, Patron")]
         public async Task<IActionResult> Remittance(PagingAuthorViewModel model) {
-            bool isRemittance = false;
+            var authorNotifications = new AuthorNotifications();
+
             BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
             model.Remittance.Created = DateTime.Now;
             model.Remittance.PayMethodId = setting.Data.Id;
@@ -185,7 +199,8 @@ namespace Cactus.Controllers
 
             BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.Remittance.Sended);
             if (walletResponse.StatusCode != 200) {
-                return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, NotEnoughBalance = true });
+                authorNotifications.EnoughBalance = "Недостаточно баланса";
+                return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, authorNotifications.EnoughBalance });
             }
             await transactionService.CreateTransaction(model.Remittance);
             await walletService.ReplenishWallet(model.Remittance.AuthorId, model.Remittance.Received);
@@ -199,8 +214,8 @@ namespace Cactus.Controllers
                 TransactionId = newTransaction.Data.Id
             };
             await donatorService.AddDonator(donatorViewModel);
-            isRemittance = true;
-            return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, isRemittance= isRemittance });
+            authorNotifications.Remittanced = "Донат отправлен";
+            return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, authorNotifications.Remittanced });
         }
     }
 }

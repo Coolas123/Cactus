@@ -1,4 +1,5 @@
 ﻿using Cactus.Models.Database;
+using Cactus.Models.Notifications;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
@@ -39,7 +40,7 @@ namespace Cactus.Controllers
         [Route("{UrlPage}")]
         [Route("/id/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string UrlPage="/", int id = 0, int authorPage = 1, int postPage = 1, bool NotEnoughBalance = false, bool postCreated=false, bool isPaidSubscribed=false, bool isPaidGoal=false, bool isRemittance= false) {
+        public async Task<IActionResult> Index(string UrlPage="/", AuthorNotifications authorNotifications = null, int id = 0, int authorPage = 1, int postPage = 1) {
             var response = new PagingAuthorViewModel();
             BaseResponse<User> author;
             if (id == 0) {
@@ -79,16 +80,12 @@ namespace Cactus.Controllers
                     response.CollectedGoal = donators.Data;
                 }
             }
-            BaseResponse<IEnumerable<PaidAuthorSubscribe>> paidSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(Convert.ToInt32(User.FindFirstValue("Id")));
+            BaseResponse<IEnumerable<PaidAuthorSubscribe>> paidSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(author.Data.Id,Convert.ToInt32(User.FindFirstValue("Id")));
             if (paidSubs.StatusCode == 200) {
                 response.PaidSubscribes= paidSubs.Data;
             }
             response.CurrentUser = author.Data;
-            response.NotEnoughBalance = NotEnoughBalance;
-            response.PostCreated = postCreated;
-            response.isPaidSubscribed = isPaidSubscribed;
-            response.IsPaidGoal = isPaidGoal;
-            response.IsRemittance = isRemittance;
+            response.AuthorNotifications = authorNotifications;
             return View(response);
         }
 

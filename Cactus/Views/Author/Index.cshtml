@@ -1,37 +1,47 @@
 ﻿@using Cactus.Models.Database
+@using Newtonsoft
 @model PagingAuthorViewModel
 
 <div class="text-center">
     @await Component.InvokeAsync("BannerPath", new { Model.CurrentUser?.Id })
-    @if (Model.NotEnoughBalance) {
+    @if (Model.AuthorNotifications.EnoughBalance != null) {
         <script type="text/javascript">
             history.pushState("", document.title, window.location.pathname);
-            alert("Недостаточно средств")
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.EnoughBalance))'
+            alert(JSON.parse(message));
         </script>
     }
     @if (ViewData["ComplainError"] != null) {
-        <script type="text/javascript">
+        <script>
             alert(@ViewData["ComplainError"]);
         </script>
     }
-    @if (Model.PostCreated != false) {
-        <script type="text/javascript">
-            alert("Пост создан");
+    @if (Model.AuthorNotifications.PostCreated != null) {
+        <script>
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.PostCreated))'
+            alert(JSON.parse(message));
+            history.pushState("", document.title, window.location.pathname);
+            </script>
+    }
+    @if (Model.AuthorNotifications.PaidSubscribed != null) {
+        <script>
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.PaidSubscribed))'
+            alert(JSON.parse(message));
+            history.pushState("", document.title, window.location.pathname);
         </script>
     }
-    @if (Model.isPaidSubscribed != false) {
-        <script type="text/javascript">
-            alert("Поздравляем! вы оформили платную подписку");
+    @if (Model.AuthorNotifications.PaidGoal != null) {
+        <script>
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.PaidGoal))'
+            alert(JSON.parse(message));
+            history.pushState("", document.title, window.location.pathname);
         </script>
     }
-    @if (Model.IsPaidGoal != false) {
-        <script type="text/javascript">
-            alert("Цель продвинулась!");
-        </script>
-    }
-    @if (Model.IsRemittance != false) {
-        <script type="text/javascript">
-            alert("Донат отправлен");
+    @if (Model.AuthorNotifications.Remittanced != null) {
+        <script>
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.Remittanced))'
+            alert(JSON.parse(message));
+            history.pushState("", document.title, window.location.pathname);
         </script>
     }
 </div>
@@ -115,6 +125,7 @@
         @if (Model.DonationOptions != null) {
             <h3>Уровни подписки</h3>
             int count = 1;
+            var paidSub = Model.PaidSubscribes.MaxBy(x => x.Donator.DonationOption.Price);
             foreach (var o in Model.DonationOptions) {
                 if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
                     <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
@@ -123,7 +134,7 @@
                         <p>@o.Description</p>
                         <p>@count-й уровень</p>
                         <p>Цена @o.Price</p>
-                        @if (!Model.IsOwner) {
+                        @if (!Model.IsOwner && o.Price > paidSub.Donator.DonationOption.Price) {
                             <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
                                 <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
                                 <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />
@@ -197,12 +208,14 @@
                 </a>
             </div>
         }
-        else if(Model.PaidSubscribes!=null && Model.PaidSubscribes.Any()){
-            foreach (var sub in Model.PaidSubscribes) {
-                <div>
-                    <span>@sub.Donator.DonationOption.OptionName, подписка заканчивается: @sub.EndDate.ToLocalTime().AddTicks(@sub.StartDate.ToLocalTime().Ticks)</span>
-                </div>
-            }
+        else if (Model.PaidSubscribes != null && Model.PaidSubscribes.Any()) {
+            PaidAuthorSubscribe sub = Model.PaidSubscribes.MaxBy(x=>x.Donator.DonationOption.Price);
+            <div>
+                <span>
+                    @sub.Donator.DonationOption.OptionName, подписка заканчивается:
+                    @sub.EndDate.ToLocalTime().AddTicks(@sub.StartDate.ToLocalTime().Ticks)
+                </span>
+            </div>
         }
 
         <div class="col">
@@ -286,8 +299,7 @@
             </div>
         </div>
     </div>
-</dib>
-
+</div>
     <style>
         .avatarProfile {
             width: 300px;
