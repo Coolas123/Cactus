@@ -39,6 +39,10 @@
                             </div>
                         }
                         <div>
+                            <label asp-for="NewSettingViewModel.Country"></label>
+                            <select asp-for="NewSettingViewModel.Country" asp-items="Html.GetEnumSelectList<Cactus.Models.Enums.Country>()"></select>
+                        </div>
+                        <div>
                             <label asp-for="NewSettingViewModel.UserName"></label>
                             <input class="form-control" asp-for="NewSettingViewModel.UserName" value="@Model.User.UserName" />
                         </div>
@@ -101,3 +105,9 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    var id = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.User.CountryId))'
+    var idd = document.getElementById("NewSettingViewModel_Country");
+    document.getElementById("NewSettingViewModel_Country").value = id
+</script>

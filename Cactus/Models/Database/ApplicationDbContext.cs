@@ -1,6 +1,4 @@
-﻿using Cactus.Models.Enums;
-using Microsoft.EntityFrameworkCore;
-using Nest;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Cactus.Models.Database
 {
@@ -54,14 +52,15 @@ namespace Cactus.Models.Database
                 x.HasData(
                 [
                     new { Id = 1, Name = "User" },
-                    new { Id = 2, Name = "Admin" }
+                    new { Id = 2, Name = "Admin" },
+                    new { Id = 3, Name = "Moderator" }
                 ]);
             });
             builder.Entity<UserRole>(x => {
                 x.HasData(
                 [
                     new { Id = 1, Name = "Patron" },
-                    new { Id = 2, Name = "Individual" }
+                    new { Id = 2, Name = "Author" }
                 ]);
             });
             builder.Entity<Country>(x => {

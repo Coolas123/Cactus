@@ -159,6 +159,12 @@ namespace Cactus.Services.Implementations
                     response.IsSettingChanged = true;
                 }
             }
+
+            if (model.Country != null) {
+                user.CountryId = (int)model.Country;
+                response.IsSettingChanged = true;
+            }
+
             await userRepository.UpdateAsync(user);
             if (response.Descriptions.Count() == 0)
                 response.StatusCode = StatusCodes.Status200OK;

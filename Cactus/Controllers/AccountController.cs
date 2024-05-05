@@ -55,12 +55,14 @@ namespace Cactus.Controllers
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Registration(RegisterViewModel model, string returnUrl) {
-            EmailValidator validator = new EmailValidator();
-            Aspose.Email.Tools.Verifications.ValidationResult isValid;
-            validator.Validate(model.Email, ValidationPolicy.SyntaxAndDomain, out isValid);
-            if (isValid.ReturnCode == ValidationResponseCode.DomainValidationFailed) {
-                ModelState.AddModelError("Email","неверный домен почты");
+            if (model.Email != null) {
+                ValidationResult isValid;
+                new EmailValidator().Validate(model.Email, ValidationPolicy.SyntaxAndDomain, out isValid);
+                if (isValid.ReturnCode == ValidationResponseCode.DomainValidationFailed) {
+                    ModelState.AddModelError("Email", "неверный домен почты");
+                }
             }
+
             if (ModelState.IsValid) {
                 var result = await userService.Register(model);
                 if (result.StatusCode==StatusCodes.Status200OK) {

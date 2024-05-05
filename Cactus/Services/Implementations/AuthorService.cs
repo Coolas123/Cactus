@@ -109,15 +109,15 @@ namespace Cactus.Services.Implementations
             };
         }
 
-        public async Task<BaseResponse<ClaimsIdentity>> RegisterAuthor(SettingViewModel model,int id) {
-            Author pageExist = await authorRepository.GetByUrlPageAsync(model.RegisterAuthor.UrlPage);
+        public async Task<BaseResponse<ClaimsIdentity>> RegisterAuthor(RegisterAuthorViewModel model,int id) {
+            Author pageExist = await authorRepository.GetByUrlPageAsync(model.UrlPage);
             if (pageExist != null) {
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Данный адрес уже используется"
                 };
             }
-            var newIndividual = new Author { UrlPage = model.RegisterAuthor.UrlPage, UserId = id };
+            var newIndividual = new Author { UrlPage = model.UrlPage, UserId = id };
             try {
                 await authorRepository.CreateAsync(newIndividual);
                 var resultPatron = await patronService.DaeleteUser(id);
@@ -134,7 +134,7 @@ namespace Cactus.Services.Implementations
                         Description = result.Description
                     };
                 }
-                result.Data.AddClaim(new Claim("UrlPage", model.RegisterAuthor.UrlPage));
+                result.Data.AddClaim(new Claim("UrlPage", model.UrlPage));
                 return new BaseResponse<ClaimsIdentity>
                 {
                     Data = result.Data,

@@ -125,7 +125,7 @@
         @if (Model.DonationOptions != null) {
             <h3>Уровни подписки</h3>
             int count = 1;
-            var paidSub = Model.PaidSubscribes.MaxBy(x => x.Donator.DonationOption.Price);
+            var paidSub = Model.PaidSubscribes?.MaxBy(x => x.Donator.DonationOption.Price);
             foreach (var o in Model.DonationOptions) {
                 if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.SubLevel) {
                     <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
@@ -134,7 +134,7 @@
                         <p>@o.Description</p>
                         <p>@count-й уровень</p>
                         <p>Цена @o.Price</p>
-                        @if (!Model.IsOwner && o.Price > paidSub.Donator.DonationOption.Price) {
+                        @if (!Model.IsOwner && o.Price > paidSub?.Donator.DonationOption.Price) {
                             <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
                                 <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
                                 <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />

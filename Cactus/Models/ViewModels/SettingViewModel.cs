@@ -1,5 +1,4 @@
-﻿using Cactus.Infrastructure;
-using Cactus.Models.Database;
+﻿using Cactus.Models.Database;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels

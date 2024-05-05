@@ -1,4 +1,5 @@
-﻿using Cactus.Infrastructure.Interfaces;
+﻿using Aspose.Email.Tools.Verifications;
+using Cactus.Infrastructure.Interfaces;
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Claims;
 
@@ -30,6 +32,7 @@ namespace Cactus.Controllers
             this.userRepository = userRepository;
             this.authorService = authorService;
         }
+        [HttpGet]
         public async Task<IActionResult> Index(bool isSettingChanged=false) {
             SettingViewModel profile= new SettingViewModel();
             int userId = Convert.ToInt32(User.FindFirstValue("Id"));
@@ -72,6 +75,14 @@ namespace Cactus.Controllers
                 }
             }
 
+            if (model.NewSettingViewModel.Email != null) {
+                ValidationResult isValid;
+                new EmailValidator().Validate(model.NewSettingViewModel.Email, ValidationPolicy.SyntaxAndDomain, out isValid);
+                if (isValid.ReturnCode == ValidationResponseCode.DomainValidationFailed) {
+                    ModelState.AddModelError("Email", "неверный домен почты");
+                }
+            }
+
             if (User.IsInRole("Author")) {
                 if (model.NewSettingViewModel.BannerFile != null) {
                     var image = Image.FromStream(model.NewSettingViewModel.BannerFile.OpenReadStream());
@@ -110,6 +121,7 @@ namespace Cactus.Controllers
             }
             if(result.IsSettingChanged) isSettingChanged=true;
             model.NewSettingViewModel.IsSettingChanged = isSettingChanged;
+
             return View("Index",model);
         }
 
@@ -119,7 +131,7 @@ namespace Cactus.Controllers
             model.User =await userRepository.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             if (ModelState["RegisterAuthor.UrlPage"].Errors.Count==0) {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                BaseResponse<ClaimsIdentity> result = await authorService.RegisterAuthor(model, id);
+                BaseResponse<ClaimsIdentity> result = await authorService.RegisterAuthor(model.RegisterAuthor, id);
                 if (result.StatusCode != StatusCodes.Status200OK) {
                     ModelState.AddModelError(nameof(model.RegisterAuthor.UrlPage), result.Description);
                     return View("Index", model);

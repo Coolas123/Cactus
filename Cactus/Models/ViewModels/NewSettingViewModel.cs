@@ -39,5 +39,8 @@ namespace Cactus.Models.ViewModels
         public string? ConfirmPassword { get; set; }
 
         public bool IsSettingChanged { get; set; }
+
+        [Display(Name = "Страна")]
+        public Enums.Country? Country { get; set; }
     }
 }

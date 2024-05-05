@@ -1,4 +1,6 @@
-﻿using Cactus.Models.Database;
+﻿using Cactus.Components;
+using Cactus.Models.Database;
+using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +15,8 @@ namespace Cactus.Models
             IUserService userService = app.ApplicationServices
                 .CreateScope().ServiceProvider.GetRequiredService<IUserService>();
 
-            IWalletService walletService = app.ApplicationServices
-                .CreateScope().ServiceProvider.GetRequiredService<IWalletService>();
+            IAuthorService authorService = app.ApplicationServices
+                .CreateScope().ServiceProvider.GetRequiredService<IAuthorService>();
 
             if (context.Database.GetPendingMigrations().Any()) {
                 context.Database.Migrate();
@@ -27,16 +29,16 @@ namespace Cactus.Models
                         UserName="Anton",
                         DateOfBirth = DateTime.Now.AddYears(-1).ToUniversalTime(),
                         Gender = "Мужской",
-                        Email = "mail@mail.ru",
-                        Password="123456",
+                        Email = "anton@gmail.com",
+                        Password="aA1@123456",
                         Country = Models.Enums.Country.Russia
                     },
                     new RegisterViewModel
                     {
                         DateOfBirth = DateTime.Now.AddYears(-2).ToUniversalTime(),
                         Gender = "Мужской",
-                        Email = "dima@mail.ru",
-                        Password="123456",
+                        Email = "dima@gmail.com",
+                        Password="aA1@123456",
                         UserName="Dima",
                         Country = Models.Enums.Country.Russia
                     },
@@ -44,9 +46,9 @@ namespace Cactus.Models
                     {
                         DateOfBirth = DateTime.Now.AddYears(-3).ToUniversalTime(),
                         Gender = "Мужской",
-                        Email = "sasha@mail.ru",
-                        Password="123456",
-                        UserName="Sasha",
+                        Email = "artyom@gmail.com",
+                        Password="aA1@123456",
+                        UserName="Artyom",
                         Country = Models.Enums.Country.Russia
                     },
                     new RegisterViewModel
@@ -107,6 +109,15 @@ namespace Cactus.Models
                 foreach (var user in users) {
                     await userService.Register(user);
                 }
+                var author = new RegisterAuthorViewModel
+                {
+                    UrlPage = "anton"
+                };
+                authorService.RegisterAuthor(new RegisterAuthorViewModel{UrlPage = "anton"},1);
+                authorService.RegisterAuthor(new RegisterAuthorViewModel{UrlPage = "dima"},2);
+                BaseResponse<User> userModer = await userService.GetAsync(2);
+                userModer.Data.SystemRoleId = (int)Enums.SystemRole.Moderator;
+                context.Update(userModer.Data);
                 await context.SaveChangesAsync();
             }
         }

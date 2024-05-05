@@ -21,9 +21,9 @@ namespace Cactus.Components
             string path = "";
             BaseResponse<ProfileMaterial> result = await profileMaterialService.GetBannerAsync(id);
             if (result.StatusCode == 200) path = result.Data.Path;
-            else path = "/banner.png";
+            else path = "/banner.jpg";
             return new HtmlContentViewComponentResult(
-                    new HtmlString($"<img src=\"{path}\" class=\"banner my-2\" {html}>"));
+                    new HtmlString($"<img src=\"{path}\" class=\"banner\" {html}>"));
         }
     }
 }
