@@ -201,6 +201,11 @@
     <div class="col">
         <br/>
         <br/>
+        @if (Model.CurrentUser.UserRoleId==(int)Cactus.Models.Enums.UserRole.Author) {
+            <div>
+                <span>@Model.CurrentAuthor.Description</span>
+            </div>
+        }
         @if (Model.IsOwner) {
             <div class="text-start">
                 <a class="btn btn-danger m-1" asp-controller="post" asp-action="index">
@@ -217,7 +222,7 @@
                 </span>
             </div>
         }
-
+        
         <div class="col">
             <h4>Посты</h4>
             <table class="table">

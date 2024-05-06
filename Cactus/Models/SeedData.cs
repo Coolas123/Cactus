@@ -27,7 +27,7 @@ namespace Cactus.Models
                     new RegisterViewModel
                     {
                         UserName="Anton",
-                        DateOfBirth = DateTime.Now.AddYears(-1).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-21).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "anton@gmail.com",
                         Password="aA1@123456",
@@ -35,7 +35,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-2).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-26).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "dima@gmail.com",
                         Password="aA1@123456",
@@ -44,7 +44,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-3).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-21).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "artyom@gmail.com",
                         Password="aA1@123456",
@@ -53,7 +53,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-5).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-23).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "anna@mail.ru",
                         Password="123456",
@@ -62,7 +62,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-6).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-20).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "alena@mail.ru",
                         Password="123456",
@@ -71,7 +71,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-7).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-25).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "sesa@mail.ru",
                         Password="123456",
@@ -80,7 +80,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-8).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-26).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "dina@mail.ru",
                         Password="123456",
@@ -89,7 +89,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-9).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-27).ToUniversalTime(),
                         Gender = "Женский",
                         Email = "olga@mail.ru",
                         Password="123456",
@@ -98,7 +98,7 @@ namespace Cactus.Models
                     },
                     new RegisterViewModel
                     {
-                        DateOfBirth = DateTime.Now.AddYears(-10).ToUniversalTime(),
+                        DateOfBirth = DateTime.Now.AddYears(-28).ToUniversalTime(),
                         Gender = "Мужской",
                         Email = "danil@mail.ru",
                         Password="123456",

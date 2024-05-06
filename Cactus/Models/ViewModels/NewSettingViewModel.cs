@@ -8,9 +8,6 @@ namespace Cactus.Models.ViewModels
         [Display(Name = "Аватарка")]
         public IFormFile? AvatarFile { get; set; }
 
-        [Display(Name = "Баннер")]
-        public IFormFile? BannerFile { get; set; }
-
         [RegularExpression(@"[A-Za-z0-9]+", ErrorMessage = "Прозвище должно состоять из латинских букв")]
         [Display(Name = "Сменить прозвище")]
         public string? UserName { get; set; }
@@ -18,7 +15,6 @@ namespace Cactus.Models.ViewModels
         [EmailAddress(ErrorMessage = "Неверный формат почты")]
         [Display(Name = "Сменить почту")]
         public string? Email { get; set; }
-
 
         [DataType(DataType.Date)]
         [DateTimeRange(minAge: 16, maxAge: 100)]
@@ -32,7 +28,6 @@ namespace Cactus.Models.ViewModels
         [Display(Name = "Сменить пароль")]
         public string? Password { get; set; }
 
-
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         [Display(Name = "Повторите пароль")]
@@ -42,5 +37,7 @@ namespace Cactus.Models.ViewModels
 
         [Display(Name = "Страна")]
         public Enums.Country? Country { get; set; }
+
+        public NewAuthorSettingViewModel? NewAuthorSettingViewModel { get; set; }
     }
 }

@@ -13,11 +13,7 @@ namespace Cactus.Models.Database
         public User User { get; set; }
         [Column("url_page", TypeName = "varchar(64)")]
         public string UrlPage {  get; set; }
-        [Column("firstname", TypeName = "varchar(64)")]
-        public string? Firstname { get; set; }
-        [Column("lastname", TypeName = "varchar(64)")]
-        public string? Lastname { get; set; }
-        [Column("surname", TypeName = "varchar(64)")]
-        public string? Surname { get; set; }
+        [Column("description", TypeName = "varchar(256)")]
+        public string? Description { get; set; }
     }
 }

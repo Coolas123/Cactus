@@ -11,6 +11,7 @@ namespace Cactus.Models.ViewModels
         public PagingInfo SubscribesPagingInfo { get; set; }
         public PagingInfo PostsPagingInfo { get; set; }
         public User CurrentUser { get; set; }
+        public Author CurrentAuthor { get; set; }
         public bool IsOwner {  get; set; }
         public bool IsUninteresting { get; set; }
         public bool IsSubscribe { get; set; }

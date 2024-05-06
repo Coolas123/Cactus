@@ -15,7 +15,7 @@
             </div>
         </div >
 
-        <div class="col flex-column d-flex align-items-start">
+        <div class="col">
             @if (Model.NewSettingViewModel!=null && Model.NewSettingViewModel.IsSettingChanged) {
                 <script type="text/javascript">
                     history.pushState("", document.title, window.location.pathname)
@@ -35,7 +35,7 @@
                             <div> 
                                 <span>Разрешение баннера должно быть не более чем 1900px на 250px</span>
                                 <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('banner').click()">Изменить баннер</button>
-                                <input type='file' id="banner" style="display:none" asp-for="NewSettingViewModel.BannerFile">
+                                <input type='file' id="banner" style="display:none" asp-for="NewSettingViewModel.NewAuthorSettingViewModel.BannerFile">
                             </div>
                         }
                         <div>
@@ -62,6 +62,13 @@
                             <label asp-for="NewSettingViewModel.ConfirmPassword"></label>
                             <input class="form-control" asp-for="NewSettingViewModel.ConfirmPassword" placeholder="Повторите пароль" />
                         </div>
+                        @if (User.IsInRole("Author"))
+                        {
+                            <div>
+                                <label asp-for="NewSettingViewModel.NewAuthorSettingViewModel.Description"></label>
+                                <textarea style="height: 150px;" class="form-control" asp-for="NewSettingViewModel.NewAuthorSettingViewModel.Description" placeholder="Введите описание профиля"></textarea>
+                            </div>
+                        }
                         <button class="btn btn-danger" type="submit">Сохранить</button>
                     </form>
                 </div>

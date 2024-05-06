@@ -42,5 +42,11 @@ namespace Cactus.Infrastructure.Repositories
         public Task<IEnumerable<Author>> SelectAsync() {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> Update(Author author) {
+            dbContext.Authors.Update(author);
+            dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

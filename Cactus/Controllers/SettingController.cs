@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Claims;
 
@@ -48,14 +47,17 @@ namespace Cactus.Controllers
                 }
             }
 
+            profile.NewSettingViewModel = new NewSettingViewModel();
+
             profile.User= await userRepository.GetAsync(userId);
             if (User.IsInRole("Author")) {
                 BaseResponse<Author> author = await authorService.GetAsync(userId);
-                if(author.StatusCode==200)
-                    profile.Author = author.Data;
+                if (author.StatusCode == 200) {
+                    profile.NewSettingViewModel.NewAuthorSettingViewModel = new NewAuthorSettingViewModel();
+                    profile.NewSettingViewModel.NewAuthorSettingViewModel.Description = author.Data.Description;
+                }
             }
             
-            profile.NewSettingViewModel = new NewSettingViewModel();
             profile.NewSettingViewModel.IsSettingChanged = isSettingChanged;
             return View(profile);
         }
@@ -83,20 +85,16 @@ namespace Cactus.Controllers
                 }
             }
 
-            if (User.IsInRole("Author")) {
-                if (model.NewSettingViewModel.BannerFile != null) {
-                    var image = Image.FromStream(model.NewSettingViewModel.BannerFile.OpenReadStream());
-                    if (image.Width > 1900 || image.Height >250) {
-                        ModelState.AddModelError("NewSettingViewModel.BannerFile", "Баннер должен иметь разрешение не более чем 1900px на 250px");
-                    }
-                    else {
-                        int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                        await profileMaterialService.ChangeBannerAsync(model.NewSettingViewModel.BannerFile, id);
-                        isSettingChanged = true;
+            if (User.IsInRole("Author") && model.NewSettingViewModel.NewAuthorSettingViewModel != null) {
+                ModelErrorsResponse<Author> authorResponseSetting = await authorService.ChangeSettingAsync(model.NewSettingViewModel.NewAuthorSettingViewModel, Convert.ToInt32(User.FindFirst("Id").Value));
+                if (authorResponseSetting.StatusCode != 200) {
+                    foreach(var e in authorResponseSetting.Descriptions) {
+                        ModelState.AddModelError(e.Key, e.Value);
                     }
                 }
             }
-            model.User = await userRepository.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
+            BaseResponse<User> user = await userService.GetAsync(Convert.ToInt32(User.FindFirst("Id").Value));
+            model.User = user.Data;
 
             foreach (var state in ModelState) {
                 if (state.Key.Split('.').Contains("NewSettingViewModel")&&

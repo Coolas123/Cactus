@@ -1,5 +1,4 @@
 ﻿using Cactus.Models.Database;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cactus.Models.ViewModels
 {

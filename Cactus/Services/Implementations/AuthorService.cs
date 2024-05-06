@@ -3,6 +3,7 @@ using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace Cactus.Services.Implementations
@@ -12,14 +13,37 @@ namespace Cactus.Services.Implementations
         private readonly IUserService userService;
         private readonly IAuthorRepository authorRepository;
         private readonly IPatronService patronService;
-        private readonly IWalletService walletService;
+        private readonly IProfileMaterialService profileMaterialService;
 
         public AuthorService(IUserService userService, IAuthorRepository authorRepository,
-            IPatronService patronService, IWalletService walletService) {
+            IPatronService patronService, IProfileMaterialService profileMaterialService) {
             this.userService = userService;
             this.authorRepository = authorRepository;
             this.patronService = patronService;
-            this.walletService = walletService;
+            this.profileMaterialService = profileMaterialService;
+        }
+
+        public async Task<ModelErrorsResponse<Author>> ChangeSettingAsync(NewAuthorSettingViewModel model, int authorId) {
+            var response = new ModelErrorsResponse<Author>();
+            if (model.BannerFile != null) {
+                var image = Image.FromStream(model.BannerFile.OpenReadStream());
+                if (image.Width > 1900 || image.Height > 250) {
+                    response.Descriptions.Add("NewSettingViewModel.BannerFile", "Баннер должен иметь разрешение не более чем 1900px на 250px");
+                }
+                else {
+                    await profileMaterialService.ChangeBannerAsync(model.BannerFile, authorId);
+                    response.StatusCode = 200;
+                    response.IsSettingChanged = true;
+                }
+            }
+
+            BaseResponse<Author> author = await GetAsync(authorId);
+            if (model.Description != author.Data.Description) {
+                author.Data.Description = model.Description;
+                await authorRepository.Update(author.Data);
+                response.StatusCode = 200;
+            }
+            return response;
         }
 
         public async Task<BaseResponse<Author>> DaeleteAuthor(int id) {
