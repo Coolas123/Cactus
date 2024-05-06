@@ -83,9 +83,10 @@ namespace Cactus.Models.Database
             });
             builder.Entity<Category>(x => {
                 x.HasData([
-                    new { Id = 1, Name = "Games" },
-                    new { Id = 2, Name = "Art" },
-                    new { Id = 3, Name = "Music" }
+                    new { Id = 1, Name = "IT" },
+                    new { Id = 2, Name = "Gaming" },
+                    new { Id = 3, Name = "Art" },
+                    new { Id = 4, Name = "News" }
                 ]);
             });
             builder.Entity<PostCategory>(x => {
@@ -139,17 +140,19 @@ namespace Cactus.Models.Database
                 x.HasData([
                     new { Id = 1, Comission = (decimal)10, DailyWithdrawLimit = (decimal)0, MonthlyWithdrawLimit = (decimal)0, TransactionTypeId = (int)Models.Enums.TransactionType.IntrasystemOperations },
                     new { Id = 2, Comission = (decimal)1, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish },
-                    new { Id = 3, Comission = (decimal)2, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Withdraw }
+                    new { Id = 3, Comission = (decimal)2, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Withdraw },
+                    new { Id = 4, Comission = (decimal)3, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Replenish },
+                    new { Id = 5, Comission = (decimal)4, DailyWithdrawLimit = (decimal)1000, MonthlyWithdrawLimit = (decimal)15000, TransactionTypeId = (int)Models.Enums.TransactionType.Withdraw }
                 ]);
             });
             builder.Entity<PayMethod>(x => {
                 x.HasData([
                     new { Id = 1, Name = "Balance", PayMethodSettingId = 1 },
                     new { Id = 2, Name = "Visa", PayMethodSettingId = 2 },
-                    new { Id = 3, Name = "MasterCard", PayMethodSettingId = 2 },
+                    new { Id = 3, Name = "MasterCard", PayMethodSettingId = 4 },
                     new { Id = 4, Name = "Mir", PayMethodSettingId = 2 },
                     new { Id = 5, Name = "MasterCard", PayMethodSettingId = 3 },
-                    new { Id = 6, Name = "Mir", PayMethodSettingId = 3 }
+                    new { Id = 6, Name = "Mir", PayMethodSettingId = 5 }
                 ]);
             });
             builder.Entity<TransactionType>(x => {

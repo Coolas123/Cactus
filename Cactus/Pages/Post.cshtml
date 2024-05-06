@@ -14,7 +14,7 @@
         <div>
             <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
             <h6>Автор: @Model.Post.User.User.UserName</h6>
-            <a asp-controller="Patron" asp-action="Index" asp-route-id="@Model.Post.User.User.Id">
+            <a asp-controller="Author" asp-action="Index" asp-route-id="@Model.Post.User.User.Id">
                 @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
             </a>
         </div>
@@ -72,6 +72,9 @@
                                 </button>
                             }
                             <p>Оставлен @p.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
+                            <a asp-controller="Patron" asp-action="Index" asp-route-id="@p.User.Id">
+                                @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
+                            </a>
                             <p>@p.Comment</p>
                         </div>
                         <hr />

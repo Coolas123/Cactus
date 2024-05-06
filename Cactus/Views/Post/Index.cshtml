@@ -18,7 +18,7 @@
         </div>
         <div>
             <label asp-for="Post.Description"></label>
-                <textarea style="height: 150px;" class="form-control" asp-for="Post.Description"></textarea>
+            <textarea style="height: 150px;" class="form-control" asp-for="Post.Description"></textarea>
         </div>
         <div>
             <label asp-for="Post.CategoryId">Выберите категорию</label>
@@ -29,7 +29,7 @@
             <input class="form-control" asp-for="Post.Tags" id="myTag" />
         </div>
         <hr />
-        <h4>Создайте или выберите вид монетизации поста, или пропустите, чтобы сделать пост бесплатным</h4>
+            <h4>Создайте или выберите вид монетизации поста, или нажмите кнопку "сделать пост бесплатным"</h4>
         <div>
             <input onclick="freePost()" type="checkbox" class="btn-check btn-sm" asp-for="Post.IsFree" value="true" autocomplete="off">
             <label class="btn btn-outline-danger" for="Post_IsFree">Сделать пост бесплатным</label>
