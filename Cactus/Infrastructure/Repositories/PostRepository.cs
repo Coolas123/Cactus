@@ -34,7 +34,7 @@ namespace Cactus.Infrastructure.Repositories
         }
 
         public async Task<Post> GetPostByIdAsync(int postId) {
-            return await dbContext.Posts.FirstOrDefaultAsync(x=>x.Id==postId);
+            return await dbContext.Posts.Include(x=>x.User).FirstOrDefaultAsync(x=>x.Id==postId);
         }
 
         public async Task<IEnumerable<Post>> GetPostsAsync(int authorId) {

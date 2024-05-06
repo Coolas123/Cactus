@@ -11,10 +11,16 @@
                 alert("Недостаточно средств")
             </script>
         }
-        @if (Model.IsOwner)
+        <div>
+            <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
+            <h6>Автор: @Model.Post.User.User.UserName</h6>
+            <a asp-controller="Patron" asp-action="Index" asp-route-id="@Model.Post.User.User.Id">
+                @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
+            </a>
+        </div>
+        @if (!Model.IsOwner)
         {
             <div>
-                <p class="sm">@Model.Post.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
             <button id="postId" onClick="postId()" value="@Model.Post.Id" type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#complainModal">
                 Пожаловаться на пост
             </button>
@@ -59,9 +65,12 @@
                     @foreach (var p in Model.PostComments) {
                         <div>
                             <h6>@p.User.UserName</h6>
-                            <button id="commentId" onClick="commentId()" type="button" class="btn btn-outline-secondary btn-sm" value="@p.Id" data-bs-toggle="modal" data-bs-target="#complainModal">
-                                Пожаловаться на комментарий
-                            </button>
+                            @if (!Model.IsOwner)
+                            {
+                                <button id="commentId" onClick="commentId()" type="button" class="btn btn-outline-secondary btn-sm" value="@p.Id" data-bs-toggle="modal" data-bs-target="#complainModal">
+                                    Пожаловаться на комментарий
+                                </button>
+                            }
                             <p>Оставлен @p.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
                             <p>@p.Comment</p>
                         </div>

@@ -66,8 +66,7 @@ namespace Cactus.Models.Database
             builder.Entity<Country>(x => {
                 x.HasData(
                 [
-                    new { Id = 1, Name = "Russia" },
-                    new { Id = 2, Name = "USA" }
+                    new { Id = 1, Name = "Russia" }
                 ]);
             });
             builder.Entity<MaterialType>(x => {
@@ -133,8 +132,7 @@ namespace Cactus.Models.Database
             });
             builder.Entity<Currency>(x => {
                 x.HasData([
-                    new { Id = 1, CountryId = (int)Models.Enums.Country.Russia, Symbol = "₽" },
-                    new { Id = 2, CountryId = (int)Models.Enums.Country.USA, Symbol = "$" }
+                    new { Id = 1, CountryId = (int)Models.Enums.Country.Russia, Symbol = "₽" }
                 ]);
             });
             builder.Entity<PayMethodSetting>(x => {

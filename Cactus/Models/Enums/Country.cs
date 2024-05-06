@@ -5,8 +5,6 @@ namespace Cactus.Models.Enums
     public enum Country
     {
         [Display(Name ="Россия")]
-        Russia=1,
-        [Display(Name = "США")]
-        USA = 2
+        Russia=1
     }
 }
