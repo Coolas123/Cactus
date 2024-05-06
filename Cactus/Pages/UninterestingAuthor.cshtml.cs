@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Cactus.Pages
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Patron, Author")]
     public class UninterestingAuthorModel : PageModel
     {
         private readonly IUninterestingAuthorService uninterestingAuthorService;

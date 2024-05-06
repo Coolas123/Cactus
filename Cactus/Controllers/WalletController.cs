@@ -4,7 +4,6 @@ using Cactus.Models.ViewModels;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
 using System.Security.Claims;
 
 namespace Cactus.Controllers
@@ -56,6 +55,7 @@ namespace Cactus.Controllers
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<JsonResult> SelectPaySetting(int payMethodId) {
+            if (payMethodId == 0) return new JsonResult(0);
             BaseResponse<PayMethod> method = await payMethodService.GetPayMethod(payMethodId);
             return new JsonResult(method.Data.PayMethodSetting.Comission);
         }

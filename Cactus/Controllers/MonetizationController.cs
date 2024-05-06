@@ -113,9 +113,6 @@ namespace Cactus.Controllers
                 model.PaidSub.StatusId = (int)Models.Enums.TransactionStatus.Sended;
                 model.PaidSub.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
-                paidSub.StartDate= DateTime.Now;
-                paidSub.EndDate= paidSub.StartDate.AddDays(30);
-                paidSub.DonatorId = Convert.ToInt32(User.FindFirstValue("Id"));
 
                 BaseResponse<Wallet> walletResponse = await walletService
                     .WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), model.PaidSub.Sended);
@@ -138,6 +135,11 @@ namespace Cactus.Controllers
                     TransactionId = newTransaction.Data.Id
                 };
                 await donatorService.AddDonator(donatorViewModel);
+
+                BaseResponse<Donator> lastDOnator = await donatorService.GetLastDonator(newTransaction.Data.Created, donatorViewModel.UserId);
+                paidSub.StartDate = DateTime.Now;
+                paidSub.EndDate = paidSub.StartDate.AddDays(30);
+                paidSub.DonatorId = lastDOnator.Data.Id;
 
                 await paidAuthorSubscribeService.SubscribeToAuthor(paidSub);
                 authorNotifications.PaidSubscribed = "Поздравляем! вы оформили платную подписку";

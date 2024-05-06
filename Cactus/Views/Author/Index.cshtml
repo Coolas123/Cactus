@@ -134,7 +134,7 @@
                         <p>@o.Description</p>
                         <p>@count-й уровень</p>
                         <p>Цена @o.Price</p>
-                        @if (!Model.IsOwner && o.Price > paidSub?.Donator.DonationOption.Price) {
+                        @if (!Model.IsOwner && paidSub == null || !Model.IsOwner && o.Price > paidSub?.Donator.DonationOption.Price) {
                             <form asp-controller="Monetization" asp-action="SubscribePaidSub" method="post">
                                 <input hidden asp-for="PaidSub.Sended" value="@o.Price" />
                                 <input hidden asp-for="PaidSub.AuthorId" value="@Model.CurrentUser.Id" />

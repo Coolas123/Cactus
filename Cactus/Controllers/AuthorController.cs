@@ -50,7 +50,12 @@ namespace Cactus.Controllers
                 user = await authorService.GetUserAsync(id);
                 author = await authorService.GetAsync(id);
             }
-            if (user.Data?.Id == Convert.ToInt32(User.FindFirstValue("Id"))) {
+
+            if(user.StatusCode != 200) {
+                return Redirect("/");
+            }
+
+            if (user.Data.Id == Convert.ToInt32(User.FindFirstValue("Id"))) {
                 response.IsOwner = true;
             }
             if (user.StatusCode == 200) {

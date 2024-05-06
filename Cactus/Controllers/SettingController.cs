@@ -13,7 +13,6 @@ using System.Security.Claims;
 
 namespace Cactus.Controllers
 {
-    [Authorize(Roles = "User")]
     [Authorize(Roles = "Patron,Author")]
     [AutoValidateAntiforgeryToken]
     public class SettingController:Controller
@@ -124,7 +123,7 @@ namespace Cactus.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Patron")]
+        [Authorize(Roles = "Patron,Moderator")]
         public async Task<IActionResult> RegisterAuthor(SettingViewModel model) {
             model.User =await userRepository.GetAsync(Convert.ToInt32(User.FindFirstValue("Id")));
             if (ModelState["RegisterAuthor.UrlPage"].Errors.Count==0) {

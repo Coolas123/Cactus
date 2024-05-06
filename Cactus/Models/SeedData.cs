@@ -109,10 +109,7 @@ namespace Cactus.Models
                 foreach (var user in users) {
                     await userService.Register(user);
                 }
-                var author = new RegisterAuthorViewModel
-                {
-                    UrlPage = "anton"
-                };
+
                 authorService.RegisterAuthor(new RegisterAuthorViewModel{UrlPage = "anton"},1);
                 authorService.RegisterAuthor(new RegisterAuthorViewModel{UrlPage = "dima"},2);
                 BaseResponse<User> userModer = await userService.GetAsync(2);

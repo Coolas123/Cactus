@@ -29,8 +29,9 @@ namespace Cactus.Infrastructure.Repositories
                 .ThenInclude(x=>x.User)
                 .Include(x => x.Donator)
                 .ThenInclude(x => x.DonationOption)
-                .Where(x=>x.DonatorId== donatorId && 
-                x.EndDate.ToLocalTime()>=DateTime.Now)
+                .Where(x=>x.Donator.UserId== donatorId && 
+                x.EndDate.ToLocalTime()>=DateTime.Now &&
+                x.Donator.DonationOption.AuthorId == authorId)
                 .ToListAsync();
         }
 

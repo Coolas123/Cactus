@@ -139,16 +139,6 @@
             }
         });
     });
-    $(function () {
-        $("#Withdraw_PayMethodId").ready(function () {
-            if ($("#Withdraw_PayMethodId").val() != 0) {
-                var value = $("#Withdraw_PayMethodId").val()
-                var response = ajaxPayMethodId(value)
-                document.getElementById("payMethodLabel2").textContent = "Комиссия " + response + " %";
-                document.getElementById("Withdraw_Comission").value = response;
-            }
-        });
-    });
     
 
     function ajaxPayMethodId(value) {
@@ -166,3 +156,18 @@
         return res
     }
 </script>
+
+@if(User.IsInRole("Patron") || User.IsInRole("Author")){
+    <script>
+        $(function () {
+        $("#Withdraw_PayMethodId").ready(function () {
+        if ($("#Withdraw_PayMethodId").val() != 0) {
+        var value = $("#Withdraw_PayMethodId").val()
+        var response = ajaxPayMethodId(value)
+        document.getElementById("payMethodLabel2").textContent = "Комиссия " + response + " %";
+        document.getElementById("Withdraw_Comission").value = response;
+        }
+        });
+        });
+    </script>
+}
