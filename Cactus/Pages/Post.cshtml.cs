@@ -1,14 +1,11 @@
 using Cactus.Models.Database;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
-using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using System.Threading;
 
 namespace Cactus.Pages
 {
@@ -64,7 +61,7 @@ namespace Cactus.Pages
         public async Task<IActionResult> OnGetAsync(int postId, bool notEnoughBalance = false)
         {
             if (notEnoughBalance) NotEnoughBalance = true;
-            BaseResponse<Post> post = await postService.GetPostByIdAsync(postId);
+            BaseResponse<Post> post = await postService.GetPostWithUserAsync(postId);
             if (post.StatusCode == 200) {
                 Post = post.Data;
                 if (post.Data.UserId == Convert.ToInt32(User.FindFirstValue("Id")))
@@ -90,14 +87,18 @@ namespace Cactus.Pages
                     DonationOption = donationOption.Data;
 
                     if (donationOption.Data.MonetizationTypeId == (int)Models.Enums.MonetizationType.OneTimePurchase) {
-                        BaseResponse<PostOneTimePurschaseDonator> Postdonator = await postOneTimePurschaseDonatorService.GetDonator(Post.Id, Convert.ToInt32(User.FindFirstValue("Id")));
+                        BaseResponse<PostOneTimePurschaseDonator> Postdonator = 
+                            await postOneTimePurschaseDonatorService
+                            .GetDonator(Post.Id, Convert.ToInt32(User.FindFirstValue("Id")));
                         if (Postdonator.StatusCode == 200) {
                             CurrentDonator = new List<Donator> { Postdonator.Data.Donator };
                         }
                         else PostAccessDescription = Postdonator.Description;
                     }
                     else {
-                        BaseResponse<IEnumerable<Donator>> donator = await donatorService.GetPostDonator(post.Data.Id, DonationOption.Id, Convert.ToInt32(User.FindFirstValue("Id")));
+                        BaseResponse<IEnumerable<Donator>> donator = 
+                            await donatorService
+                            .GetPostDonator(post.Data.Id, DonationOption.Id, Convert.ToInt32(User.FindFirstValue("Id")));
                         if (donator.StatusCode == 200) {
                             CurrentDonator = donator.Data;
                         }
@@ -121,14 +122,18 @@ namespace Cactus.Pages
         }
 
         public async Task<IActionResult> OnPostOneTimePurschase() {
-            BaseResponse<PayMethodSetting> setting = await payMethodSettingService.GetIntrasystemOperationsSetting();
+            BaseResponse<PayMethodSetting> setting = 
+                await payMethodSettingService.GetIntrasystemOperationsSetting();
+            
             NewOneTimePurschase.Created = DateTime.Now;
             NewOneTimePurschase.PayMethodId = setting.Data.Id;
             NewOneTimePurschase.Received = NewOneTimePurschase.Sended - NewOneTimePurschase.Sended / 100 * setting.Data.Comission;
             NewOneTimePurschase.StatusId = (int)Models.Enums.TransactionStatus.Sended;
             NewOneTimePurschase.UserId = Convert.ToInt32(User.FindFirstValue("Id"));
 
-            BaseResponse<Wallet> walletResponse = await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Sended);
+            BaseResponse<Wallet> walletResponse = 
+                await walletService.WithdrawWallet(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Sended);
+            
             if (walletResponse.StatusCode != 200) {
                 NotEnoughBalance = false;
                 return RedirectToPage("/Post", new { postId = NewOneTimePurschase.PostId, NotEnoughBalance = true});
@@ -137,7 +142,9 @@ namespace Cactus.Pages
             await transactionService.CreateTransaction(NewOneTimePurschase);
             await walletService.ReplenishWallet(NewOneTimePurschase.AuthorId, NewOneTimePurschase.Received);
 
-            BaseResponse<Transaction> newTransaction = await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Created);
+            BaseResponse<Transaction> newTransaction = 
+                await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), NewOneTimePurschase.Created);
+            
             var donatorViewModel = new DonatorViewModel
             {
                 UserId = NewOneTimePurschase.UserId,
@@ -145,8 +152,11 @@ namespace Cactus.Pages
                 DonationTargetTypeId = (int)Models.Enums.DonationTargetType.Author,
                 TransactionId = newTransaction.Data.Id
             };
+            
             await donatorService.AddDonator(donatorViewModel);
-            BaseResponse<Donator> lastDonator = await donatorService.GetLastDonator(NewOneTimePurschase.Created.ToUniversalTime(), Convert.ToInt32(User.FindFirstValue("Id")));
+            BaseResponse<Donator> lastDonator = 
+                await donatorService.GetLastDonator(NewOneTimePurschase.Created.ToUniversalTime(), Convert.ToInt32(User.FindFirstValue("Id")));
+            
             await postOneTimePurschaseDonatorService.AddDonator(NewOneTimePurschase.PostId, lastDonator.Data.Id);
             return RedirectToPage("/Post", new { postId = NewOneTimePurschase.PostId });
         }

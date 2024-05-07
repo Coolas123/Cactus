@@ -14,5 +14,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<Post>> GetLastAsync(DateTime created);
         Task<BaseResponse<IEnumerable<Post>>> GetPostsByTagsAsync(IEnumerable<string> tags);
         Task<BaseResponse<IEnumerable<Post>>> GetPostsByTitleAsync(IEnumerable<string> titles);
+        Task<BaseResponse<Post>> GetPostWithUserAsync(int postId);
     }
 }

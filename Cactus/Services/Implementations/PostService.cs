@@ -85,7 +85,7 @@ namespace Cactus.Services.Implementations
             }
             return new BaseResponse<Post>
             {
-                Data = await postRepository.GetPostByIdAsync(postId),
+                Data = post,
                 StatusCode = 200
             };
         }
@@ -100,7 +100,7 @@ namespace Cactus.Services.Implementations
             }
             return new BaseResponse<IEnumerable<Post>>
             {
-                Data = await postRepository.GetPostsAsync(authorId),
+                Data = posts,
                 StatusCode = 200
             };
         }
@@ -135,6 +135,21 @@ namespace Cactus.Services.Implementations
             return new BaseResponse<IEnumerable<Post>>
             {
                 Description="Посты не найдены"
+            };
+        }
+
+        public async Task<BaseResponse<Post>> GetPostWithUserAsync(int postId) {
+            Post post = await postRepository.GetPostWithUserAsync(postId);
+            if (post == null) {
+                return new BaseResponse<Post>
+                {
+                    Description = "Пост не найден"
+                };
+            }
+            return new BaseResponse<Post>
+            {
+                Data = post,
+                StatusCode = 200
             };
         }
 
