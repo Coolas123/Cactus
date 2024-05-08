@@ -7,5 +7,6 @@
         public string PaidSubscribed { get; set; }
         public string PaidGoal { get; set; }
         public string Remittanced { get; set; }
+        public string GoalDone { get; set; }
     }
 }

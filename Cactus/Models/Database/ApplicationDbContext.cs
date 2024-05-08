@@ -43,6 +43,7 @@ namespace Cactus.Models.Database
         public DbSet<TransactionStatus> TransactionStatues { get; set; }
         public DbSet<PayMethodSetting> PayMethodSettings { get; set; }
         public DbSet<PostOneTimePurschaseDonator> PostOneTimePurschaseDonators { get; set; }
+        public DbSet<Goal> Golas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

@@ -21,10 +21,12 @@ namespace Cactus.Controllers
         private readonly IDonationOptionService donationOptionService;
         private readonly IDonatorService donatorService;
         private readonly IPaidAuthorSubscribeService paidAuthorSubscribeService;
+        private readonly IGoalService goalService;
         public AuthorController(IAuthorSubscribeService authorSubscribeService,
            LinkGenerator linkGenerator, IAuthorService authorService, IPostService postService,
            IUninterestingAuthorService uninterestingAuthorService,IDonationOptionService donationOptionService,
-           IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService) {
+           IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService,
+           IGoalService goalService) {
             this.authorSubscribeService = authorSubscribeService;
             this.postService = postService;
             this.linkGenerator = linkGenerator;
@@ -33,6 +35,7 @@ namespace Cactus.Controllers
             this.donationOptionService = donationOptionService;
             this.donatorService = donatorService;
             this.paidAuthorSubscribeService = paidAuthorSubscribeService;
+            this.goalService = goalService;
         }
 
         [Route("{UrlPage}")]
@@ -82,12 +85,13 @@ namespace Cactus.Controllers
             BaseResponse<IEnumerable<DonationOption>> options = await donationOptionService.GetOptionsAsync(user.Data.Id);
             if (options.StatusCode == 200) {
                 response.DonationOptions = options.Data.OrderBy(x=>x.Price);
-                List<int> goals = options.Data.Where(x => x.MonetizationTypeId == (int)Models.Enums.MonetizationType.Goal).Select(x => x.Id).ToList();
-                BaseResponse<Dictionary<int, decimal>> donators = await donatorService.GetCollectedSumOfGoals(goals);
-                if (donators.StatusCode == 200) {
-                    response.CollectedGoal = donators.Data;
-                }
             }
+
+            BaseResponse<IEnumerable<Goal>> goals = await goalService.GetWorkGoals(author.Data.UserId);
+            if (goals.StatusCode == 200) {
+                response.Goals = goals.Data;
+            }
+
             BaseResponse<IEnumerable<PaidAuthorSubscribe>> paidSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(user.Data.Id,Convert.ToInt32(User.FindFirstValue("Id")));
             if (paidSubs.StatusCode == 200) {
                 response.PaidSubscribes= paidSubs.Data;

@@ -10,5 +10,6 @@ namespace Cactus.Services.Interfaces
         Task<BaseResponse<bool>> AddOptionAsync(NewDonationOptionViewModel model);
         Task<BaseResponse<DonationOption>> GetByPriceAsync(decimal price);
         Task<BaseResponse<bool>> PayGoalAsync(int id,decimal price);
+        Task<BaseResponse<DonationOption>> GetLastAsync(int authorId);
     }
 }

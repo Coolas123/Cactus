@@ -90,6 +90,8 @@ namespace Cactus
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IPostOneTimePurschaseDonatorRepository, PostOneTimePurschaseDonatorRepository>();
             services.AddScoped<IPostOneTimePurschaseDonatorService, PostOneTimePurschaseDonatorService>();
+            services.AddScoped<IGoalService, GoalService>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
         }
 
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {

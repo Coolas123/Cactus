@@ -2,6 +2,7 @@
 using Cactus.Models.Notifications;
 using Cactus.Models.Responses;
 using Cactus.Models.ViewModels;
+using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,12 @@ namespace Cactus.Controllers
         private readonly IPayMethodSettingService payMethodSettingService;
         private readonly IDonatorService donatorService;
         private readonly IPaidAuthorSubscribeService paidAuthorSubscribeService;
+        private readonly IGoalService goalService;
         public MonetizationController(IDonationOptionService donationOptionService,
             ISubLevelMaterialService subLevelMaterialServices, ITransactionService transactionService,
             IWalletService walletService, IPayMethodSettingService payMethodSettingService,
-            IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService) {
+            IDonatorService donatorService, IPaidAuthorSubscribeService paidAuthorSubscribeService,
+            IGoalService goalService) {
             this.donationOptionService = donationOptionService;
             this.subLevelMaterialServices = subLevelMaterialServices;
             this.transactionService = transactionService;
@@ -32,6 +35,7 @@ namespace Cactus.Controllers
             this.payMethodSettingService = payMethodSettingService;
             this.donatorService = donatorService;
             this.paidAuthorSubscribeService = paidAuthorSubscribeService;
+            this.goalService = goalService;
         }
 
         [Authorize(Roles = "Author")]
@@ -77,7 +81,7 @@ namespace Cactus.Controllers
             if (!ModelState.IsValid) {
                 return View("Index", model);
             }
-            await donationOptionService.AddOptionAsync(model);
+            await goalService.CreateGoal(model);
             return RedirectToAction("Index");
         }
 
@@ -172,7 +176,7 @@ namespace Cactus.Controllers
             }
             await transactionService.CreateTransaction(model.PayGoal);
             await walletService.ReplenishWallet(model.PayGoal.AuthorId, model.PayGoal.Received);
-            await donationOptionService.PayGoalAsync(model.PayGoal.DonationOptionId, model.PayGoal.Received);
+            //await donationOptionService.PayGoalAsync(model.PayGoal.DonationOptionId, model.PayGoal.Received);
 
             BaseResponse<Transaction> newTransaction= await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Created);
             var donatorViewModel = new DonatorViewModel
@@ -183,6 +187,9 @@ namespace Cactus.Controllers
                 TransactionId = newTransaction.Data.Id
             };
             await donatorService.AddDonator(donatorViewModel);
+            BaseResponse<Donator> lastDonator = await donatorService.GetLastDonator(newTransaction.Data.Created, model.PayGoal.UserId);
+            await goalService.ReplenishGoal(model.PayGoal.DonationOptionId, newTransaction.Data.Sended);
+
             authorNotifications.PaidGoal = "Цель продвинулась!";
             return RedirectToAction("Index", "Author", new { id = model.PayGoal.AuthorId, authorNotifications.PaidGoal });
         }
@@ -218,6 +225,11 @@ namespace Cactus.Controllers
             await donatorService.AddDonator(donatorViewModel);
             authorNotifications.Remittanced = "Донат отправлен";
             return RedirectToAction("Index", "Author", new { id = model.Remittance.AuthorId, authorNotifications.Remittanced });
+        }
+
+        public async Task<IActionResult> DoneGoal(int goalId, int authorId) {
+            BaseResponse<bool> result = await goalService.DoneGoal(goalId);
+            return RedirectToAction("Index","Author", new { id =authorId,GoalDone = result.Description});
         }
     }
 }

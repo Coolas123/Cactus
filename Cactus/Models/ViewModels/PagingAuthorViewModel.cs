@@ -17,7 +17,7 @@ namespace Cactus.Models.ViewModels
         public bool IsSubscribe { get; set; }
         public NewComplainViewModel NewComplain { get; set; }
         public IEnumerable<DonationOption> DonationOptions { get; set; }
-        public Dictionary<int,decimal> CollectedGoal {  get; set; }
+        public IEnumerable<Goal> Goals { get; set; }
         public Dictionary<int,decimal> NewRemittance {  get; set; }
         public TransactionViewModel PaidSub { get; set; }
         public TransactionViewModel PayGoal { get; set; }

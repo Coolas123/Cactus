@@ -28,6 +28,10 @@ namespace Cactus.Infrastructure.Repositories
             return await dbContext.DonationOptions.FirstOrDefaultAsync(x=>x.Price== price);
         }
 
+        public async Task<DonationOption> GetLastAsync(int authorId) {
+            return await dbContext.DonationOptions.OrderBy(x=>x.Id).LastOrDefaultAsync(x=>x.AuthorId== authorId);
+        }
+
         public async Task<IEnumerable<DonationOption>> GetOptionsAsync(int authorId) {
             return await dbContext.DonationOptions.Where(x=>x.AuthorId== authorId).ToListAsync();
         }

@@ -44,6 +44,13 @@
             history.pushState("", document.title, window.location.pathname);
         </script>
     }
+    @if (Model.AuthorNotifications.GoalDone != null) {
+        <script>
+            var message = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AuthorNotifications.GoalDone))'
+            alert(JSON.parse(message));
+            history.pushState("", document.title, window.location.pathname);
+        </script>
+    }
 </div>
 
 <div class="row">
@@ -150,27 +157,27 @@
 
         @if (Model.DonationOptions != null && Model.DonationOptions.Any()) {
             <h4>Цели</h4>
-            foreach (var o in Model.DonationOptions) {
-                if (o.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.Goal) {
-                    <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
-                        <h5>@o.OptionName</h5>
-                        <p>@o.Description</p>
-                        @if (@Model.CollectedGoal.ContainsKey(o.Id)) {
-                            <p>@Model.CollectedGoal[o.Id]/@o.Price собрано</p>
-                        }
-                        else {
-                            <p>0/@o.Price собрано</p>
-                        }
-                        @if (!Model.IsOwner) {
-                            <form asp-controller="Monetization" asp-action="PayGoal" method="post">
-                                <input class="form-control" asp-for="PayGoal.Sended" />
-                                <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
-                                <input hidden asp-for="PayGoal.DonationOptionId" value="@o.Id" />
-                                <button class="btn btn-danger m-1">Внести</button>
-                            </form>
-                        }
-                    </div>
-                }
+            foreach (var o in Model.Goals) {
+                <div class="border border-secondary p-2 mb-2 rounded border-2 bg-light">
+                    <h5>@o.DonationOption.OptionName</h5>
+                    <p>@o.DonationOption.Description</p>
+                    <p>@o.TotalAmount/@o.DonationOption.Price собрано</p>
+                    @if (!Model.IsOwner) {
+                        <form asp-controller="Monetization" asp-action="PayGoal" method="post">
+                            <input class="form-control" asp-for="PayGoal.Sended" />
+                            <input hidden asp-for="PayGoal.AuthorId" value="@Model.CurrentUser.Id" />
+                            <input hidden asp-for="PayGoal.DonationOptionId" value="@o.DonationOptionId" />
+                            <button class="btn btn-danger m-1">Внести</button>
+                        </form>
+                    }
+                    else {
+                        <form asp-controller="Monetization" asp-action="DoneGoal" method="post">
+                            <input hidden name="authorId" value="@o.DonationOption.AuthorId"/>
+                            <input hidden name="goalId" value="@o.DonationOptionId" />
+                            <button class="btn btn-danger m-1">Закрыть цель</button>
+                        </form>
+                    }
+                </div>
             }
         }
         @if (Model.IsOwner)
@@ -226,13 +233,12 @@
         <div class="col">
             <h4>Посты</h4>
             <table class="table">
-
                 <tbody>
                     @if (Model.Posts != null) {
                         @foreach (var p in Model.Posts) {
                             <tr>
                                 <td>@p.Title</td>
-                                <td>@p.Description</td>
+                                <td class="ellipsis">@p.Description</td>
                                 <td><a class="btn btn-primary" asp-page="/Post" asp-route-postId="@p.Id">Открыть</a></td>
                             </tr>
                         }
@@ -316,5 +322,12 @@
         [src=""] {
             display: none;
         }
+
+    .ellipsis {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     </style>
     
