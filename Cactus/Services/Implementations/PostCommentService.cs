@@ -35,6 +35,21 @@ namespace Cactus.Services.Implementations
             };
         }
 
+        public async Task<BaseResponse<PostComment>> GetComment(int postId) {
+            PostComment comment = await postCommentRepository.GetCommentAsync(postId);
+            if (comment == null) {
+                return new BaseResponse<PostComment>
+                {
+                    Description = "Комментариев еще нет"
+                };
+            }
+            return new BaseResponse<PostComment>
+            {
+                Data = comment,
+                StatusCode = 200
+            };
+        }
+
         public async Task<BaseResponse<IEnumerable<PostComment>>> GetComments(int postId) {
             IEnumerable<PostComment> comments = await postCommentRepository.GetCommentsAsync(postId);
             if (comments.Count() == 0) {

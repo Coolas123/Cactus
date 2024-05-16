@@ -5,11 +5,10 @@ namespace Cactus.Models.ViewModels
     public class TransactionViewModel
     {
         public int UserId { get; set; }
-        [Display(Name ="Выберите метод пополнения")]
+        [Display(Name ="Выберите способ")]
         [Required]
         public int PayMethodId { get; set; }
         public decimal Comission { get; set; }
-        [Display(Name = "Выберите сумму пополнения")]
         [Required]
         [Range(1,9999999999)]
         public decimal Sended {  get; set; }

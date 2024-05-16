@@ -6,6 +6,7 @@ using Cactus.Services.Implementations;
 using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 
 namespace Cactus
 {
@@ -112,7 +113,7 @@ namespace Cactus
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
                 endpoints.MapFallback(async context => {
-                    await context.Response.WriteAsync("Страница не найдена");
+                    await context.Response.WriteAsync("<h1>Not Found</h1>");
                 });
             });
             new SeedData().fill(app);

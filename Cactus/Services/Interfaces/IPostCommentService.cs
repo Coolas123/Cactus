@@ -8,5 +8,6 @@ namespace Cactus.Services.Interfaces
     {
         Task<BaseResponse<PostComment>> Create(CommentViewModel model);
         Task<BaseResponse<IEnumerable<PostComment>>> GetComments(int postId);
+        Task<BaseResponse<PostComment>> GetComment(int postId);
     }
 }

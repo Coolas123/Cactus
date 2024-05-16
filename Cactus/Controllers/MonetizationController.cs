@@ -49,7 +49,7 @@ namespace Cactus.Controllers
         public async Task<IActionResult> AddSubLevel(NewDonationOptionViewModel model) {
             if (model.CoverFile != null) {
                 var image = Image.FromStream(model.CoverFile.OpenReadStream());
-                if (image.Width % image.Height ==0) {
+                if (image.Width % image.Height !=0) {
                     ModelState.AddModelError("CoverFile", "Изображение должно имет ьсоотношение 1 к 1");
                     return View("Index", model);
                 }
@@ -176,7 +176,6 @@ namespace Cactus.Controllers
             }
             await transactionService.CreateTransaction(model.PayGoal);
             await walletService.ReplenishWallet(model.PayGoal.AuthorId, model.PayGoal.Received);
-            //await donationOptionService.PayGoalAsync(model.PayGoal.DonationOptionId, model.PayGoal.Received);
 
             BaseResponse<Transaction> newTransaction= await transactionService.GetLastTransaction(Convert.ToInt32(User.FindFirstValue("Id")), model.PayGoal.Created);
             var donatorViewModel = new DonatorViewModel

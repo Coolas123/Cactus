@@ -8,6 +8,7 @@ namespace Cactus.Models.Enums
         Replenish=1,
         [Display(Name = "Вывод")]
         Withdraw =2,
-        IntrasystemOperations=3
+        [Display(Name = "Системная покупка")]
+        IntrasystemOperations =3
     }
 }

@@ -39,6 +39,9 @@
                             @if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Replenish) {
                                 <td>@(Cactus.Models.Enums.TransactionType.Replenish.GetAttribute<DisplayAttribute>().Name)</td>
                             }
+                            else {
+                                <td>@(Cactus.Models.Enums.TransactionType.IntrasystemOperations.GetAttribute<DisplayAttribute>().Name)</td>
+                            }
                             <td>@c.Sended</td>
                             <td>@c.Received</td>
                             <td>@c.PayMethod.Name</td>

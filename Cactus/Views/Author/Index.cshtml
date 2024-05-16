@@ -288,7 +288,6 @@
                     </div>
                     <div class="modal-body">
                         <form asp-controller="Complain" asp-action="AddComplain" method="post" enctype="multipart/form-data">
-                            <div asp-validation-summary="All" class="text-danger"></div>
                             <input type="hidden" asp-for="NewComplain.ComplainTargetId" value="@Model.CurrentUser.Id" />
                             <input type="hidden" asp-for="NewComplain.ComplainTargetTypeId" value="@((int)Cactus.Models.Enums.ComplainTargetType.User)" />
                             <input type="hidden" asp-for="NewComplain.SenderId" value="@Convert.ToInt32(User.FindFirst("Id").Value)" />
@@ -299,6 +298,7 @@
                             </div>
                             <div>
                                 Описание жалобы
+                                <span asp-validation-for="NewComplain.Description" class="text-danger"></span>
                                 <textarea style="resize:none; height: 150px;" class="form-control m-1" asp-for="NewComplain.Description"></textarea>
                             </div>
                             <div class="modal-footer">

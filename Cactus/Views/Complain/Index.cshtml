@@ -29,11 +29,41 @@
                             }
                             <td>@(((Cactus.Models.Enums.ComplainType)c.ComplainTypeId).GetAttribute<DisplayAttribute>().Name)</td>
                             <td>@(((Cactus.Models.Enums.ComplainStatus)c.ComplainStatusId).GetAttribute<DisplayAttribute>().Name)</td>
+                            <td>
+                                <a class="dropdown-item btn btn-success" data-bs-toggle="modal" data-bs-target="#@c.Id">
+                                    Пожаловаться
+                                </a>
+                                <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                    <div class="modal fade" id="@c.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Жалоба</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form asp-controller="Complain" asp-action="AddComplain" method="post">
+                                                        <h4>Описание жалобы</h4>
+                                                        <div>
+                                                            <textarea class="form-control" readonly style="resize:none; width: 100%;">@c.Description</textarea>
+                                                       </div>
+                                                        <h4>Цель жалобы</h4>
+                                                        <div>
+                                                            @await Component.InvokeAsync("Complain", new { targetId = c.ComplainTargetId, targetTypeId =c.ComplainTargetTypeId})
+                                                       </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     }
                 }
             </tbody>
         </table>
     </div>
+    
     <div class="col"></div>
 </div>

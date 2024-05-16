@@ -25,6 +25,10 @@ namespace Cactus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<PostComment> GetCommentAsync(int postId) {
+            return await dbContext.PostComments.FirstOrDefaultAsync(x=>x.PostId == postId);
+        }
+
         public async Task<IEnumerable<PostComment>> GetCommentsAsync(int postId) {
             return await dbContext.PostComments.Include(x=>x.User).Where(x => x.PostId==postId).ToListAsync();
         }

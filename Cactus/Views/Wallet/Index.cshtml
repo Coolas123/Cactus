@@ -15,7 +15,7 @@
                 </select>
                 <p class="m-1" id="payMethodLabel1"></p>
             </div>
-            <label asp-for="Replenish.Sended"></label>
+            <label>Введите сумму пополнения</label>
             <div class="d-flex ">
                 <input class="form-control" oninput="getReceived1()" asp-for="Replenish.Sended" />
                 <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>
@@ -43,7 +43,7 @@
                         </select>
                         <p class="m-1" id="payMethodLabel2"></p>
                     </div>
-                    <label asp-for="Withdraw.Sended"></label>
+                    <label>Введите сумму вывода</label>
                     <div class="d-flex ">
                         <input class="form-control" oninput="getReceived2()" asp-for="Withdraw.Sended" />
                         <nobr style="font-size: 20px">@Model.Wallet.Currency.Symbol</nobr>

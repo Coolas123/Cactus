@@ -39,7 +39,7 @@ namespace Cactus.Controllers
         }
 
         [Route("{UrlPage}")]
-        [Route("/id/{id}")]
+        [Route("{id:int}")]
         [AllowAnonymous]
         public async Task<IActionResult> Index(string UrlPage="/", AuthorNotifications authorNotifications = null, int id = 0, int authorPage = 1, int postPage = 1) {
             var response = new PagingAuthorViewModel();

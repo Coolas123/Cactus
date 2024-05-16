@@ -44,6 +44,11 @@
             </div>
         }
         else {
+            <div>
+                <p class="ellipsis">
+                    @Model.Post.Description
+                </p>
+            </div>
             <h3 class="text-danger">@Model.PostAccessDescription</h3>
             if (Model.DonationOption != null && Model.DonationOption.MonetizationTypeId == (int)Cactus.Models.Enums.MonetizationType.OneTimePurchase) {
                 <form class="m-1" asp-page-handler="OneTimePurschase" method="post">
@@ -65,16 +70,25 @@
                     @foreach (var p in Model.PostComments) {
                         <div>
                             <h6>@p.User.UserName</h6>
-                            @if (!Model.IsOwner)
+                            @if (p.Id != Model.Post.UserId ||
+                                 p.Id != Convert.ToInt32(User.FindFirst("Id").Value))
                             {
                                 <button id="commentId" onClick="commentId()" type="button" class="btn btn-outline-secondary btn-sm" value="@p.Id" data-bs-toggle="modal" data-bs-target="#complainModal">
                                     Пожаловаться на комментарий
                                 </button>
                             }
                             <p>Оставлен @p.Created.ToLocalTime().ToString("dd MMMM yyyy H:mm")</p>
-                            <a asp-controller="Patron" asp-action="Index" asp-route-id="@p.User.Id">
-                                @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
-                            </a>
+                            @if (p.User.UserRoleId == (int)Cactus.Models.Enums.UserRole.Patron)
+                            {
+                                <a asp-controller="Patron" asp-action="Index" asp-route-id="@p.User.Id">
+                                    @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
+                                </a>
+                            }
+                            else {
+                                <a asp-controller="Author" asp-action="Index" asp-route-id="@p.User.Id">
+                                    @await Component.InvokeAsync("AvatarPath", new { Model.Post.User.User.Id, html = "class=\"d-block border border-dark\"" })
+                                </a>
+                            }
                             <p>@p.Comment</p>
                         </div>
                         <hr />
@@ -153,3 +167,11 @@
     }
 </script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<style>
+    .ellipsis {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
