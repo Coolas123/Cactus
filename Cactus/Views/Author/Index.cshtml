@@ -224,7 +224,7 @@
             PaidAuthorSubscribe sub = Model.PaidSubscribes.MaxBy(x=>x.Donator.DonationOption.Price);
             <div>
                 <span>
-                    @sub.Donator.DonationOption.OptionName, подписка заканчивается:
+                    @sub.Donator.DonationOption.OptionName, заканчивается:
                     @sub.EndDate.ToLocalTime().AddTicks(@sub.StartDate.ToLocalTime().Ticks)
                 </span>
             </div>

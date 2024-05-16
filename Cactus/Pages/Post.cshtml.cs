@@ -5,6 +5,7 @@ using Cactus.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Nest;
 using System.Security.Claims;
 
 namespace Cactus.Pages
@@ -23,11 +24,13 @@ namespace Cactus.Pages
         private readonly ITransactionService transactionService;
         private readonly IWalletService walletService;
         private readonly IPostOneTimePurschaseDonatorService postOneTimePurschaseDonatorService;
+        private readonly IPaidAuthorSubscribeService paidAuthorSubscribeService;
         public PostModel(IPostService postService, IPostMaterialService postMaterialService,
             IPostCommentService postCommentService, IPostTagService postTagService,
             IDonatorService donatorService, IPostDonationOptionService postDonationOptionService,
             IPayMethodSettingService payMethodSettingService, ITransactionService transactionService,
-            IWalletService walletService, IPostOneTimePurschaseDonatorService postOneTimePurschaseDonatorService) {
+            IWalletService walletService, IPostOneTimePurschaseDonatorService postOneTimePurschaseDonatorService,
+            IPaidAuthorSubscribeService paidAuthorSubscribeService) {
             this.postService = postService;
             this.postMaterialService = postMaterialService;
             this.postCommentService = postCommentService;
@@ -38,6 +41,7 @@ namespace Cactus.Pages
             this.transactionService = transactionService;
             this.walletService = walletService;
             this.postOneTimePurschaseDonatorService = postOneTimePurschaseDonatorService;
+            this.paidAuthorSubscribeService = paidAuthorSubscribeService;
         }
 
         public string ReturnUrl { get; set; }
@@ -54,6 +58,7 @@ namespace Cactus.Pages
         public IEnumerable<Donator> CurrentDonator { get; set; }
         public string PostAccessDescription { get; set; }
         public bool IsOwner { get; set; }
+        public IEnumerable<PaidAuthorSubscribe> PaidSubscribes { get; set; }
         [BindProperty]
         public TransactionViewModel NewOneTimePurschase { get; set; }
         public bool NotEnoughBalance { get; set; } = false;
@@ -96,13 +101,11 @@ namespace Cactus.Pages
                         else PostAccessDescription = Postdonator.Description;
                     }
                     else {
-                        BaseResponse<IEnumerable<Donator>> donator = 
-                            await donatorService
-                            .GetPostDonator(post.Data.Id, DonationOption.Id, Convert.ToInt32(User.FindFirstValue("Id")));
-                        if (donator.StatusCode == 200) {
-                            CurrentDonator = donator.Data;
+                        BaseResponse<IEnumerable<PaidAuthorSubscribe>> paidSubs = await paidAuthorSubscribeService.GetCurrentSubscribes(post.Data.UserId, Convert.ToInt32(User.FindFirstValue("Id")));
+                        if (paidSubs.StatusCode == 200) {
+                            PaidSubscribes = paidSubs.Data;
                         }
-                        else PostAccessDescription = donator.Description;
+                        
                     }
                 }
             }

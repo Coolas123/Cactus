@@ -33,7 +33,8 @@
         @if (Model.IsOwner || 
             Model.DonationOption == null || 
                 Model.CurrentDonator!=null &&
-                Model.CurrentDonator.Any(x => x.DonationOption.OptionName == Model.DonationOption?.OptionName)) {
+                (Model.CurrentDonator.Any(x => x.DonationOption.OptionName == Model.DonationOption?.OptionName||
+                Model.PaidSubscribes.Any(x=>x.Donator.DonationOption.Price>=Model.DonationOption.Price)))) {
             <div>
                 <img class="m-2" src="@Model.Material?.Path"/>
             </div>

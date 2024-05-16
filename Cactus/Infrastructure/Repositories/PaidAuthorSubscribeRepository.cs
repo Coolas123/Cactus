@@ -35,6 +35,7 @@ namespace Cactus.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+
         public Task<IEnumerable<PaidAuthorSubscribe>> SelectAsync() {
             throw new NotImplementedException();
         }

@@ -19,7 +19,7 @@ namespace Cactus.Models.ViewModels
         public int CategoryId {  get; set; }
         public DateTime? Created {  get; set; }
         [Display(Name = "Теги поста")]
-        [RegularExpression(@"#\\?[A-Za-zа-яА-Я]+", ErrorMessage = "Тег должен состоять из букв без спец символов в конце")]
+        [RegularExpression(@"(#?[A-Za-zа-яА-Я0-9])+", ErrorMessage = "Тег должен состоять из букв без спец символов в конце")]
         public string? Tags { get; set; }
         [Display(Name = "Сделать пост бесплатным?")]
         public bool IsFree { get; set; }

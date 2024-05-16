@@ -36,7 +36,7 @@
                             @if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Withdraw) {
                                 <td>@(Cactus.Models.Enums.TransactionType.Withdraw.GetAttribute<DisplayAttribute>().Name)</td>
                             }
-                            @if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Replenish) {
+                            else@if (c.PayMethod.PayMethodSetting.TransactionType.Id == (int)Cactus.Models.Enums.TransactionType.Replenish) {
                                 <td>@(Cactus.Models.Enums.TransactionType.Replenish.GetAttribute<DisplayAttribute>().Name)</td>
                             }
                             else {
