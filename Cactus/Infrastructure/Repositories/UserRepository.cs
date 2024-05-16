@@ -14,9 +14,6 @@ namespace Cactus.Infrastructure.Repositories
         {
             await dbContext.Users.AddAsync(entity);
             await dbContext.SaveChangesAsync();
-            User user =await GetByEmailAsync(entity.Email);
-            await dbContext.Patrons.AddAsync(new Patron { UserId=user.Id});
-            await dbContext.SaveChangesAsync();
             return true;
         }
 

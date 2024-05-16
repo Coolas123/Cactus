@@ -24,6 +24,7 @@ namespace Cactus
             services.AddDbContext<ApplicationDbContext>(opts => {
                 opts.UseNpgsql(configuration["ConnectionStrings:CactusConnection"]);
             });
+            //, ServiceLifetime.Transient
             services.AddDistributedMemoryCache();
             services.AddRazorPages();
             services.AddMemoryCache();
@@ -48,8 +49,6 @@ namespace Cactus
             services.AddScoped<IProfileMaterialService, ProfileMaterialService>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IAuthorService, AuthorService>();
-            services.AddScoped<IPatronRepository, PatronRepository>();
-            services.AddScoped<IPatronService, PatronService>();
             services.AddScoped<IAuthorSubscribeRepository, AuthorSubscribeRepository>();
             services.AddScoped<IAuthorSubscribeService, AuthorSubscribeService>();
             services.AddScoped<IPostRepository, PostRepository>();

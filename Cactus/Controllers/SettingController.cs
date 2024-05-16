@@ -86,7 +86,7 @@ namespace Cactus.Controllers
 
             if (User.IsInRole("Author") && model.NewSettingViewModel.NewAuthorSettingViewModel != null) {
                 ModelErrorsResponse<Author> authorResponseSetting = await authorService.ChangeSettingAsync(model.NewSettingViewModel.NewAuthorSettingViewModel, Convert.ToInt32(User.FindFirst("Id").Value));
-                if (authorResponseSetting.StatusCode != 200) {
+                if (authorResponseSetting.StatusCode != 200 && authorResponseSetting.Descriptions != null) {
                     foreach(var e in authorResponseSetting.Descriptions) {
                         ModelState.AddModelError(e.Key, e.Value);
                     }

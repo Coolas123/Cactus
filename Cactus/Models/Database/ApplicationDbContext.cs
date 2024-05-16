@@ -10,7 +10,6 @@ namespace Cactus.Models.Database
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<SystemRole> SystemRoles { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Patron> Patrons { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<ProfileMaterial> ProfileMaterials { get; set; }

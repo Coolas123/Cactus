@@ -12,14 +12,12 @@ namespace Cactus.Services.Implementations
     {
         private readonly IUserService userService;
         private readonly IAuthorRepository authorRepository;
-        private readonly IPatronService patronService;
         private readonly IProfileMaterialService profileMaterialService;
 
         public AuthorService(IUserService userService, IAuthorRepository authorRepository,
-            IPatronService patronService, IProfileMaterialService profileMaterialService) {
+            IProfileMaterialService profileMaterialService) {
             this.userService = userService;
             this.authorRepository = authorRepository;
-            this.patronService = patronService;
             this.profileMaterialService = profileMaterialService;
         }
 
@@ -144,13 +142,7 @@ namespace Cactus.Services.Implementations
             var newIndividual = new Author { UrlPage = model.UrlPage, UserId = id };
             try {
                 await authorRepository.CreateAsync(newIndividual);
-                var resultPatron = await patronService.DaeleteUser(id);
-                if (resultPatron.StatusCode != 200) {
-                    return new BaseResponse<ClaimsIdentity>
-                    {
-                        Description = resultPatron.Description
-                    };
-                }
+
                 BaseResponse<ClaimsIdentity> result = await userService.ChangeRoleToAuthor(id);
                 if (result.StatusCode != 200) {
                     return new BaseResponse<ClaimsIdentity>

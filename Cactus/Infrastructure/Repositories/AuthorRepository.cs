@@ -45,7 +45,7 @@ namespace Cactus.Infrastructure.Repositories
 
         public async Task<bool> Update(Author author) {
             dbContext.Authors.Update(author);
-            dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
             return true;
         }
     }
